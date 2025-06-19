@@ -1,15 +1,15 @@
- 'use client';
+'use client';
 
-import FAQModal from "../../component/faqmodal";
+import FAQModal from '@/component/faqmodal';
+import { useRouter } from 'next/navigation';
 
+export default function FAQPage() {
+  const router = useRouter();
 
-type FAQPageProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
-
-export default function FAQPage({ isOpen, onClose }: FAQPageProps) {
   return (
-    <FAQModal isOpen={isOpen} onClose={onClose} />
+    <FAQModal
+      isOpen={true}
+      onClose={() => router.back()} // or router.push('/') if you prefer
+    />
   );
-}  
+}

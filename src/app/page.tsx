@@ -8,9 +8,9 @@ import { PROJECTS } from './data/projects';
 import TeamModal from './Team/page';
 import AboutModal from './about/page';
 import ServicesModal from './services/page';
-import FAQPage from './FAQ/page';
 import { FaFacebook, FaInstagram, FaTwitter, FaQuoteLeft,FaLinkedin } from 'react-icons/fa';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
+import FAQPage from './FAQ/page';
 type Project = {
   id: number;
   title: string;
@@ -386,7 +386,7 @@ export default function Home() {
         <AboutModal isOpen={showAboutModal} onClose={() => setShowAboutModal(false)} />
       )}
       {showServicesModal && <ServicesModal onClose={() => setShowServicesModal(false)} />}
-      <FAQPage isOpen={showFAQModal} onClose={() => setShowFAQModal(false)} />
+      {showFAQModal && <FAQPage />}
     </div>
   );
 }

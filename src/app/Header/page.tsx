@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
+
 import {
   FaHome,
   FaInfoCircle,
@@ -27,8 +30,6 @@ type SidebarProps = {
 
 export default function Sidebar({ onSectionClick, onFAQClick }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
-
-  // Fixed background color (no scroll effect)
   const baseBg = 'bg-[#ee5225]';
 
   return (
@@ -49,7 +50,6 @@ export default function Sidebar({ onSectionClick, onFAQClick }: SidebarProps) {
         className={`fixed top-0 left-0 z-50 w-54 ${baseBg} transition-all duration-500 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 relative shadow-xl font-monasans`}
       >
-        {/* Animated Background Pattern with Reduced Opacity */}
         <motion.div
           className="absolute inset-0 bg-repeat-y bg-center bg-[length:100%_auto] pointer-events-none opacity-38"
           style={{ backgroundImage: 'url(/Image/pptr.svg)' }}
@@ -76,9 +76,11 @@ export default function Sidebar({ onSectionClick, onFAQClick }: SidebarProps) {
           {/* Logo + Nav */}
           <div>
             <div className="mb-10 flex items-center justify-start px-4">
-              <img
+              <Image
                 src="/Image/adve.svg"
                 alt="Advera Logo"
+                width={100}
+                height={40}
                 className="h-10 w-auto"
               />
             </div>
@@ -109,7 +111,7 @@ export default function Sidebar({ onSectionClick, onFAQClick }: SidebarProps) {
 
                   return (
                     <li key={key}>
-                      <a
+                      <Link
                         href={href}
                         onClick={(e) => {
                           e.preventDefault();
@@ -120,7 +122,7 @@ export default function Sidebar({ onSectionClick, onFAQClick }: SidebarProps) {
                       >
                         <span>{icon}</span>
                         <span className="ml-3 font-medium text-sm tracking-wide">{name}</span>
-                      </a>
+                      </Link>
                     </li>
                   );
                 })}
@@ -130,12 +132,15 @@ export default function Sidebar({ onSectionClick, onFAQClick }: SidebarProps) {
 
           {/* Bottom CTA */}
           <div className="px-2 mt-2 md:mt-6 mb-6 relative z-10">
-                  <a href="tel:0966557743" onClick={() => setIsOpen(false)}>
-                    <button className="w-full flex items-center justify-center gap-2 border border-[#191D49] text-white hover:bg-[#191D49] hover:text-white active:scale-95 transition-all duration-300 font-semibold rounded-xl px-3 py-2 shadow-md hover:shadow-[#191D49]/30 bg-[#191D49] focus:outline-none text-sm">
-                      <FaPhoneAlt className="text-sm" />
-                      <span>Call Us</span>
-                    </button>
-        </a>
+            <Link href="tel:0966557743" passHref>
+              <button
+                className="w-full flex items-center justify-center gap-2 border border-[#191D49] text-white hover:bg-[#191D49] hover:text-white active:scale-95 transition-all duration-300 font-semibold rounded-xl px-3 py-2 shadow-md hover:shadow-[#191D49]/30 bg-[#191D49] focus:outline-none text-sm"
+                onClick={() => setIsOpen(false)}
+              >
+                <FaPhoneAlt className="text-sm" />
+                <span>Call Us</span>
+              </button>
+            </Link>
           </div>
         </aside>
       </div>

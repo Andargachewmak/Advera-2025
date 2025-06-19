@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import type { StaticImageData } from 'next/image';
-import Sidebar from './Header/page';
 import { PROJECTS } from './data/projects';
 import TeamModal from './Team/page';
 import AboutModal from './about/page';
@@ -11,6 +10,7 @@ import ServicesModal from './services/page';
 import { FaFacebook, FaInstagram, FaTwitter, FaQuoteLeft,FaLinkedin } from 'react-icons/fa';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import FAQPage from './FAQ/page';
+import Sidebar from '@/component/sidebar';
 type Project = {
   id: number;
   title: string;

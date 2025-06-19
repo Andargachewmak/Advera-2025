@@ -43,7 +43,7 @@ const modalVariants = {
   exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
 }
 
-export default function FAQPage({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+export default function FAQModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const toggleFAQ = (index: number) => {

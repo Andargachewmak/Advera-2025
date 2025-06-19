@@ -7,12 +7,12 @@ type AboutModalProps = {
   isOpen: boolean;
   onClose: () => void;
 };
+
 const backdropVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.4, ease: easeOut } }, // easeOut
-  exit: { opacity: 0, transition: { duration: 0.3, ease: easeIn } }, // easeIn
+  visible: { opacity: 1, transition: { duration: 0.4, ease: easeOut } },
+  exit: { opacity: 0, transition: { duration: 0.3, ease: easeIn } },
 };
-
 
 const modalVariants = {
   hidden: { opacity: 0, y: 40, scale: 0.85 },
@@ -34,7 +34,6 @@ const modalVariants = {
     transition: { duration: 0.25, ease: easeInOut },
   },
 };
-
 
 export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
   return (

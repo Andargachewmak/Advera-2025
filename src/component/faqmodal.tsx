@@ -12,19 +12,23 @@ type FAQ = {
 const faqs: FAQ[] = [
   {
     question: 'What services do you offer?',
-    answer: 'We offer web design, development, UI/UX, branding, and digital marketing solutions tailored to your business needs.',
+    answer:
+      'We offer web design, development, UI/UX, branding, and digital marketing solutions tailored to your business needs.',
   },
   {
     question: 'How long does a typical project take?',
-    answer: 'Project timelines vary, but most small to medium projects take 2-6 weeks from start to launch.',
+    answer:
+      'Project timelines vary, but most small to medium projects take 2–6 weeks from start to launch.',
   },
   {
     question: 'Do you provide support after launch?',
-    answer: 'Yes, we offer post-launch support and maintenance to ensure your product runs smoothly.',
+    answer:
+      'Yes, we offer post-launch support and maintenance to ensure your product runs smoothly.',
   },
   {
     question: 'Can you redesign an existing website?',
-    answer: 'Absolutely. We can analyze your current site and offer a full redesign to improve performance and aesthetics.',
+    answer:
+      'Absolutely. We can analyze your current site and offer a full redesign to improve performance and aesthetics.',
   },
 ];
 
@@ -72,7 +76,6 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
             onClick={(e) => e.stopPropagation()}
             layout
           >
-            {/* Header */}
             <header className="flex justify-between items-start sm:items-center mb-6 sm:mb-8">
               <h1 className="text-2xl sm:text-4xl font-bold text-white">
                 Frequently Asked Questions
@@ -86,7 +89,6 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
               </button>
             </header>
 
-            {/* FAQ Items */}
             <section className="space-y-4 sm:space-y-6">
               {faqs.map((faq, index) => (
                 <motion.div
@@ -128,4 +130,4 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
       )}
     </AnimatePresence>
   );
-}  
+}

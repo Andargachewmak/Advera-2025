@@ -1,6 +1,6 @@
  'use client';
 
-import FAQModal from "../component/faqmodal";
+import FAQModal from "../../component/faqmodal";
 
 
 type FAQPageProps = {

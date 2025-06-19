@@ -1,6 +1,6 @@
 // app/components/ProjectCard.tsx
 import Image from "next/image";
-import type { Project } from "../data/projects";
+import type { Project } from "../app/data/projects";
 
 type ProjectCardProps = {
   project: Project;

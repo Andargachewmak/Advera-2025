@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "@fontsource/mona-sans/index.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -120,16 +119,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-@font-face {
-  font-family: 'Mona Sans';
-  src: url('/fonts/MonaSans-Regular.woff2') format('woff2'),
-       url('/fonts/MonaSans-Regular.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-body {
-  font-family: "Mona Sans", sans-serif;
 }

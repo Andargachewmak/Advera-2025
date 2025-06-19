@@ -1,17 +1,14 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import FAQModal from '../component/faqmodal'
+import FAQModal from '../component/faqmodal';
 
-export default function FAQPage() {
-  const [isOpen, setIsOpen] = useState(true) // or false initially, and toggle as needed
+type FAQPageProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
 
+export default function FAQPage({ isOpen, onClose }: FAQPageProps) {
   return (
-    <>
-      {/* Some UI to open FAQ */}
-      <button onClick={() => setIsOpen(true)}>Open FAQ</button>
-
-      <FAQModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
-    </>
-  )
+    <FAQModal isOpen={isOpen} onClose={onClose} />
+  );
 }

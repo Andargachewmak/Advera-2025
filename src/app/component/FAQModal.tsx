@@ -128,4 +128,4 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
       )}
     </AnimatePresence>
   );
-}
+}  

@@ -1,6 +1,7 @@
-'use client';
+ 'use client';
 
-import FAQModal from '../component/faqmodal';
+import FAQModal from "../component/faqmodal";
+
 
 type FAQPageProps = {
   isOpen: boolean;
@@ -11,4 +12,4 @@ export default function FAQPage({ isOpen, onClose }: FAQPageProps) {
   return (
     <FAQModal isOpen={isOpen} onClose={onClose} />
   );
-}
+}  

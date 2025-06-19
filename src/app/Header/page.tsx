@@ -1,10 +1,10 @@
+// src/components/Sidebar.tsx
 'use client';
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-
 import {
   FaHome,
   FaInfoCircle,

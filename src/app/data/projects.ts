@@ -14,9 +14,9 @@ export type Project = {
 };
 
 export const PROJECTS = [
-  // Video Editing
+  //Web development
   {
-    id: 4,
+    id: 1,
     title: 'Event Recap Reel',
     client: 'Global Fest',
     category: 'Web development',
@@ -25,7 +25,7 @@ export const PROJECTS = [
     images: ['/image/graphic3.png'],
   },
   {
-    id: 3,
+    id: 2,
     title: 'Product Promo Video',
     client: 'StartupX',
     category: 'Web development',
@@ -34,7 +34,7 @@ export const PROJECTS = [
     images: ['/image/graphic4.png'],
   },
   {
-    id: 4,
+    id: 3,
     title: 'Event Recap Reel',
     client: 'Global Fest',
     category: 'Web development',
@@ -43,7 +43,7 @@ export const PROJECTS = [
     images: ['/image/graphic3.png'],
   },
   {
-    id: 3,
+    id: 4,
     title: 'Product Promo Video',
     client: 'StartupX',
     category: 'Web development',
@@ -52,7 +52,7 @@ export const PROJECTS = [
     images: ['/image/graphic4.png'],
   },
   {
-    id: 4,
+    id: 5,
     title: 'Event Recap Reel',
     client: 'Global Fest',
     category: 'Web development',
@@ -63,7 +63,7 @@ export const PROJECTS = [
 
   // Graphics (Logo, Poster)
   {
-    id: 5,
+    id: 6,
     title: 'Modern Logo Design',
     client: 'GreenLeaf Agency',
     category: 'Graphics (Logo, Poster)',
@@ -72,7 +72,7 @@ export const PROJECTS = [
     images: ['/image/graphic2.png','/image/graphic1.png','/image/graphic3.png'],
   },
   {
-    id: 6,
+    id: 7,
     title: 'Event Poster',
     client: 'Cultural Beats',
     category: 'Graphics (Logo, Poster)',
@@ -81,7 +81,7 @@ export const PROJECTS = [
     images: ['/image/graphic1.png'],
   },
   {
-    id: 5,
+    id: 8,
     title: 'Modern Logo Design',
     client: 'GreenLeaf Agency',
     category: 'Graphics (Logo, Poster)',
@@ -90,7 +90,7 @@ export const PROJECTS = [
     images: ['/image/graphic2.png'],
   },
   {
-    id: 6,
+    id: 9,
     title: 'Event Poster',
     client: 'Cultural Beats',
     category: 'Graphics (Logo, Poster)',
@@ -99,9 +99,9 @@ export const PROJECTS = [
     images: ['/image/graphic1.png'],
   },
 
-  // Paid Advertising
+  // Web development
   {
-    id: 7,
+    id: 10,
     title: 'Facebook Ad Funnel',
     client: 'EcoBags Co.',
     category: 'UI/UX Design',
@@ -110,7 +110,7 @@ export const PROJECTS = [
     images: ['/image/graphic4.png'],
   },
   {
-    id: 8,
+    id: 11,
     title: 'Instagram Story Ads',
     client: 'Urban Sneakers',
     category: 'UI/UX Design',
@@ -119,7 +119,7 @@ export const PROJECTS = [
     images: ['/image/graphic3.png'],
   },
   {
-    id: 7,
+    id: 12,
     title: 'Facebook Ad Funnel',
     client: 'EcoBags Co.',
     category: 'UI/UX Design',
@@ -128,7 +128,7 @@ export const PROJECTS = [
     images: ['/image/graphic4.png'],
   },
   {
-    id: 8,
+    id: 13,
     title: 'Instagram Story Ads',
     client: 'Urban Sneakers',
     category: 'UI/UX Design',
@@ -137,7 +137,7 @@ export const PROJECTS = [
     images: ['/image/graphic3.png'],
   },
    {
-    id: 7,
+    id: 14,
     title: 'Facebook Ad Funnel',
     client: 'EcoBags Co.',
     category: 'UI/UX Design',
@@ -146,7 +146,7 @@ export const PROJECTS = [
     images: ['/image/graphic4.png'],
   },
   {
-    id: 8,
+    id: 15,
     title: 'Instagram Story Ads',
     client: 'Urban Sneakers',
     category: 'UI/UX Design',

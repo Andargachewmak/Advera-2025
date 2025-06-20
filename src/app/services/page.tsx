@@ -1,78 +1,92 @@
-'use client'
+'use client';
 
-import { motion, AnimatePresence } from 'framer-motion'
-import { FaCode, FaPaintBrush, FaPenNib } from 'react-icons/fa'
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaBullhorn, FaBook, FaGlobe, FaImage, FaPalette, FaTags } from 'react-icons/fa';
 
 const services = [
-   {
-    title: 'Graphics Design',
-    icon: <FaPenNib size={32} className="text-green-400" />,
-    description:
-      'Creative and professional graphics that visually communicate your brand identity.',
-  },
-   {
-    title: 'UI/UX Design',
-    icon: <FaPaintBrush size={32} className="text-pink-400" />,
-    description:
-      'Our designs are user-centered and visually stunning across all platforms.',
+  {
+    title: 'Branding and Identity Design',
+    icon: <FaTags size={32} className="text-yellow-400" />,
+    description: 'Logos and brand guidelines that establish a strong visual identity.',
   },
   {
-    title: 'Web Development',
-    icon: <FaCode size={32} className="text-blue-400" />,
-    description:
-      'We build fast, responsive, and scalable web applications tailored to your needs.',
+    title: 'Print Design',
+    icon: <FaBook size={32} className="text-pink-400" />,
+    description: 'Brochures, posters, flyers, and packaging that leave a lasting impression.',
   },
- 
- 
-]
+  {
+    title: 'Digital Marketing',
+    icon: <FaGlobe size={32} className="text-blue-400" />,
+    description: 'Social media post design to amplify your digital presence.',
+  },
+  {
+    title: 'Environmental Design',
+    icon: <FaImage size={32} className="text-green-400" />,
+    description: 'Signage, billboards, and exhibition designs that make spaces speak.',
+  },
+  {
+    title: 'Editorial Design',
+    icon: <FaPalette size={32} className="text-purple-400" />,
+    description: 'Layouts for magazines, books, and newspapers with editorial clarity.',
+  },
+  {
+    title: 'Advertising Design',
+    icon: <FaBullhorn size={32} className="text-red-400" />,
+    description: 'Digital ads, banners, web campaigns, and print advertisements.',
+  },
+];
 
 const backdropVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.3 } },
   exit: { opacity: 0, transition: { duration: 0.2 } },
-}
+};
 
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.9 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
   exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
-}
+};
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "tween" as const, ease: "easeOut" as const, duration: 0.5 },
+    transition: { type: 'tween' as const, ease: 'easeOut' as const, duration: 0.4 },
   },
-}
+};
 
 export default function ServicesModal({ onClose }: { onClose: () => void }) {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+        className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         variants={backdropVariants}
         initial="hidden"
         animate="visible"
         exit="exit"
+        onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-4xl rounded-2xl p-6 sm:p-8 md:p-10 bg-transparent overflow-auto max-h-[90vh]"
+          className="relative w-full max-w-5xl max-h-[90vh] overflow-auto rounded-2xl p-6 sm:p-8 md:p-10 bg-white/20 backdrop-blur-md shadow-lg"
           variants={modalVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
+          onClick={(e) => e.stopPropagation()}
+          layout
         >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-300 hover:text-red-500 text-2xl font-bold transition"
+            className="absolute top-4 right-4 text-white hover:text-red-400 text-2xl font-bold transition"
             aria-label="Close"
           >
             ✕
           </button>
 
-          <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-white">
+          {/* Centered Title */}
+          <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-10">
             Our Services
           </h2>
 
@@ -81,23 +95,30 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
             initial="hidden"
             animate="visible"
             variants={{
-              visible: { transition: { staggerChildren: 0.15 } },
+              visible: {
+                transition: {
+                  staggerChildren: 0.1,
+                  delayChildren: 0.1,
+                },
+              },
             }}
+            layout
           >
             {services.map((service) => (
               <motion.div
                 key={service.title}
-                className="bg-white/20 backdrop-blur-md rounded-xl p-5 shadow-lg text-center hover:bg-white/30 hover:shadow-2xl transition"
+                className="bg-white/10 rounded-xl p-5 shadow-md text-center cursor-pointer hover:shadow-xl hover:scale-[1.05] transition-transform duration-300"
                 variants={cardVariants}
+                layout
               >
                 <div className="mb-4 flex justify-center">{service.icon}</div>
                 <h3 className="text-lg font-semibold text-white">{service.title}</h3>
-                <p className="text-sm text-gray-200 mt-2">{service.description}</p>
+                <p className="text-sm text-white/90 mt-2">{service.description}</p>
               </motion.div>
             ))}
           </motion.div>
         </motion.div>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }

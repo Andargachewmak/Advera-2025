@@ -66,8 +66,4 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
-@import "@fontsource/mona-sans/index.css";
 
-body {
-  font-family: "Mona Sans", sans-serif;
-}

@@ -4,13 +4,13 @@ import { useEffect, useState, useMemo } from 'react';
 import Image from 'next/image';
 import type { StaticImageData } from 'next/image';
 import { PROJECTS } from './data/projects';
-import ServicesModal from './services/page';
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from 'react-icons/fa';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import Sidebar from '@/component/sidebar';
 import TeamModal from '@/component/TeamModal';
 import AboutModal from '@/component/AboutModal';
 import FAQPage from '@/component/faqmodal';
+import ServicesModal from '@/component/ServicesModal';
 
 type Project = {
   id: number;
@@ -136,9 +136,9 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-8">
-              {filteredProjects.map((project, idx) => (
+              {filteredProjects.map((project) => (
                 <div
-                  key={`${project.id}-${idx}`} // <-- unique key combining id and index
+                  key={project.id}
                   onClick={() => {
                     setSelectedProject(project);
                     setCurrentImageIndex(0);

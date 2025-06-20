@@ -22,7 +22,7 @@ export const PROJECTS = [
     category: 'Web development',
     contributors: 'Studio Mix',
     summary: 'Edited an engaging highlight reel for a global music festival.',
-    images: ['/image/graphic3.png'],
+    images: ['/Image/graphic3.png'],
   },
   {
     id: 2,
@@ -31,7 +31,7 @@ export const PROJECTS = [
     category: 'Web development',
     contributors: 'Editor Pro',
     summary: 'Crafted a punchy promo video with animations and transitions.',
-    images: ['/image/graphic4.png'],
+    images: ['/Image/graphic4.png'],
   },
   {
     id: 3,
@@ -40,7 +40,7 @@ export const PROJECTS = [
     category: 'Web development',
     contributors: 'Studio Mix',
     summary: 'Edited an engaging highlight reel for a global music festival.',
-    images: ['/image/graphic3.png'],
+    images: ['/Image/graphic3.png'],
   },
   {
     id: 4,
@@ -49,7 +49,7 @@ export const PROJECTS = [
     category: 'Web development',
     contributors: 'Editor Pro',
     summary: 'Crafted a punchy promo video with animations and transitions.',
-    images: ['/image/graphic4.png'],
+    images: ['/Image/graphic4.png'],
   },
   {
     id: 5,
@@ -58,7 +58,7 @@ export const PROJECTS = [
     category: 'Web development',
     contributors: 'Studio Mix',
     summary: 'Edited an engaging highlight reel for a global music festival.',
-    images: ['/image/graphic3.png'],
+    images: ['/Image/graphic3.png'],
   },
 
   // Graphics (Logo, Poster)
@@ -69,7 +69,7 @@ export const PROJECTS = [
     category: 'Graphics (Logo, Poster)',
     contributors: 'Design Team',
     summary: 'Created a fresh, minimalist logo for a sustainable brand.',
-    images: ['/image/graphic2.png','/image/graphic1.png','/image/graphic3.png'],
+    images: ['/Image/graphic2.png','/Image/graphic1.png','/image/graphic3.png'],
   },
   {
     id: 7,
@@ -78,7 +78,7 @@ export const PROJECTS = [
     category: 'Graphics (Logo, Poster)',
     contributors: 'Art Studio',
     summary: 'Designed a vibrant poster for a multicultural event.',
-    images: ['/image/graphic1.png'],
+    images: ['/Image/graphic1.png'],
   },
   {
     id: 8,
@@ -87,7 +87,7 @@ export const PROJECTS = [
     category: 'Graphics (Logo, Poster)',
     contributors: 'Design Team',
     summary: 'Created a fresh, minimalist logo for a sustainable brand.',
-    images: ['/image/graphic2.png'],
+    images: ['/Image/graphic2.png'],
   },
   {
     id: 9,
@@ -96,7 +96,7 @@ export const PROJECTS = [
     category: 'Graphics (Logo, Poster)',
     contributors: 'Art Studio',
     summary: 'Designed a vibrant poster for a multicultural event.',
-    images: ['/image/graphic1.png'],
+    images: ['/Image/graphic1.png'],
   },
 
   // Web development
@@ -107,7 +107,7 @@ export const PROJECTS = [
     category: 'UI/UX Design',
     contributors: 'Ad Wizards',
     summary: 'Generated 5x ROI through a multi-step Facebook ad funnel.',
-    images: ['/image/graphic4.png'],
+    images: ['/Image/graphic4.png'],
   },
   {
     id: 11,
@@ -116,7 +116,7 @@ export const PROJECTS = [
     category: 'UI/UX Design',
     contributors: 'SocialClicks',
     summary: 'Launched animated story ads with high conversion rates.',
-    images: ['/image/graphic3.png'],
+    images: ['/Image/graphic3.png'],
   },
   {
     id: 12,
@@ -125,7 +125,7 @@ export const PROJECTS = [
     category: 'UI/UX Design',
     contributors: 'Ad Wizards',
     summary: 'Generated 5x ROI through a multi-step Facebook ad funnel.',
-    images: ['/image/graphic4.png'],
+    images: ['/Image/graphic4.png'],
   },
   {
     id: 13,
@@ -134,7 +134,7 @@ export const PROJECTS = [
     category: 'UI/UX Design',
     contributors: 'SocialClicks',
     summary: 'Launched animated story ads with high conversion rates.',
-    images: ['/image/graphic3.png'],
+    images: ['/Image/graphic3.png'],
   },
    {
     id: 14,
@@ -143,7 +143,7 @@ export const PROJECTS = [
     category: 'UI/UX Design',
     contributors: 'Ad Wizards',
     summary: 'Generated 5x ROI through a multi-step Facebook ad funnel.',
-    images: ['/image/graphic4.png'],
+    images: ['/Image/graphic4.png'],
   },
   {
     id: 15,
@@ -152,6 +152,6 @@ export const PROJECTS = [
     category: 'UI/UX Design',
     contributors: 'SocialClicks',
     summary: 'Launched animated story ads with high conversion rates.',
-    images: ['/image/graphic3.png'],
+    images: ['/Image/graphic3.png'],
   },
 ];  

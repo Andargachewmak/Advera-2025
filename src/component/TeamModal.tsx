@@ -22,14 +22,14 @@ const team: TeamMember[] = [
   {
     name: 'Abel Tefera',
     role: 'CEO & Founder',
-    image: '/image/abela.jpg',
+    image: '\image\abela.jpg',
     linkedin: 'https://linkedin.com/in/janedoe',
     twitter: 'https://twitter.com/janedoe',
   },
   {
     name: 'Andargachew',
     role: 'Lead Developer',
-    image: '/image/Andi.jpg',
+    image: '\image\Andi.jpg',
     linkedin: 'https://linkedin.com/in/johnsmith',
   },
   {

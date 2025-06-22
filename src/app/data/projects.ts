@@ -2,7 +2,13 @@
 
 import { StaticImageData } from "next/image";
 
-// import type { StaticImageData } from 'next/image';
+export type Testimonial = {
+  quote: string;
+  clientName: string;
+  clientTitle: string;
+  clientImage: string; // string path
+};
+
 export type Project = {
   id: number;
   title: string;
@@ -11,65 +17,50 @@ export type Project = {
   contributors: string;
   summary: string;
   images: (string | StaticImageData)[];
+  testimonials?: Testimonial[]; // <-- New
 };
-
-export const PROJECTS = [
-  //Web development
+export const PROJECTS: Project[] = [  //Web development
   {
     id: 1,
-    title: 'Event Recap Reel',
+    title: 'Web develope',
     client: 'Global Fest',
     category: 'Web development',
     contributors: 'Studio Mix',
     summary: 'Edited an engaging highlight reel for a global music festival.',
     images: ['/Image/graphic3.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+      {
+        quote: "Fast delivery and great attention to details.",
+        clientName: "Mike D.",
+        clientTitle: "Head of Marketing",
+        clientImage: "/Image/client2.jpg",
+      },
+  
+    ],
   },
-  {
-    id: 2,
-    title: 'Product Promo Video',
-    client: 'StartupX',
-    category: 'Web development',
-    contributors: 'Editor Pro',
-    summary: 'Crafted a punchy promo video with animations and transitions.',
-    images: ['/Image/graphic4.png'],
-  },
-  {
-    id: 3,
-    title: 'Event Recap Reel',
-    client: 'Global Fest',
-    category: 'Web development',
-    contributors: 'Studio Mix',
-    summary: 'Edited an engaging highlight reel for a global music festival.',
-    images: ['/Image/graphic3.png'],
-  },
-  {
-    id: 4,
-    title: 'Product Promo Video',
-    client: 'StartupX',
-    category: 'Web development',
-    contributors: 'Editor Pro',
-    summary: 'Crafted a punchy promo video with animations and transitions.',
-    images: ['/Image/graphic4.png'],
-  },
-  {
-    id: 5,
-    title: 'Event Recap Reel',
-    client: 'Global Fest',
-    category: 'Web development',
-    contributors: 'Studio Mix',
-    summary: 'Edited an engaging highlight reel for a global music festival.',
-    images: ['/Image/graphic3.png'],
-  },
-
   // Graphics (Logo, Poster)
-  {
-    id: 6,
-    title: 'Modern Logo Design',
-    client: 'GreenLeaf Agency',
-    category: 'Graphics (Logo, Poster)',
-    contributors: 'Design Team',
-    summary: 'Created a fresh, minimalist logo for a sustainable brand.',
-    images: ['/Image/graphic2.png','/Image/graphic1.png','/image/graphic3.png'],
+   {
+    id: 2,
+    title: 'Web development',
+    client: 'StartupX',
+    category: 'Web development',
+    contributors: 'Editor Pro',
+    summary: 'Crafted a punchy promo video with animations and transitions.',
+    images: ['/Image/graphic4.png'],
+    testimonials: [
+      {
+        quote: "Slick, modern and super effective. Loved it!",
+        clientName: "Laura Kim",
+        clientTitle: "CEO, StartupX",
+        clientImage: "/Image/client3.jpg",
+      },
+    ],
   },
   {
     id: 7,
@@ -79,6 +70,21 @@ export const PROJECTS = [
     contributors: 'Art Studio',
     summary: 'Designed a vibrant poster for a multicultural event.',
     images: ['/Image/graphic1.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+      {
+        quote: "Fast delivery and great attention to details.",
+        clientName: "Mike D.",
+        clientTitle: "Head of Marketing",
+        clientImage: "/Image/client2.jpg",
+      },
+  
+    ],
   },
   {
     id: 8,
@@ -88,6 +94,21 @@ export const PROJECTS = [
     contributors: 'Design Team',
     summary: 'Created a fresh, minimalist logo for a sustainable brand.',
     images: ['/Image/graphic2.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+      {
+        quote: "Fast delivery and great attention to details.",
+        clientName: "Mike D.",
+        clientTitle: "Head of Marketing",
+        clientImage: "/Image/client2.jpg",
+      },
+  
+    ],
   },
   {
     id: 9,
@@ -97,6 +118,21 @@ export const PROJECTS = [
     contributors: 'Art Studio',
     summary: 'Designed a vibrant poster for a multicultural event.',
     images: ['/Image/graphic1.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+      {
+        quote: "Fast delivery and great attention to details.",
+        clientName: "Mike D.",
+        clientTitle: "Head of Marketing",
+        clientImage: "/Image/client2.jpg",
+      },
+  
+    ],
   },
 
   // Web development
@@ -108,6 +144,21 @@ export const PROJECTS = [
     contributors: 'Ad Wizards',
     summary: 'Generated 5x ROI through a multi-step Facebook ad funnel.',
     images: ['/Image/graphic4.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+      {
+        quote: "Fast delivery and great attention to details.",
+        clientName: "Mike D.",
+        clientTitle: "Head of Marketing",
+        clientImage: "/Image/client2.jpg",
+      },
+  
+    ],
   },
   {
     id: 11,
@@ -117,6 +168,21 @@ export const PROJECTS = [
     contributors: 'SocialClicks',
     summary: 'Launched animated story ads with high conversion rates.',
     images: ['/Image/graphic3.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+      {
+        quote: "Fast delivery and great attention to details.",
+        clientName: "Mike D.",
+        clientTitle: "Head of Marketing",
+        clientImage: "/Image/client2.jpg",
+      },
+  
+    ],
   },
   {
     id: 12,
@@ -126,6 +192,21 @@ export const PROJECTS = [
     contributors: 'Ad Wizards',
     summary: 'Generated 5x ROI through a multi-step Facebook ad funnel.',
     images: ['/Image/graphic4.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+      {
+        quote: "Fast delivery and great attention to details.",
+        clientName: "Mike D.",
+        clientTitle: "Head of Marketing",
+        clientImage: "/Image/client2.jpg",
+      },
+  
+    ],
   },
   {
     id: 13,
@@ -135,6 +216,21 @@ export const PROJECTS = [
     contributors: 'SocialClicks',
     summary: 'Launched animated story ads with high conversion rates.',
     images: ['/Image/graphic3.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+      {
+        quote: "Fast delivery and great attention to details.",
+        clientName: "Mike D.",
+        clientTitle: "Head of Marketing",
+        clientImage: "/Image/client2.jpg",
+      },
+  
+    ],
   },
    {
     id: 14,
@@ -144,6 +240,21 @@ export const PROJECTS = [
     contributors: 'Ad Wizards',
     summary: 'Generated 5x ROI through a multi-step Facebook ad funnel.',
     images: ['/Image/graphic4.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+      {
+        quote: "Fast delivery and great attention to details.",
+        clientName: "Mike D.",
+        clientTitle: "Head of Marketing",
+        clientImage: "/Image/client2.jpg",
+      },
+  
+    ],
   },
   {
     id: 15,
@@ -153,5 +264,20 @@ export const PROJECTS = [
     contributors: 'SocialClicks',
     summary: 'Launched animated story ads with high conversion rates.',
     images: ['/Image/graphic3.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+      {
+        quote: "Fast delivery and great attention to details.",
+        clientName: "Mike D.",
+        clientTitle: "Head of Marketing",
+        clientImage: "/Image/client2.jpg",
+      },
+  
+    ],
   },
 ];  

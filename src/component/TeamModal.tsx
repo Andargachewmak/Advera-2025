@@ -29,7 +29,7 @@ const team: TeamMember[] = [
   {
     name: 'Andargachew',
     role: 'Lead Developer',
-    image: '\Image\Andi.jpg',
+    image: '/Image/Andi.jpg',
     linkedin: 'https://linkedin.com/in/johnsmith',
   },
   {
@@ -57,15 +57,16 @@ const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[1000] bg-black/60 flex items-center justify-center p-4"
-          variants={backdropVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          onClick={onClose}
-        >
+  className="fixed inset-0 z-[1000] bg-black/20 backdrop-blur-md flex items-center justify-center p-4"
+  variants={backdropVariants}
+  initial="hidden"
+  animate="visible"
+  exit="exit"
+  onClick={onClose}
+>
+
           <motion.div
-            className="relative max-w-5xl w-full max-h-[90vh] overflow-auto rounded-2xl p-5 sm:p-8 shadow-lg bg-transparent"
+            className="relative max-w-5xl w-full max-h-[90vh] overflow-auto rounded-2xl p-5 sm:p-8 shadow-lg bg-black/20 backdrop-blur-md text-white"
             variants={modalVariants}
             initial="hidden"
             animate="visible"

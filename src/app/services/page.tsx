@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import ServicesModal from '@/component/ServicesModal';
+import { useState } from 'react';
 
 export default function ServicesPage() {
   const [modalOpen, setModalOpen] = useState(true);

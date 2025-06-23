@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { FaLinkedin, FaTwitter } from 'react-icons/fa';
-import type { FC } from 'react';
+import { useEffect, type FC } from 'react';
 
 type TeamMember = {
   name: string;
@@ -53,18 +53,26 @@ const modalVariants = {
 };
 
 const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-  className="fixed inset-0 z-[1000] bg-black/20 backdrop-blur-md flex items-center justify-center p-4"
-  variants={backdropVariants}
-  initial="hidden"
-  animate="visible"
-  exit="exit"
-  onClick={onClose}
->
-
+          className="fixed inset-0 z-[1000] bg-black/20 backdrop-blur-md flex items-center justify-center p-4"
+          variants={backdropVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          onClick={onClose}
+        >
           <motion.div
             className="relative max-w-5xl w-full max-h-[90vh] overflow-auto rounded-2xl p-5 sm:p-8 shadow-lg bg-black/20 backdrop-blur-md text-white"
             variants={modalVariants}

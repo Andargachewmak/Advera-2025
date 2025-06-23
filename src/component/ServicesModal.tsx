@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 import { FaBook, FaGlobe, FaPalette, FaTags, FaLaptopCode } from 'react-icons/fa';
 import { TbWriting } from 'react-icons/tb';
 
@@ -50,6 +51,16 @@ const modalVariants = {
 };
 
 export default function ServicesModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    // Lock scroll on mount
+    document.body.style.overflow = 'hidden';
+
+    // Unlock scroll on unmount
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
   return (
     <AnimatePresence>
       <motion.div

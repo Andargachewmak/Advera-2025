@@ -35,12 +35,7 @@ export const PROJECTS: Project[] = [  //Web development
         clientTitle: "Event Organizer, Global Fest",
         clientImage: "/Image/client1.jpg",
       },
-      {
-        quote: "Fast delivery and great attention to details.",
-        clientName: "Mike D.",
-        clientTitle: "Head of Marketing",
-        clientImage: "/Image/client2.jpg",
-      },
+     
   
     ],
   },
@@ -77,12 +72,7 @@ export const PROJECTS: Project[] = [  //Web development
         clientTitle: "Event Organizer, Global Fest",
         clientImage: "/Image/client1.jpg",
       },
-      {
-        quote: "Fast delivery and great attention to details.",
-        clientName: "Mike D.",
-        clientTitle: "Head of Marketing",
-        clientImage: "/Image/client2.jpg",
-      },
+     
   
     ],
   },
@@ -101,12 +91,7 @@ export const PROJECTS: Project[] = [  //Web development
         clientTitle: "Event Organizer, Global Fest",
         clientImage: "/Image/client1.jpg",
       },
-      {
-        quote: "Fast delivery and great attention to details.",
-        clientName: "Mike D.",
-        clientTitle: "Head of Marketing",
-        clientImage: "/Image/client2.jpg",
-      },
+      
   
     ],
   },
@@ -125,12 +110,7 @@ export const PROJECTS: Project[] = [  //Web development
         clientTitle: "Event Organizer, Global Fest",
         clientImage: "/Image/client1.jpg",
       },
-      {
-        quote: "Fast delivery and great attention to details.",
-        clientName: "Mike D.",
-        clientTitle: "Head of Marketing",
-        clientImage: "/Image/client2.jpg",
-      },
+     
   
     ],
   },
@@ -151,12 +131,7 @@ export const PROJECTS: Project[] = [  //Web development
         clientTitle: "Event Organizer, Global Fest",
         clientImage: "/Image/client1.jpg",
       },
-      {
-        quote: "Fast delivery and great attention to details.",
-        clientName: "Mike D.",
-        clientTitle: "Head of Marketing",
-        clientImage: "/Image/client2.jpg",
-      },
+     
   
     ],
   },
@@ -175,12 +150,7 @@ export const PROJECTS: Project[] = [  //Web development
         clientTitle: "Event Organizer, Global Fest",
         clientImage: "/Image/client1.jpg",
       },
-      {
-        quote: "Fast delivery and great attention to details.",
-        clientName: "Mike D.",
-        clientTitle: "Head of Marketing",
-        clientImage: "/Image/client2.jpg",
-      },
+     
   
     ],
   },
@@ -199,12 +169,7 @@ export const PROJECTS: Project[] = [  //Web development
         clientTitle: "Event Organizer, Global Fest",
         clientImage: "/Image/client1.jpg",
       },
-      {
-        quote: "Fast delivery and great attention to details.",
-        clientName: "Mike D.",
-        clientTitle: "Head of Marketing",
-        clientImage: "/Image/client2.jpg",
-      },
+     
   
     ],
   },
@@ -223,12 +188,7 @@ export const PROJECTS: Project[] = [  //Web development
         clientTitle: "Event Organizer, Global Fest",
         clientImage: "/Image/client1.jpg",
       },
-      {
-        quote: "Fast delivery and great attention to details.",
-        clientName: "Mike D.",
-        clientTitle: "Head of Marketing",
-        clientImage: "/Image/client2.jpg",
-      },
+      
   
     ],
   },
@@ -247,12 +207,7 @@ export const PROJECTS: Project[] = [  //Web development
         clientTitle: "Event Organizer, Global Fest",
         clientImage: "/Image/client1.jpg",
       },
-      {
-        quote: "Fast delivery and great attention to details.",
-        clientName: "Mike D.",
-        clientTitle: "Head of Marketing",
-        clientImage: "/Image/client2.jpg",
-      },
+     
   
     ],
   },
@@ -271,12 +226,7 @@ export const PROJECTS: Project[] = [  //Web development
         clientTitle: "Event Organizer, Global Fest",
         clientImage: "/Image/client1.jpg",
       },
-      {
-        quote: "Fast delivery and great attention to details.",
-        clientName: "Mike D.",
-        clientTitle: "Head of Marketing",
-        clientImage: "/Image/client2.jpg",
-      },
+      
   
     ],
   },

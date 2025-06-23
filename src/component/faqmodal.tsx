@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type FAQ = {
   question: string;
@@ -51,6 +51,19 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
+
+  // Disable background scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    // Clean up on unmount
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   return (
     <AnimatePresence>
@@ -128,4 +141,4 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
       )}
     </AnimatePresence>
   );
-}  
+}

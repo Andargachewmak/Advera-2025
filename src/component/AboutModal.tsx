@@ -1,6 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 
 type AboutModalProps = {
   isOpen: boolean;
@@ -28,6 +29,21 @@ const modalVariants = {
 };
 
 export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
+  useEffect(() => {
+    if (isOpen) {
+      // Disable background scroll
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Restore scroll
+      document.body.style.overflow = '';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen && (

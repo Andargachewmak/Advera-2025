@@ -260,3 +260,44 @@ footer .flex-col.items-start.justify-start {
 .project-modal-info {
   @apply grid grid-cols-1 md:grid-cols-2 gap-6 px-4 py-8 text-[#58595b];
 }
+/* Logo Marquee Wrapper */
+.logo-marquee-wrapper {
+  width: 100%;
+  overflow-x: hidden;
+  padding-top: 6rem; /* pt-24 */
+  padding-bottom: 1rem; /* pb-4 */
+  margin-bottom: 1.5rem; /* mb-6 */
+}
+
+/* Logo Container */
+.logo-marquee {
+  display: flex;
+  white-space: nowrap;
+  gap: 2.5rem; /* mx-10 on each side ≈ gap-20 */
+}
+
+.logo-item {
+  flex-shrink: 0;
+}
+
+.logo-item img {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .logo-marquee-wrapper {
+    padding-top: 3rem;
+    padding-bottom: 1rem;
+  }
+
+  .logo-item img {
+    height: 40px;
+  }
+
+  .logo-marquee {
+    gap: 1.5rem;
+  }
+}

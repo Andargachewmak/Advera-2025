@@ -229,27 +229,27 @@ export default function Home() {
     </div>
 
     {/* Logo Slider */}
-    <div className="w-full overflow-hidden pt-24 pb-4 mb-6">
-      <motion.div
-        className="flex whitespace-nowrap"
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{ repeat: Infinity, duration: 20, ease: 'linear' }}
-      >
-        {[...logos, ...logos].map((logo, idx) => (
-          <div key={`${logo.alt}-${idx}`} className="flex-shrink-0 mx-10">
-            <Image
-              src={logo.src}
-              alt={logo.alt}
-              width={logo.width}
-              height={logo.height}
-              className="h-15 w-auto object-contain"
-              draggable={false}
-              priority={idx < logos.length}
-            />
-          </div>
-        ))}
-      </motion.div>
-    </div>
+<div className="logo-marquee-wrapper">
+  <motion.div
+    className="logo-marquee"
+    animate={{ x: ['0%', '-50%'] }}
+    transition={{ repeat: Infinity, duration: 20, ease: 'linear' }}
+  >
+    {[...logos, ...logos].map((logo, idx) => (
+      <div key={`${logo.alt}-${idx}`} className="logo-item">
+        <Image
+          src={logo.src}
+          alt={logo.alt}
+          width={logo.width}
+          height={logo.height}
+          className=""
+          draggable={false}
+          priority={idx < logos.length}
+        />
+      </div>
+    ))}
+  </motion.div>
+</div>
   </section>
 
   {/* Footer: Only show when filter is 'All' */}

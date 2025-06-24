@@ -163,8 +163,8 @@ export default function Home() {
   </ul>
 </div>
 
-      <div className="flex flex-grow">
-        <div className="fixed top-0 left-0 h-screen w-20 lg:w-64 z-40">
+      <div className="flex flex-grow ">
+        <div className="fixed top-0 left-0 h-screen w-20 lg:w-64 z-40 pointer-events-auto">
           <Sidebar onSectionClick={handleNavigate} onFAQClick={() => setShowFAQModal(true)} />
         </div>
 
@@ -173,21 +173,21 @@ export default function Home() {
     <h1 className="text-4xl font-extrabold text-[#ee5225] font-mona">Projects</h1>
     <p className="text-gray-600 mt-2">Check out some of our featured work.</p>
 
-    <div className="flex gap-5 mt-4 flex-wrap ml-7">
-      {filterButtons.map((btnCategory) => (
-        <button
-          key={btnCategory}
-          onClick={() => handleFilterChange(btnCategory)}
-          className={`px-5 py-2 rounded-full font-medium transition transform duration-200 ${
-            filter === btnCategory
-              ? 'bg-[#ee5225] text-white'
-              : 'bg-[#f1f2f2] text-black hover:bg-orange-100'
-          } active:scale-95`}
-        >
-          {btnCategory}
-        </button>
-      ))}
-    </div>
+<div className="flex gap-5 mt-4 flex-wrap relative z-[40]">
+  {filterButtons.map((btnCategory) => (
+    <button
+      key={btnCategory}
+      onClick={() => handleFilterChange(btnCategory)}
+      className={`px-5 py-2 rounded-full font-medium transition transform duration-200 ${
+        filter === btnCategory
+          ? 'bg-[#ee5225] text-white'
+          : 'bg-[#f1f2f2] text-black hover:bg-orange-100'
+      } active:scale-95`}
+    >
+      {btnCategory}
+    </button>
+  ))}
+</div>
 
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 mt-8">
       {filteredProjects.map((project) => (
@@ -229,20 +229,19 @@ export default function Home() {
     </div>
 
     {/* Logo Slider */}
-<div className="logo-marquee-wrapper">
+<div className="relative z-10 logo-marquee-wrapper mt-12">
   <motion.div
-    className="logo-marquee"
+    className="logo-marquee flex whitespace-nowrap"
     animate={{ x: ['0%', '-50%'] }}
     transition={{ repeat: Infinity, duration: 20, ease: 'linear' }}
   >
     {[...logos, ...logos].map((logo, idx) => (
-      <div key={`${logo.alt}-${idx}`} className="logo-item">
+      <div key={`${logo.alt}-${idx}`} className="logo-item mx-8">
         <Image
           src={logo.src}
           alt={logo.alt}
           width={logo.width}
           height={logo.height}
-          className=""
           draggable={false}
           priority={idx < logos.length}
         />
@@ -363,11 +362,11 @@ export default function Home() {
       {/* Modal Preview */}
 {selectedProject && (
   <div
-    className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-2 sm:p-4"
+    className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
     onClick={() => setSelectedProject(null)}
   >
     <div
-      className="bg-white w-full h-full overflow-y-auto shadow-lg relative rounded-none"
+      className="bg-white w-screen h-screen overflow-y-auto shadow-lg relative rounded-none"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Hero Image Section */}
@@ -491,8 +490,7 @@ export default function Home() {
       </div>
     </div>
   </div>
-)}
-      
+)}      
 
 
       {/* Other Modals */}

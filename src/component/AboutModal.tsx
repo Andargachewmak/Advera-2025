@@ -74,16 +74,15 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
             </button>
 
             {/* Content */}
-            <h1 className="text-3xl sm:text-4xl font-bold mb-6 text-center">
+            <h1 className="text-3xl sm:text-4xl font-'Satoshi', sans-serif font-bold mb-6 text-center">
               About Us
             </h1>
-            <p className="text-white/90 text-base mb-4 text-center">
-              We’re a passionate team of creatives and engineers, dedicated to building outstanding digital experiences.
-            </p>
-            <p className="text-white/70 text-sm text-center">
-              Our mission is to blend design and technology into solutions that empower brands and engage users.
-              Let’s build something amazing together.
-            </p>
+<p className="text-white/90 text-base text-justify mb-4">
+  We’re a passionate team of creatives and engineers, dedicated to building outstanding digital experiences.
+</p>
+<p className="text-white/90 text-base text-justify">
+  Our mission is to blend design and technology into solutions that empower brands and engage users. Let’s build something amazing together.
+</p>
           </motion.div>
         </motion.div>
       )}

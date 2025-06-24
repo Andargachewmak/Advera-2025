@@ -76,13 +76,17 @@ export default function Sidebar({ onSectionClick, onFAQClick }: SidebarProps) {
           {/* Logo + Nav */}
           <div>
             <div className="mb-10 flex items-center justify-start px-4">
-              <Image
-                src="/Image/adve.svg"
-                alt="Advera Logo"
-                width={100}
-                height={40}
-                className="h-10 w-auto"
-              />
+                <Image
+                  src="/Image/adve.svg"
+                  alt="Advera Logo"
+                  width={100}
+                  height={40}
+                  className="h-10 w-auto cursor-pointer"
+                  onClick={() => {
+                    setIsOpen(false);
+                    window.location.reload();
+                  }}
+                />
             </div>
 
             <nav>

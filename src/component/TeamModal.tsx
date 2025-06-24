@@ -65,23 +65,23 @@ const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          className="fixed inset-0 z-[1000] bg-black/20 backdrop-blur-md flex items-center justify-center p-4"
-          variants={backdropVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          onClick={onClose}
-        >
-          <motion.div
-            className="relative max-w-5xl w-full max-h-[90vh] overflow-auto rounded-2xl p-5 sm:p-8 shadow-lg bg-black/20 backdrop-blur-md text-white"
-            variants={modalVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            onClick={(e) => e.stopPropagation()}
-            layout
-          >
+       <motion.div
+  className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+  variants={backdropVariants}
+  initial="hidden"
+  animate="visible"
+  exit="exit"
+  onClick={onClose}
+>
+  <motion.div
+    className="relative max-w-5xl w-full max-h-[90vh] overflow-auto rounded-2xl p-6 sm:p-8 md:p-10 bg-white/20 backdrop-blur-md shadow-lg"
+    variants={modalVariants}
+    initial="hidden"
+    animate="visible"
+    exit="exit"
+    onClick={(e) => e.stopPropagation()}
+    layout
+  >
             {/* Centered title */}
             <div className="flex justify-center items-center mb-8 relative">
               <h2 className="text-3xl sm:text-4xl font-bold text-white text-center">

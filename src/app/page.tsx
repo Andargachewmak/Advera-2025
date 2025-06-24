@@ -12,14 +12,16 @@ import {
   FaPhoneAlt,
   FaEnvelope,
   FaMapMarkerAlt,
+  
 } from 'react-icons/fa';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
+import { FiMessageCircle} from 'react-icons/fi';
 import Sidebar from '@/component/sidebar';
 import AboutModal from '@/component/AboutModal';
 import FAQPage from '@/component/faqmodal';
 import ServicesModal from '@/component/ServicesModal';
 import TeamModal from '@/component/TeamModal';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type Project = {
   id: number;
@@ -48,7 +50,9 @@ export default function Home() {
   const [showFAQModal, setShowFAQModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
+  const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  // Predefined logos for the marquee                                   
   const logos = [
     { src: '/Image/logo1.svg', alt: 'Navan', width: 200, height: 50 },
     { src: '/Image/logo2.svg', alt: 'Contentful', width: 200, height: 50 },
@@ -57,6 +61,15 @@ export default function Home() {
     { src: '/Image/logo5.svg', alt: 'Riot Games', width: 200, height: 50 },
     { src: '/Image/logo6.svg', alt: 'Nike', width: 200, height: 50 },
   ];
+
+  // State for active logo popup
+  const [activeLogo, setActiveLogo] = useState<{
+    src: string;
+    alt: string;
+    width: number;
+    height: number;
+    description?: string;
+  } | null>(null);
 
   // Load saved filter from localStorage on mount
   useEffect(() => {
@@ -77,7 +90,15 @@ export default function Home() {
       };
     }
   }, [selectedProject]);
+ useEffect(() => {
+    if (formStatus === 'success' || formStatus === 'error') {
+      const timer = setTimeout(() => {
+        setFormStatus('idle'); // reset to initial state
+      }, 3000); // 3 seconds
 
+      return () => clearTimeout(timer);
+    }
+  }, [formStatus, setFormStatus]);
   const handleFilterChange = (category: string) => {
     setFilter(category);
     setSelectedProject(null); // close modal if open
@@ -115,13 +136,15 @@ export default function Home() {
     }
   };
 
+  const [showContact, setShowContact] = useState(false);
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* Responsive Menu Bar */}
 <div className="menu-bar">
   <div className="logo">
     <Image
-      src="/Image/adv.svg"
+      src="/Image/advera2.svg"
       alt="Advera Logo"
       width={100}
       height={30}
@@ -170,23 +193,79 @@ export default function Home() {
 
 <main className="ml-0 sm:ml-20 lg:ml-45 p-8 w-full bg-white text-black">
   <section id="projects" className="mb-20">
-    <h1 className="text-4xl font-extrabold text-[#ee5225] font-mona">Projects</h1>
+    <h1 className="text-4xl font-extrabold text-[#ee5225] ">Projects</h1>
     <p className="text-gray-600 mt-2">Check out some of our featured work.</p>
 
-<div className="flex gap-5 mt-4 flex-wrap relative z-[40]">
-  {filterButtons.map((btnCategory) => (
-    <button
-      key={btnCategory}
-      onClick={() => handleFilterChange(btnCategory)}
-      className={`px-5 py-2 rounded-full font-medium transition transform duration-200 ${
-        filter === btnCategory
-          ? 'bg-[#ee5225] text-white'
-          : 'bg-[#f1f2f2] text-black hover:bg-orange-100'
-      } active:scale-95`}
-    >
-      {btnCategory}
-    </button>
-  ))}
+<div className="flex flex-wrap items-center justify-between gap-6 mt-4 relative z-[40]">
+  {/* Filter Buttons */}
+  <div className="flex gap-5 flex-wrap">
+    {filterButtons.map((btnCategory) => (
+      <button
+        key={btnCategory}
+        onClick={() => handleFilterChange(btnCategory)}
+        className={`px-5 py-2 rounded-full font-medium transition transform duration-200 ${
+          filter === btnCategory
+            ? 'bg-[#ee5225] text-white'
+            : 'bg-[#f1f2f2] text-black hover:bg-orange-100'
+        } active:scale-95`}
+      >
+        {btnCategory}
+      </button>
+    ))}
+  </div>
+
+  {/* Slogan on the right */}
+  <div className="relative flex flex-col items-center justify-center text-center">
+      {/* Animated Text Container */}
+      <motion.div
+        className="text-2xl sm:text-2xl font-bold whitespace-nowrap"
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: [1, 0], // Alternates between fully visible and invisible
+        }}
+        transition={{
+          duration: 1, // Duration of one blink cycle
+          repeat: Infinity, // Repeats indefinitely
+          repeatType: 'reverse', // Smoothly reverses the animation
+          ease: 'easeInOut', // Smooth easing for transitions
+        }}
+      >
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225]">THINK,</span>
+        <span className="mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225]">CRAFT,</span>
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d]">& IMPACT.</span>
+      </motion.div>
+
+      {/* Underline Animation */}
+      <motion.div
+        className="w-24 h-1 bg-gradient-to-r from-[#ee5225] to-[#f97316] mt-4 rounded-full"
+        initial={{ width: 0 }}
+        animate={{
+          width: ['0rem', '6rem'], // Alternates between shrinking and growing
+        }}
+        transition={{
+          duration: 1, // Synchronized with the text blinking
+          repeat: Infinity, // Repeats indefinitely
+          repeatType: 'reverse', // Smoothly reverses the animation
+          ease: 'easeInOut', // Smooth easing for transitions
+        }}
+      />
+    </div>
+    </div>
+<div className="absolute top-4 right-8 z-50 flex gap-4 hidden md:flex">
+  {[FaFacebook, FaInstagram, FaTiktok, FaLinkedin].map((Icon, i) => {
+    const ariaLabels = ['Facebook', 'Instagram', 'Tiktok', 'LinkedIn'];
+    return (
+      <a
+        key={i}
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={ariaLabels[i]}
+      >
+        <Icon className="text-[#191D49] hover:text-orange-500 transition" size={20} />
+      </a>
+    );
+  })}
 </div>
 
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 mt-8">
@@ -227,29 +306,69 @@ export default function Home() {
         </div>
       ))}
     </div>
-
-    {/* Logo Slider */}
-<div className="relative z-10 logo-marquee-wrapper mt-12">
-  <motion.div
-    className="logo-marquee flex whitespace-nowrap"
-    animate={{ x: ['0%', '-50%'] }}
-    transition={{ repeat: Infinity, duration: 20, ease: 'linear' }}
+{/* Floating Message Button */}
+<div className="fixed-contact-button fixed bottom-6 right-6 z-[70] animate-pulse">
+  <button
+    onClick={() => setShowContact(true)}
+    className="group bg-[#ee5225] hover:bg-[#d9431d] text-white p-4 rounded-full shadow-xl transition-all duration-300 relative overflow-hidden"
+    aria-label="Open Contact Form"
   >
-    {[...logos, ...logos].map((logo, idx) => (
-      <div key={`${logo.alt}-${idx}`} className="logo-item mx-8">
+    <FiMessageCircle size={28} className="group-hover:scale-110 transition-transform duration-300" />
+    <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white animate-ping" />
+  </button>
+</div>
+    {/* Logo Slider */}
+<div className="relative z-10 w-full round-full pt-8 pb-4 mb-12 mt-20 bg-gray-100">
+  {/* Static Logos Grid */}
+  <div className="flex flex-wrap justify-center gap-30">
+    {logos.slice(0, 6).map((logo, idx) => (
+      <div
+        key={`${logo.alt}-${idx}`}
+        className="flex-shrink-0 flex items-center transition-transform duration-300 hover:scale-110 cursor-pointer relative"
+        onClick={() => setActiveLogo(logo)}
+      >
         <Image
           src={logo.src}
           alt={logo.alt}
           width={logo.width}
           height={logo.height}
           draggable={false}
-          priority={idx < logos.length}
+          className="h-[80px] sm:h-[60px] w-auto object-contain grayscale hover:grayscale-0"
         />
       </div>
     ))}
-  </motion.div>
+  </div>
+
+  {/* Popup Modal */}
+  {activeLogo && (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
+      onClick={() => setActiveLogo(null)}
+    >
+      <div
+        className="bg-white p-8 rounded-lg shadow-lg max-w-md text-center relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          onClick={() => setActiveLogo(null)}
+        >
+          &times;
+        </button>
+        <Image
+          src={activeLogo.src}
+          alt={activeLogo.alt}
+          width={activeLogo.width}
+          height={activeLogo.height}
+          className="h-40 w-auto mx-auto object-contain mb-4"
+        />
+        <h3 className="text-xl font-bold">{activeLogo.alt}</h3>
+        <p className="text-gray-600">{activeLogo.description || 'No description available.'}</p>
+      </div>
+    </div>
+  )}
 </div>
-  </section>
+      </section>
 
   {/* Footer: Only show when filter is 'All' */}
   {filter === 'All' && (
@@ -491,7 +610,148 @@ export default function Home() {
     </div>
   </div>
 )}      
+{/* Contact Form Modal */}
+{showContact && (
+  <div
+    className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+    onClick={() => setShowContact(false)}
+  >
+    <div
+      className="bg-white/20 backdrop-blur-md p-10 w-full max-w-4xl rounded-2xl shadow-xl relative"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        onClick={() => setShowContact(false)}
+        className="absolute top-4 right-4 text-white hover:text-[#ee5225] text-3xl font-bold"
+        aria-label="Close Contact Form"
+      >
+        &times;
+      </button>
+      <h3 className="text-3xl font-bold mb-6 text-white text-center">Get in Touch</h3>
 
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+
+          // Basic validation (optional, can extend)
+          if (!contactForm.name || !contactForm.email || !contactForm.message) {
+            setFormStatus('error');
+            return;
+          }
+
+          setFormStatus('sending');
+          try {
+            const res = await fetch('https://formspree.io/f/mwpbrjoz', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify(contactForm),
+            });
+
+            const data = await res.json();
+
+            if (data.ok) {
+              setFormStatus('success');
+              setContactForm({ name: '', email: '', message: '' });
+              // Optionally auto close modal after delay:
+              // setTimeout(() => setShowContact(false), 4000);
+            } else {
+              setFormStatus('error');
+            }
+          } catch (err) {
+            console.error(err);
+            setFormStatus('error');
+          }
+        }}
+        className="flex flex-col gap-6"
+      >
+        <input
+          type="text"
+          name="name"
+          placeholder="Your Name"
+          value={contactForm.name}
+          onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+          required
+          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Your Email"
+          value={contactForm.email}
+          onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+          required
+          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+        />
+        <textarea
+          name="message"
+          placeholder="Your Message"
+          value={contactForm.message}
+          onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+          required
+          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md resize-none h-32 focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+        />
+
+        <button
+          type="submit"
+          disabled={formStatus === 'sending'}
+          className="bg-[#ee5225] text-white py-3 rounded-md hover:bg-[#d9431d] transition font-semibold text-lg disabled:opacity-50"
+        >
+          {formStatus === 'sending' ? 'Sending...' : 'Send Message'}
+        </button>
+
+ <AnimatePresence>
+      {formStatus === 'success' && (
+        <motion.p
+          key="success"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.3 }}
+          className="flex items-center justify-center gap-3 rounded-xl bg-green-600/20 text-green-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
+          role="alert"
+        >
+          <svg
+            className="w-6 h-6 stroke-green-600"
+            fill="none"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path d="M5 13l4 4L19 7" />
+          </svg>
+          Message sent successfully!
+        </motion.p>
+      )}
+
+      {formStatus === 'error' && (
+        <motion.p
+          key="error"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.3 }}
+          className="flex items-center justify-center gap-3 rounded-xl bg-red-600/20 text-red-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
+          role="alert"
+        >
+          <svg
+            className="w-6 h-6 stroke-red-600"
+            fill="none"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+          Something went wrong. Please check your inputs and try again.
+        </motion.p>
+      )}
+    </AnimatePresence>
+              </form>
+    </div>
+  </div>
+)}
 
       {/* Other Modals */}
       {showTeamModal && <TeamModal isOpen={showTeamModal} onClose={() => setShowTeamModal(false)} />}

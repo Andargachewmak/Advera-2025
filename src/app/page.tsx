@@ -1,8 +1,9 @@
 'use client';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import type { StaticImageData } from 'next/image';
 import { PROJECTS } from './data/projects';
+// Chat bubble with 3 dots inside
 import {
   FaFacebook,
   FaInstagram,
@@ -15,13 +16,14 @@ import {
   
 } from 'react-icons/fa';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
-import { FiMessageCircle} from 'react-icons/fi';
 import Sidebar from '@/component/sidebar';
 import AboutModal from '@/component/AboutModal';
 import FAQPage from '@/component/faqmodal';
 import ServicesModal from '@/component/ServicesModal';
 import TeamModal from '@/component/TeamModal';
 import { motion, AnimatePresence } from 'framer-motion';
+import { HiOutlineChatBubbleLeftEllipsis } from 'react-icons/hi2';
+// Very close match — message bubble + ellipsis
 
 type Project = {
   id: number;
@@ -39,11 +41,7 @@ type Project = {
   }[];
 };
 
-const categories = ['Graphics (Logo, Poster)', 'Web development', 'UI/UX Design'];
-const filterButtons = ['All', ...categories];
-
 export default function Home() {
-  const [filter, setFilter] = useState<string>('All');
   const [showTeamModal, setShowTeamModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [showServicesModal, setShowServicesModal] = useState(false);
@@ -61,7 +59,6 @@ export default function Home() {
     { src: '/Image/logo5.svg', alt: 'Riot Games', width: 200, height: 50 },
     { src: '/Image/logo6.svg', alt: 'Nike', width: 200, height: 50 },
   ];
-
   // State for active logo popup
   const [activeLogo, setActiveLogo] = useState<{
     src: string;
@@ -71,15 +68,9 @@ export default function Home() {
     description?: string;
   } | null>(null);
 
-  // Load saved filter from localStorage on mount
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedFilter = localStorage.getItem('selectedFilter');
-      if (storedFilter && filterButtons.includes(storedFilter)) {
-        setFilter(storedFilter);
-      }
-    }
-  }, []);
+  const waveCount = 3;
+const waveDuration = 1.5;
+const delayBetweenWaves = 0.5;
 
   // Lock body scroll when modal open
   useEffect(() => {
@@ -99,20 +90,7 @@ export default function Home() {
       return () => clearTimeout(timer);
     }
   }, [formStatus, setFormStatus]);
-  const handleFilterChange = (category: string) => {
-    setFilter(category);
-    setSelectedProject(null); // close modal if open
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('selectedFilter', category);
-    }
-  };
-
-  const filteredProjects = useMemo(() => {
-    if (filter === 'All') return PROJECTS;
-    return PROJECTS.filter(
-      (project) => project.category.toLowerCase() === filter.toLowerCase()
-    );
-  }, [filter]);
+ 
 
   const nextImage = () =>
     setCurrentImageIndex((prev) => (prev + 1) % (selectedProject?.images.length ?? 1));
@@ -138,6 +116,13 @@ export default function Home() {
 
   const [showContact, setShowContact] = useState(false);
 
+  // Simple implementation of CSS steps() easing for framer-motion
+  function steps(steps: number): (t: number) => number {
+    return (t: number) => {
+      if (steps <= 1) return 1;
+      return Math.floor(t * steps) / steps;
+    };
+  }
   return (
     <div className="flex min-h-screen flex-col">
       {/* Responsive Menu Bar */}
@@ -192,186 +177,192 @@ export default function Home() {
         </div>
 
 <main className="ml-0 sm:ml-20 lg:ml-45 p-8 w-full bg-white text-black">
-  <section id="projects" className="mb-20">
-    <h1 className="text-4xl font-extrabold text-[#ee5225] ">Projects</h1>
-    <p className="text-gray-600 mt-2">Check out some of our featured work.</p>
+<section id="projects" className="mb-20 relative">
+  {/* Social Icons */}
+  <div className="absolute top-2 right-5 z-10 flex gap-4 hidden md:flex">
+    {[FaFacebook, FaInstagram, FaTiktok, FaLinkedin].map((Icon, i) => {
+      const ariaLabels = ['Facebook', 'Instagram', 'Tiktok', 'LinkedIn'];
+      return (
+        <a
+          key={i}
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={ariaLabels[i]}
+        >
+          <Icon className="text-[#191D49] hover:text-orange-500 transition" size={20} />
+        </a>
+      );
+    })}
+  </div>
 
-<div className="flex flex-wrap items-center justify-between gap-6 mt-4 relative z-[40]">
-  {/* Filter Buttons */}
-  <div className="flex gap-5 flex-wrap">
-    {filterButtons.map((btnCategory) => (
-      <button
-        key={btnCategory}
-        onClick={() => handleFilterChange(btnCategory)}
-        className={`px-5 py-2 rounded-full font-medium transition transform duration-200 ${
-          filter === btnCategory
-            ? 'bg-[#ee5225] text-white'
-            : 'bg-[#f1f2f2] text-black hover:bg-orange-100'
-        } active:scale-95`}
+  {/* Container for slogan + button + description with top padding */}
+  <div className="pt-12 px-4 sm:px-0"> {/* Adjust pt-12 to increase/decrease space */}
+    {/* Slogan on top-left with typing animation */}
+    <div className="text-left mb-6">
+      <motion.div
+        className="text-lg sm:text-xl font-semibold mt-1 whitespace-nowrap inline-block"
       >
-        {btnCategory}
+        <motion.span
+          className="inline-block overflow-hidden border-r-2 border-[#ee5225] pr-2"
+          initial={{ width: 0 }}
+          animate={{ width: '22ch' }}
+          transition={{
+            duration: 4,
+            ease: steps(22),
+            repeat: Infinity,
+            repeatType: 'loop',
+            repeatDelay: 1,
+          }}
+        >
+          <span className="text-[#191D49]">THINK, CRAFT </span>
+          <span className="text-[#ee5225]">& IMPACT.</span>
+        </motion.span>
+      </motion.div>
+    </div>
+
+    {/* Button + Description */}
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-3">
+      <button
+        onClick={() => {}}
+        className="inline-flex items-center px-5 py-2.5 bg-[#ee5225] hover:bg-[#d9431d] text-white font-medium text-sm rounded-full shadow-md transition-all duration-300"
+      >
+        View All Projects
       </button>
+      <p className="text-gray-600 text-base sm:text-lg">
+        Check out some of our featured work.
+      </p>
+    </div>
+  </div>
+
+  {/* Project Cards */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 mt-8 px-4 sm:px-0">
+    {PROJECTS.map((project) => (
+      <div
+        key={project.id}
+        className="relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+        onClick={() => {
+          setSelectedProject(project);
+          setCurrentImageIndex(0);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            setSelectedProject(project);
+            setCurrentImageIndex(0);
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label={`View project: ${project.title}`}
+      >
+        <div className="relative w-full h-52">
+          <Image
+            src={project.images[0]}
+            alt={project.title}
+            fill
+            className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+            draggable={false}
+          />
+        </div>
+
+        <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none" />
+
+        <div className="absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-white">
+          <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
+          <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">
+            {project.summary}
+          </p>
+        </div>
+      </div>
     ))}
   </div>
 
-  {/* Slogan on the right */}
-  <div className="relative flex flex-col items-center justify-center text-center">
-      {/* Animated Text Container */}
+  {/* Floating Contact Button */}
+  <div className="fixed bottom-6 right-6 z-[70]">
+    {Array.from({ length: waveCount }).map((_, i) => (
       <motion.div
-        className="text-2xl sm:text-2xl font-bold whitespace-nowrap"
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: [1, 0], // Alternates between fully visible and invisible
-        }}
+        key={i}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-[#ee5225]"
+        style={{ width: 64, height: 64 }}
+        initial={{ scale: 1, opacity: 0.6 }}
+        animate={{ scale: 3, opacity: 0 }}
         transition={{
-          duration: 1, // Duration of one blink cycle
-          repeat: Infinity, // Repeats indefinitely
-          repeatType: 'reverse', // Smoothly reverses the animation
-          ease: 'easeInOut', // Smooth easing for transitions
-        }}
-      >
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225]">THINK,</span>
-        <span className="mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225]">CRAFT,</span>
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d]">& IMPACT.</span>
-      </motion.div>
-
-      {/* Underline Animation */}
-      <motion.div
-        className="w-24 h-1 bg-gradient-to-r from-[#ee5225] to-[#f97316] mt-4 rounded-full"
-        initial={{ width: 0 }}
-        animate={{
-          width: ['0rem', '6rem'], // Alternates between shrinking and growing
-        }}
-        transition={{
-          duration: 1, // Synchronized with the text blinking
-          repeat: Infinity, // Repeats indefinitely
-          repeatType: 'reverse', // Smoothly reverses the animation
-          ease: 'easeInOut', // Smooth easing for transitions
+          duration: waveDuration,
+          delay: i * delayBetweenWaves,
+          repeat: Infinity,
+          ease: 'easeOut',
         }}
       />
-    </div>
-    </div>
-<div className="absolute top-4 right-8 z-50 flex gap-4 hidden md:flex">
-  {[FaFacebook, FaInstagram, FaTiktok, FaLinkedin].map((Icon, i) => {
-    const ariaLabels = ['Facebook', 'Instagram', 'Tiktok', 'LinkedIn'];
-    return (
-      <a
-        key={i}
-        href="#"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={ariaLabels[i]}
-      >
-        <Icon className="text-[#191D49] hover:text-orange-500 transition" size={20} />
-      </a>
-    );
-  })}
-</div>
+    ))}
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 mt-8">
-      {filteredProjects.map((project) => (
+    <button
+      onClick={() => setShowContact(true)}
+      className="group relative z-10 bg-[#ee5225] hover:bg-[#d9431d] text-white p-4 rounded-full shadow-xl transition-all duration-300"
+      aria-label="Open Contact Form"
+    >
+      <HiOutlineChatBubbleLeftEllipsis
+        size={28}
+        className="group-hover:scale-110 transition-transform duration-300"
+      />
+      <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white animate-ping" />
+    </button>
+  </div>
+
+  {/* Logo Section */}
+  <div className="relative z-10 w-full pt-8 pb-4 mb-12 mt-20 bg-gray-100">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 px-4">
+      {logos.slice(0, 6).map((logo, idx) => (
         <div
-          key={project.id}
-          onClick={() => {
-            setSelectedProject(project);
-            setCurrentImageIndex(0);
-          }}
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              setSelectedProject(project);
-              setCurrentImageIndex(0);
-            }
-          }}
-          className="relative group cursor-pointer overflow-hidden shadow-lg transition-transform rounded-2xl duration-300 hover:scale-[1.03] focus:scale-[1.03] active:scale-[1.03] hover:shadow-2xl focus:shadow-2xl active:shadow-2xl outline-none"
+          key={`${logo.alt}-${idx}`}
+          className="flex items-center justify-center transition-transform duration-300 hover:scale-110 cursor-pointer"
+          onClick={() => setActiveLogo(logo)}
         >
-          <div className="relative w-full h-52">
-            <Image
-              src={project.images[0]}
-              alt={project.title}
-              fill
-              className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105 group-focus:scale-105 group-active:scale-105"
-              draggable={false}
-            />
-          </div>
-
-          <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 group-active:opacity-100 transition-opacity duration-500 ease-in-out pointer-events-none z-10" />
-
-          <div className="absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 opacity-0 group-hover:opacity-100 group-focus:opacity-100 group-active:opacity-100 transition-opacity duration-500 ease-in-out text-white">
-            <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
-            <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">
-              {project.summary}
-            </p>
-          </div>
+          <Image
+            src={logo.src}
+            alt={logo.alt}
+            width={logo.width}
+            height={logo.height}
+            draggable={false}
+            className="h-[48px] sm:h-[60px] w-auto object-contain grayscale hover:grayscale-0"
+          />
         </div>
       ))}
     </div>
-{/* Floating Message Button */}
-<div className="fixed-contact-button fixed bottom-6 right-6 z-[70] animate-pulse">
-  <button
-    onClick={() => setShowContact(true)}
-    className="group bg-[#ee5225] hover:bg-[#d9431d] text-white p-4 rounded-full shadow-xl transition-all duration-300 relative overflow-hidden"
-    aria-label="Open Contact Form"
-  >
-    <FiMessageCircle size={28} className="group-hover:scale-110 transition-transform duration-300" />
-    <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white animate-ping" />
-  </button>
-</div>
-    {/* Logo Slider */}
-<div className="relative z-10 w-full round-full pt-8 pb-4 mb-12 mt-20 bg-gray-100">
-  {/* Static Logos Grid */}
-  <div className="flex flex-wrap justify-center gap-30">
-    {logos.slice(0, 6).map((logo, idx) => (
-      <div
-        key={`${logo.alt}-${idx}`}
-        className="flex-shrink-0 flex items-center transition-transform duration-300 hover:scale-110 cursor-pointer relative"
-        onClick={() => setActiveLogo(logo)}
-      >
-        <Image
-          src={logo.src}
-          alt={logo.alt}
-          width={logo.width}
-          height={logo.height}
-          draggable={false}
-          className="h-[80px] sm:h-[60px] w-auto object-contain grayscale hover:grayscale-0"
-        />
-      </div>
-    ))}
-  </div>
 
-  {/* Popup Modal */}
-  {activeLogo && (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
-      onClick={() => setActiveLogo(null)}
-    >
+    {activeLogo && (
       <div
-        className="bg-white p-8 rounded-lg shadow-lg max-w-md text-center relative"
-        onClick={(e) => e.stopPropagation()}
+        className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 px-4"
+        onClick={() => setActiveLogo(null)}
       >
-        <button
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-          onClick={() => setActiveLogo(null)}
+        <div
+          className="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md text-center relative"
+          onClick={(e) => e.stopPropagation()}
         >
-          &times;
-        </button>
-        <Image
-          src={activeLogo.src}
-          alt={activeLogo.alt}
-          width={activeLogo.width}
-          height={activeLogo.height}
-          className="h-40 w-auto mx-auto object-contain mb-4"
-        />
-        <h3 className="text-xl font-bold">{activeLogo.alt}</h3>
-        <p className="text-gray-600">{activeLogo.description || 'No description available.'}</p>
+          <button
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl sm:text-3xl"
+            onClick={() => setActiveLogo(null)}
+          >
+            &times;
+          </button>
+          <Image
+            src={activeLogo.src}
+            alt={activeLogo.alt}
+            width={activeLogo.width}
+            height={activeLogo.height}
+            className="h-32 sm:h-40 w-auto mx-auto object-contain mb-4"
+          />
+          <h3 className="text-lg sm:text-xl font-bold">{activeLogo.alt}</h3>
+          <p className="text-gray-600 text-sm sm:text-base">
+            {activeLogo.description || 'No description available.'}
+          </p>
+        </div>
       </div>
-    </div>
-  )}
-</div>
-      </section>
+    )}
+  </div>
+</section>
 
   {/* Footer: Only show when filter is 'All' */}
-  {filter === 'All' && (
+
     <footer className="w-full mt-12 bg-transparent">
       <hr className="border-t border-[#ee5225] opacity-50 my-8 w-full" />
 
@@ -474,7 +465,7 @@ export default function Home() {
         &copy; {new Date().getFullYear()} Advera Communication. All rights reserved.
       </div>
     </footer>
-  )}
+  
 </main>
       </div>
 
@@ -613,27 +604,27 @@ export default function Home() {
 {/* Contact Form Modal */}
 {showContact && (
   <div
-    className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+    className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
     onClick={() => setShowContact(false)}
   >
     <div
-      className="bg-white/20 backdrop-blur-md p-10 w-full max-w-4xl rounded-2xl shadow-xl relative"
+      className="bg-white/20 backdrop-blur-md p-6 sm:p-10 w-full max-w-[95%] sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl relative overflow-y-auto max-h-[90vh]"
       onClick={(e) => e.stopPropagation()}
     >
       <button
         onClick={() => setShowContact(false)}
-        className="absolute top-4 right-4 text-white hover:text-[#ee5225] text-3xl font-bold"
+        className="absolute top-4 right-4 text-white hover:text-[#ee5225] text-2xl sm:text-3xl font-bold"
         aria-label="Close Contact Form"
       >
         &times;
       </button>
-      <h3 className="text-3xl font-bold mb-6 text-white text-center">Get in Touch</h3>
+
+      <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-white text-center">Get in Touch</h3>
 
       <form
         onSubmit={async (e) => {
           e.preventDefault();
 
-          // Basic validation (optional, can extend)
           if (!contactForm.name || !contactForm.email || !contactForm.message) {
             setFormStatus('error');
             return;
@@ -643,17 +634,17 @@ export default function Home() {
           try {
             const res = await fetch('https://formspree.io/f/mwpbrjoz', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
               body: JSON.stringify(contactForm),
             });
 
             const data = await res.json();
-
             if (data.ok) {
               setFormStatus('success');
               setContactForm({ name: '', email: '', message: '' });
-              // Optionally auto close modal after delay:
-              // setTimeout(() => setShowContact(false), 4000);
             } else {
               setFormStatus('error');
             }
@@ -662,7 +653,7 @@ export default function Home() {
             setFormStatus('error');
           }
         }}
-        className="flex flex-col gap-6"
+        className="flex flex-col gap-5"
       >
         <input
           type="text"
@@ -671,7 +662,7 @@ export default function Home() {
           value={contactForm.name}
           onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
           required
-          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
         />
         <input
           type="email"
@@ -680,7 +671,7 @@ export default function Home() {
           value={contactForm.email}
           onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
           required
-          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
         />
         <textarea
           name="message"
@@ -688,67 +679,67 @@ export default function Home() {
           value={contactForm.message}
           onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
           required
-          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md resize-none h-32 focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md resize-none h-28 sm:h-32 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
         />
 
         <button
           type="submit"
           disabled={formStatus === 'sending'}
-          className="bg-[#ee5225] text-white py-3 rounded-md hover:bg-[#d9431d] transition font-semibold text-lg disabled:opacity-50"
+          className="bg-[#ee5225] text-white py-3 rounded-md hover:bg-[#d9431d] transition font-semibold text-base sm:text-lg disabled:opacity-50"
         >
           {formStatus === 'sending' ? 'Sending...' : 'Send Message'}
         </button>
 
- <AnimatePresence>
-      {formStatus === 'success' && (
-        <motion.p
-          key="success"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.3 }}
-          className="flex items-center justify-center gap-3 rounded-xl bg-green-600/20 text-green-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
-          role="alert"
-        >
-          <svg
-            className="w-6 h-6 stroke-green-600"
-            fill="none"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            viewBox="0 0 24 24"
-          >
-            <path d="M5 13l4 4L19 7" />
-          </svg>
-          Message sent successfully!
-        </motion.p>
-      )}
+        <AnimatePresence>
+          {formStatus === 'success' && (
+            <motion.p
+              key="success"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center justify-center gap-3 rounded-xl bg-green-600/20 text-green-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
+              role="alert"
+            >
+              <svg
+                className="w-6 h-6 stroke-green-600"
+                fill="none"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M5 13l4 4L19 7" />
+              </svg>
+              Message sent successfully!
+            </motion.p>
+          )}
 
-      {formStatus === 'error' && (
-        <motion.p
-          key="error"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.3 }}
-          className="flex items-center justify-center gap-3 rounded-xl bg-red-600/20 text-red-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
-          role="alert"
-        >
-          <svg
-            className="w-6 h-6 stroke-red-600"
-            fill="none"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            viewBox="0 0 24 24"
-          >
-            <path d="M18 6L6 18M6 6l12 12" />
-          </svg>
-          Something went wrong. Please check your inputs and try again.
-        </motion.p>
-      )}
-    </AnimatePresence>
-              </form>
+          {formStatus === 'error' && (
+            <motion.p
+              key="error"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center justify-center gap-3 rounded-xl bg-red-600/20 text-red-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
+              role="alert"
+            >
+              <svg
+                className="w-6 h-6 stroke-red-600"
+                fill="none"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+              Something went wrong. Please check your inputs and try again.
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </form>
     </div>
   </div>
 )}

@@ -28,6 +28,7 @@ export const PROJECTS: Project[] = [  //Web development
     contributors: 'Studio Mix',
     summary: 'Edited an engaging highlight reel for a global music festival.',
     images: ['/Image/graphic3.png'],
+    
     testimonials: [
       {
         quote: "Captured the event’s essence beautifully!",
@@ -230,4 +231,24 @@ export const PROJECTS: Project[] = [  //Web development
   
     ],
   },
+    {
+    id: 16,
+    title: 'Event Poster',
+    client: 'Cultural Beats',
+    category: 'Graphics (Logo, Poster)',
+    contributors: 'Art Studio',
+    summary: 'Designed a vibrant poster for a multicultural event.',
+    images: ['/Image/graphic1.png'],
+    testimonials: [
+      {
+        quote: "Captured the event’s essence beautifully!",
+        clientName: "Hanna Tekle",
+        clientTitle: "Event Organizer, Global Fest",
+        clientImage: "/Image/client1.jpg",
+      },
+     
+  
+    ],
+  },
+
 ];  

@@ -252,63 +252,6 @@ footer .flex-col.items-start.justify-start {
 .project-modal-info {
   @apply grid grid-cols-1 md:grid-cols-2 gap-6 px-4 py-8 text-[#58595b];
 }
-/* Logo Marquee Wrapper */
-/* Wrapper Styling */
-/* Wrapper Styling */
-.logo-marquee-wrapper {
-  width: 100%;
-  overflow-x: hidden;
-  padding-top: 6rem; /* pt-24 */
-  padding-bottom: 2rem; /* pb-8 */
-  margin-bottom: 3rem; /* mb-12 */
-  background: linear-gradient(to bottom, #1a1a1a, #2d2d2d, transparent);
-}
-
-/* Marquee Container */
-.logo-marquee {
-  display: flex;
-  white-space: nowrap;
-  gap: 5rem; /* Increased spacing for a modern look */
-}
-
-/* Individual Logo */
-.logo-item {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  transform: scale(1); /* Smooth scaling effect */
-  transition: transform 0.3s ease-in-out;
-}
-
-.logo-item img {
-  height: 80px;
-  width: auto;
-  object-fit: contain;
-  filter: grayscale(100%); /* Start in grayscale */
-  transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
-}
-
-/* Hover Effects */
-.logo-item:hover img {
-  filter: grayscale(0%); /* Remove grayscale on hover */
-  transform: scale(1.1); /* Slightly enlarge the logo */
-}
-
-/* Mobile Styles */
-@media (max-width: 640px) {
-  .logo-marquee-wrapper {
-    padding-top: 3rem;
-    padding-bottom: 1rem;
-  }
-
-  .logo-marquee {
-    gap: 2rem; /* Reduced spacing for smaller screens */
-  }
-
-  .logo-item img {
-    height: 60px; /* Smaller logo size for mobile */
-  }
-}
 .fixed-contact-button {
   right: 1.5rem; /* 6 * 0.25rem */
   left: auto;

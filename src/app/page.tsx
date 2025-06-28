@@ -21,15 +21,14 @@ import AboutModal from '@/component/AboutModal';
 import FAQPage from '@/component/faqmodal';
 import ServicesModal from '@/component/ServicesModal';
 import TeamModal from '@/component/TeamModal';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation,Variants } from 'framer-motion';
 import { HiOutlineChatBubbleLeftEllipsis } from 'react-icons/hi2';
 // Very close match — message bubble + ellipsis
-
+import { IoMdMenu } from 'react-icons/io';
 type Project = {
   id: number;
   title: string;
   client: string;
-  category: string;
   contributors: string;
   summary: string;
   images: (string | StaticImageData)[];
@@ -42,6 +41,7 @@ type Project = {
 };
 
 export default function Home() {
+  const controls = useAnimation();
   const [showTeamModal, setShowTeamModal] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [showServicesModal, setShowServicesModal] = useState(false);
@@ -51,26 +51,12 @@ export default function Home() {
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   // Predefined logos for the marquee                                   
-  const logos = [
-    { src: '/Image/logo1.svg', alt: 'Navan', width: 200, height: 50 },
-    { src: '/Image/logo2.svg', alt: 'Contentful', width: 200, height: 50 },
-    { src: '/Image/logo3.svg', alt: 'Unilever', width: 200, height: 50 },
-    { src: '/Image/logo4.svg', alt: 'Stack Overflow', width: 200, height: 50 },
-    { src: '/Image/logo5.svg', alt: 'Riot Games', width: 200, height: 50 },
-    { src: '/Image/logo6.svg', alt: 'Nike', width: 200, height: 50 },
-  ];
-  // State for active logo popup
-  const [activeLogo, setActiveLogo] = useState<{
-    src: string;
-    alt: string;
-    width: number;
-    height: number;
-    description?: string;
-  } | null>(null);
+ 
 
-  const waveCount = 3;
-const waveDuration = 1.5;
-const delayBetweenWaves = 0.5;
+//   const waveCount = 3;
+// const waveDuration = 1.5;
+// const delayBetweenWaves = 0.5;
+const text = "THINK, CRAFT & IMPACT."; // The text to be revealed
 
   // Lock body scroll when modal open
   useEffect(() => {
@@ -92,6 +78,33 @@ const delayBetweenWaves = 0.5;
   }, [formStatus, setFormStatus]);
  
 
+  useEffect(() => {
+    controls.start("visible");
+  }, [controls]);
+
+  const container = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.07, delayChildren: 1.5 },
+    },
+  };
+
+  const letter: Variants = {
+    hidden: { opacity: 0, y: 30, scale: 0.8, rotate: -10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      rotate: 0,
+      transition: { type: "spring" as const, stiffness: 500, damping: 30 },
+    },
+    bounce: {
+      y: [0, -8, 0],
+      transition: { delay: 2.5, duration: 0.6, ease: "easeInOut" },
+    },
+  };
+  
   const nextImage = () =>
     setCurrentImageIndex((prev) => (prev + 1) % (selectedProject?.images.length ?? 1));
 
@@ -116,51 +129,58 @@ const delayBetweenWaves = 0.5;
 
   const [showContact, setShowContact] = useState(false);
 
+  const [isOpen, setIsOpen] = useState(false);
   // Simple implementation of CSS steps() easing for framer-motion
-  function steps(steps: number): (t: number) => number {
-    return (t: number) => {
-      if (steps <= 1) return 1;
-      return Math.floor(t * steps) / steps;
-    };
-  }
   return (
     <div className="flex min-h-screen flex-col">
       {/* Responsive Menu Bar */}
 <div className="menu-bar">
-  <div className="logo">
+  {/* Logo with Reload on Click */}
+  <div
+    className="logo cursor-pointer select-none flex items-center"
+    onClick={() => window.location.reload()}
+  >
     <Image
-      src="/Image/advera2.svg"
+      src="/Image/advo.svg"
       alt="Advera Logo"
       width={100}
       height={30}
       className="h-10 w-auto"
+      priority
     />
   </div>
 
-  {/* Hamburger icon with animation */}
-  <div
-    className="hamburger text-[#ee5225] transition-transform duration-300 hover:rotate-90"
-    onClick={() => {
-      document.querySelector('.nav-links')?.classList.toggle('open');
-    }}
-  >
-    ☰
+  {/* Toggle Menu Button */}
+  <div className="fixed top-4 right-4 z-50 md:hidden">
+    <button
+      onClick={() => setIsOpen((prev) => !prev)}
+      className="p-2 rounded-md bg-[#ee5225]/100 text-white focus:outline-none"
+      aria-label="Toggle Menu"
+    >
+      <IoMdMenu size={24} />
+    </button>
   </div>
 
-  {/* Animated mobile nav */}
-  <ul className="nav-links">
-    {['Home', 'About Us', 'Services', 'Team', 'FAQ'].map((section, ) => (
+  {/* Animated Mobile Nav */}
+  <ul
+    className={`nav-links transition-all duration-500 ease-in-out ${
+      isOpen ? 'open' : ''
+    }`}
+  >
+    {['Home', 'About Us', 'Services', 'Team', 'FAQ'].map((section) => (
       <li key={section}>
         <button
           onClick={() => {
             handleNavigate(section);
-            document.querySelector('.nav-links')?.classList.remove('open');
+            setIsOpen(false);
           }}
           className="w-full text-white hover:text-orange-300 transition-all font-medium text-left"
         >
           <span
-            className={`inline-block w-full pl-6 ${
-              section === 'About Us' || section === 'Services' ? 'pl-8' : 'pl-6'
+            className={`inline-block w-full ${
+              section === 'About Us' || section === 'Services'
+                ? 'pl-8'
+                : 'pl-6'
             }`}
           >
             {section}
@@ -170,13 +190,12 @@ const delayBetweenWaves = 0.5;
     ))}
   </ul>
 </div>
-
-      <div className="flex flex-grow ">
+    <div className="flex flex-grow ">
         <div className="fixed top-0 left-0 h-screen w-20 lg:w-64 z-40 pointer-events-auto">
           <Sidebar onSectionClick={handleNavigate} onFAQClick={() => setShowFAQModal(true)} />
         </div>
 
-<main className="ml-0 sm:ml-20 lg:ml-45 p-8 w-full bg-white text-black">
+<main className="ml-0 sm:ml-20 lg:ml-45 px-2 sm:px-8 py-10 w-full bg-white text-black text-[17px] sm:text-base">
 <section id="projects" className="mb-20 relative">
   {/* Social Icons */}
   <div className="absolute top-2 right-5 z-10 flex gap-4 hidden md:flex">
@@ -199,42 +218,54 @@ const delayBetweenWaves = 0.5;
   {/* Container for slogan + button + description with top padding */}
   <div className="pt-12 px-4 sm:px-0"> {/* Adjust pt-12 to increase/decrease space */}
     {/* Slogan on top-left with typing animation */}
-    <div className="text-left mb-6">
-      <motion.div
-        className="text-lg sm:text-xl font-semibold mt-1 whitespace-nowrap inline-block"
-      >
-        <motion.span
-          className="inline-block overflow-hidden border-r-2 border-[#ee5225] pr-2"
-          initial={{ width: 0 }}
-          animate={{ width: '22ch' }}
-          transition={{
-            duration: 4,
-            ease: steps(22),
-            repeat: Infinity,
-            repeatType: 'loop',
-            repeatDelay: 1,
-          }}
+<div className="text-left mb-6">
+        <motion.div
+          className="fancy-font"
+          variants={container}
+          initial="hidden"
+          animate={controls}
         >
-          <span className="text-[#191D49]">THINK, CRAFT </span>
-          <span className="text-[#ee5225]">& IMPACT.</span>
-        </motion.span>
-      </motion.div>
-    </div>
+          {text.split("").map((char, index) => {
+            let className = "";
 
-    {/* Button + Description */}
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-3">
-      <button
-        onClick={() => {}}
-        className="inline-flex items-center px-5 py-2.5 bg-[#ee5225] hover:bg-[#d9431d] text-white font-medium text-sm rounded-full shadow-md transition-all duration-300"
-      >
-        View All Projects
-      </button>
-      <p className="text-gray-600 text-base sm:text-lg">
-        Check out some of our featured work.
-      </p>
-    </div>
+            if ("THINK, CRAFT".includes(char) || (index <= 12 && char !== "&")) {
+              className = "dark-text";
+            } else if (char === "&") {
+              className = "highlight";
+            } else {
+              className = "gradient-text";
+            }
+
+            return (
+              <motion.span
+                key={index}
+                className={`${className} inline-block`}
+                variants={letter}
+                animate={index === text.length - 1 ? "bounce" : undefined}
+              >
+                {char}
+              </motion.span>
+            );
+          })}
+        </motion.div>
+      </div>
+                  {/* Button + Description */}
+<div className="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-3">
+<button
+  onClick={() => {}}
+  className="fit-text-mobile sm:w-auto w-auto text-left px-4 py-2 sm:px-5 sm:py-2 bg-[#ee5225] hover:bg-[#d9431d] text-sm sm:text-base text-white font-semibold rounded-full shadow-md transition-all duration-300 leading-none"
+>
+  Our Projects
+</button>
+
+
+
+
+  <p className="text-gray-600 text-sm sm:text-base">
+    Check out some of our featured work.
+  </p>
+</div>
   </div>
-
   {/* Project Cards */}
   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 mt-8 px-4 sm:px-0">
     {PROJECTS.map((project) => (
@@ -277,93 +308,69 @@ const delayBetweenWaves = 0.5;
     ))}
   </div>
 
-  {/* Floating Contact Button */}
-  <div className="fixed bottom-6 right-6 z-[70]">
-    {Array.from({ length: waveCount }).map((_, i) => (
-      <motion.div
-        key={i}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-[#ee5225]"
-        style={{ width: 64, height: 64 }}
-        initial={{ scale: 1, opacity: 0.6 }}
-        animate={{ scale: 3, opacity: 0 }}
-        transition={{
-          duration: waveDuration,
-          delay: i * delayBetweenWaves,
-          repeat: Infinity,
-          ease: 'easeOut',
-        }}
-      />
-    ))}
+{/* Floating Contact Button */}
+<div className="fixed bottom-6 right-4 z-[70]">
+  <div className="relative w-16 h-16">
 
-    <button
-      onClick={() => setShowContact(true)}
-      className="group relative z-10 bg-[#ee5225] hover:bg-[#d9431d] text-white p-4 rounded-full shadow-xl transition-all duration-300"
-      aria-label="Open Contact Form"
+    {/* Meteor Trail */}
+    <motion.span
+      className="absolute w-10 h-[2px] bg-[#ee5225] rounded-full opacity-40 blur-sm"
+      initial={{ x: -40, y: -30, rotate: 45 }}
+      animate={{ x: 80, y: 80 }}
+      transition={{
+        duration: 2.2,
+        ease: 'easeInOut',
+        repeat: Infinity,
+        repeatType: 'loop',
+        delay: 1,
+      }}
+    />
+
+    <motion.div
+      whileHover={{ scale: 1.1, y: -6 }}
+      transition={{
+        type: 'spring',
+        stiffness: 300,
+        damping: 18,
+      }}
+      className="relative z-10"
     >
-      <HiOutlineChatBubbleLeftEllipsis
-        size={28}
-        className="group-hover:scale-110 transition-transform duration-300"
-      />
-      <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white animate-ping" />
-    </button>
-  </div>
-
-  {/* Logo Section */}
-  <div className="relative z-10 w-full pt-8 pb-4 mb-12 mt-20 bg-gray-100">
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-10 px-4">
-      {logos.slice(0, 6).map((logo, idx) => (
-        <div
-          key={`${logo.alt}-${idx}`}
-          className="flex items-center justify-center transition-transform duration-300 hover:scale-110 cursor-pointer"
-          onClick={() => setActiveLogo(logo)}
-        >
-          <Image
-            src={logo.src}
-            alt={logo.alt}
-            width={logo.width}
-            height={logo.height}
-            draggable={false}
-            className="h-[48px] sm:h-[60px] w-auto object-contain grayscale hover:grayscale-0"
-          />
-        </div>
-      ))}
-    </div>
-
-    {activeLogo && (
-      <div
-        className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 px-4"
-        onClick={() => setActiveLogo(null)}
+      <button
+        onClick={() => setShowContact(true)}
+        className={`group w-16 h-16 rounded-full shadow-2xl transition-all duration-300 
+          flex items-center justify-center relative overflow-hidden
+          ${isOpen ? 'bg-white text-[#ee5225]' : 'bg-[#ee5225] text-white'}
+          hover:bg-[#fdfdfd] sm:hover:bg-[#d9431d]`}
+        aria-label="Open Contact Form"
       >
-        <div
-          className="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md text-center relative"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <button
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl sm:text-3xl"
-            onClick={() => setActiveLogo(null)}
-          >
-            &times;
-          </button>
-          <Image
-            src={activeLogo.src}
-            alt={activeLogo.alt}
-            width={activeLogo.width}
-            height={activeLogo.height}
-            className="h-32 sm:h-40 w-auto mx-auto object-contain mb-4"
-          />
-          <h3 className="text-lg sm:text-xl font-bold">{activeLogo.alt}</h3>
-          <p className="text-gray-600 text-sm sm:text-base">
-            {activeLogo.description || 'No description available.'}
-          </p>
-        </div>
-      </div>
-    )}
+        {/* Icon */}
+        <HiOutlineChatBubbleLeftEllipsis
+          size={28}
+          className={`transition-transform duration-300 z-10 group-hover:scale-110 ${
+            isOpen ? 'text-[#ee5225]' : 'text-white'
+          }`}
+        />
+
+        {/* Optional Ping Indicator */}
+        <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white opacity-60 animate-ping z-20" />
+
+        {/* Glow */}
+        <motion.div
+          className="absolute inset-0 rounded-full bg-[#ee522530] blur-2xl z-0"
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        />
+      </button>
+    </motion.div>
   </div>
+</div>
+  {/* Logo Section */}
 </section>
 
   {/* Footer: Only show when filter is 'All' */}
 
-    <footer className="w-full mt-12 bg-transparent">
+<footer className="w-full ml-0 px-2 sm:ml-0 sm:px-0 mt-12 bg-transparent">
       <hr className="border-t border-[#ee5225] opacity-50 my-8 w-full" />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-y-10 w-full">
@@ -535,72 +542,69 @@ const delayBetweenWaves = 0.5;
       </div>
 
       {/* Info Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full px-4 md:px-8 py-10 text-[#58595b]">
-        <div className="pl-4 md:pl-8">
-          <h1 className="text-2xl md:text-3xl text-black font-bold mb-4">{selectedProject.title}</h1>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full px-4 md:px-8 py-10 text-[#58595b]">
+  {/* Left Column */}
+  <div className="pl-4 md:pl-8">
+    <h1 className="text-2xl md:text-3xl text-black font-bold mb-4">{selectedProject.title}</h1>
 
-          <div className="mb-3">
-            <h3 className="font-bold text-lg">Client</h3>
-            <p className="text-sm">{selectedProject.client}</p>
-          </div>
+    <div className="mb-3">
+      <h3 className="font-bold text-lg">Client</h3>
+      <p className="text-sm">{selectedProject.client}</p>
+    </div>
 
-          <div className="mb-3">
-            <h3 className="font-bold text-lg">Category</h3>
-            <p className="text-sm">{selectedProject.category}</p>
-          </div>
+    <div className="mb-3">
+      <h3 className="font-bold text-lg">Contributors</h3>
+      <p className="text-sm">{selectedProject.contributors}</p>
+    </div>
 
-          <div className="mb-3">
-            <h3 className="font-bold text-lg">Contributors</h3>
-            <p className="text-sm">{selectedProject.contributors}</p>
-          </div>
-
-          <div className="mt-6">
-            <button
-              onClick={() => setSelectedProject(null)}
-              className="px-6 py-2 bg-[#f1f2f2] text-black hover:text-white font-semibold rounded-full hover:bg-[#ee5225] transition"
-            >
-              Back to Projects
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="font-bold text-lg mb-2">Project Summary</h3>
-          <p className="whitespace-pre-line mb-6 text-sm md:text-base">{selectedProject.summary}</p>
-
-          {(selectedProject.testimonials?.length ?? 0) > 0 && (
-            <div className="pb-10">
-              <h4 className="text-xl font-semibold text-[#191D49] mb-6">Client Testimonials</h4>
-              <div className="grid grid-cols-1 gap-6">
-                {selectedProject.testimonials?.map((testimonial, index) => (
-                  <div
-                    key={index}
-                    className="bg-[#f1f2f2] rounded-xl border border-orange-100 p-5 shadow-md"
-                  >
-                    <p className="text-sm text-gray-700 italic mb-4">“{testimonial.quote}”</p>
-                    <div className="flex items-center gap-4">
-                      <Image
-                        src={testimonial.clientImage}
-                        alt={testimonial.clientName}
-                        width={48}
-                        height={48}
-                        className="rounded-full object-cover border-2 border-orange-300 shadow"
-                      />
-                      <div>
-                        <p className="text-base font-semibold text-gray-800">{testimonial.clientName}</p>
-                        <p className="text-sm text-gray-500">{testimonial.clientTitle}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+    <div className="mt-20">
+      <button
+        onClick={() => setSelectedProject(null)}
+        className="px-6 py-2 bg-[#f1f2f2] text-black hover:text-white font-semibold rounded-full hover:bg-[#ee5225] transition"
+      >
+        Back to Projects
+      </button>
     </div>
   </div>
-)}      
+
+  {/* Right Column */}
+  <div className="pl-4 md:pl-8">
+    <h3 className="font-bold text-lg mb-2">Project Summary</h3>
+    <p className="whitespace-pre-line mb-6 text-sm md:text-base">{selectedProject.summary}</p>
+
+    {(selectedProject.testimonials?.length ?? 0) > 0 && (
+      <div className="pb-10">
+        <h4 className="text-xl font-semibold text-[#191D49] mb-6">Client Testimonials</h4>
+        <div className="grid grid-cols-1 gap-6">
+          {selectedProject.testimonials?.map((testimonial, index) => (
+            <div
+              key={index}
+              className="bg-[#f1f2f2] rounded-xl border border-orange-100 p-5 shadow-md"
+            >
+              <p className="text-sm text-gray-700 italic mb-4">“{testimonial.quote}”</p>
+              <div className="flex items-center gap-4">
+                <Image
+                  src={testimonial.clientImage}
+                  alt={testimonial.clientName}
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover border-2 border-orange-300 shadow"
+                />
+                <div>
+                  <p className="text-base font-semibold text-gray-800">{testimonial.clientName}</p>
+                  <p className="text-sm text-gray-500">{testimonial.clientTitle}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+    </div>
+  </div>
+)}
 {/* Contact Form Modal */}
 {showContact && (
   <div
@@ -658,7 +662,7 @@ const delayBetweenWaves = 0.5;
         <input
           type="text"
           name="name"
-          placeholder="Your Name"
+          placeholder="Company Name"
           value={contactForm.name}
           onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
           required

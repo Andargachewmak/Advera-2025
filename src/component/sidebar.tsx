@@ -12,7 +12,7 @@ import {
   FaPhoneAlt,
   FaQuestionCircle,
 } from 'react-icons/fa';
-import { IoMdClose, IoMdMenu } from 'react-icons/io';
+import { IoMdClose,  } from 'react-icons/io';
 
 const navbar = [
   { name: 'Home', key: 'home', href: '/', icon: <FaHome size={18} /> },
@@ -34,15 +34,7 @@ export default function Sidebar({ onSectionClick, onFAQClick }: SidebarProps) {
   return (
     <>
       {/* Mobile Menu Button */}
-      <div className="fixed top-4 left-4 z-50 md:hidden">
-        <button
-          onClick={() => setIsOpen(true)}
-          className="p-2 rounded-md bg-[#ee5225]/100 text-white focus:outline-none"
-          aria-label="Open Menu"
-        >
-          <IoMdMenu size={24} />
-        </button>
-      </div>
+     
 
       {/* Sidebar */}
       <div

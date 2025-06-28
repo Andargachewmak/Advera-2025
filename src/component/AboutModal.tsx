@@ -15,7 +15,7 @@ const backdropVariants = {
 };
 
 const modalVariants = {
-  hidden: { opacity: 0, scale: 0.9 },
+  hidden: { opacity: 0, scale: 0.95 },
   visible: {
     opacity: 1,
     scale: 1,
@@ -23,7 +23,7 @@ const modalVariants = {
   },
   exit: {
     opacity: 0,
-    scale: 0.9,
+    scale: 0.95,
     transition: { duration: 0.2 },
   },
 };
@@ -31,14 +31,10 @@ const modalVariants = {
 export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
   useEffect(() => {
     if (isOpen) {
-      // Disable background scroll
       document.body.style.overflow = 'hidden';
     } else {
-      // Restore scroll
       document.body.style.overflow = '';
     }
-
-    // Cleanup on unmount
     return () => {
       document.body.style.overflow = '';
     };
@@ -47,8 +43,8 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] flex items-center justify-center p-4"
+        <motion.div                  
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] flex items-center justify-center p-4"
           variants={backdropVariants}
           initial="hidden"
           animate="visible"
@@ -56,8 +52,8 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
           onClick={onClose}
         >
           <motion.div
-            className="relative max-w-2xl w-full mx-4 rounded-2xl p-6 sm:p-8 bg-white/20 backdrop-blur-md shadow-lg text-white"
-            variants={modalVariants}
+            className="relative max-w-4xl w-full mx-4 rounded-2xl px-6 py-11 sm:px-12 bg-white/20 backdrop-blur-md shadow-xl text-white overflow-auto max-h-[90vh]"
+            variants={modalVariants}                           
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -74,15 +70,50 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
             </button>
 
             {/* Content */}
-            <h1 className="text-3xl sm:text-4xl font-'Satoshi', sans-serif font-bold mb-6 text-center">
-              About Us
-            </h1>
-<p className="text-white/90 text-base text-justify mb-4">
-  We’re a passionate team of creatives and engineers, dedicated to building outstanding digital experiences.
-</p>
-<p className="text-white/90 text-base text-justify">
-  Our mission is to blend design and technology into solutions that empower brands and engage users. Let’s build something amazing together.
-</p>
+<div className="space-y-12 text-left">
+  <div className="mb-25">
+    <h1 className="text-3xl sm:text-4xl font-bold mb-6">About Us</h1>
+    <p className="text-white text-sm  max-w-3xl">
+      We are the dynamic hub for marketing, communication, and brands. Committed to achieving your goals,
+      we provide creative and impactful marketing and communication plans that resonate with your target market and elevate your business.
+    </p>
+  </div>
+
+  {/* Card Container */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {/* Card 1 */}
+    <div className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6  hover:shadow-lg transition-shadow duration-300">
+      <h2 className="text-lg text-white font-bold mb-2">
+        The Spark to Ignite Your Ideas
+      </h2>
+      <p className="text-white  text-xs ">
+        Ever had a brilliant idea you can’t quite express? At Advera, we transform your vision into reality—often before you can finish the thought.
+      </p>
+    </div>
+
+    {/* Card 2 */}
+    <div className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6  hover:shadow-lg transition-shadow duration-300">
+      <h2 className="text-lg text-white font-bold mb-2">
+        Teamwork Makes the Dream Work
+      </h2>
+      <p className="text-white  text-xs ">
+        At Advera, collaboration drives every project. Our team ensures every detail is crafted thoughtfully because, as the saying goes,
+        the sum is greater than the parts.
+      </p>
+    </div>
+
+    {/* Card 3 */}
+    <div className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6  hover:shadow-lg transition-shadow duration-300">
+      <h2 className="text-lg text-white font-bold mb-2">
+        Precision or Passion?
+      </h2>
+      <p className="text-white  text-xs ">
+        We’re never satisfied with “good enough.” Every idea and word is crafted with care to reflect your vision perfectly.
+        We ensure your brand is polished and ready to captivate.
+      </p>
+    </div>
+  </div>
+</div>
           </motion.div>
         </motion.div>
       )}

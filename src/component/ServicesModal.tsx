@@ -72,7 +72,7 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
         onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-5xl max-h-[90vh] overflow-auto rounded-2xl p-6 sm:p-8 md:p-10 bg-white/20 backdrop-blur-md shadow-lg"
+          className="relative w-full max-w-5xl max-h-[90vh] overflow-auto rounded-2xl p-6 sm:p-11 md:p-12 bg-white/20 backdrop-blur-md shadow-lg"
           variants={modalVariants}
           initial="hidden"
           animate="visible"

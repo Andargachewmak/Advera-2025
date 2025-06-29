@@ -30,20 +30,36 @@ const modalVariants = {
 
 export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
   }, [isOpen]);
 
+  const cards = [
+    {
+      title: 'The Spark to Ignite Your Ideas',
+      text: 'Ever had a brilliant idea you can’t quite express? At Advera, we transform your vision into reality—often before you can finish the thought.',
+    },
+    {
+      title: 'Teamwork Makes the Dream Work',
+      text: 'At Advera, collaboration drives every project. Our team ensures every detail is crafted thoughtfully because, as the saying goes, the sum is greater than the parts.',
+    },
+    {
+      title: 'Precision or Passion?',
+      text: 'We’re never satisfied with “good enough.” Every idea and word is crafted with care to reflect your vision perfectly. We ensure your brand is polished and ready to captivate.',
+    },
+  ];
+
+  const strokeDasharray = 384;
+  const borderRadius = 8; // px for card border-radius
+  const strokeWidth = 2; // stroke width in px
+  const halfStroke = strokeWidth / 2; // 1
+
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div                  
+        <motion.div
           className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] flex items-center justify-center p-4"
           variants={backdropVariants}
           initial="hidden"
@@ -53,7 +69,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
         >
           <motion.div
             className="relative max-w-4xl w-full mx-4 rounded-2xl px-6 py-11 sm:px-12 bg-white/20 backdrop-blur-md shadow-xl text-white overflow-auto max-h-[90vh]"
-            variants={modalVariants}                           
+            variants={modalVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -63,57 +79,89 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 text-white hover:text-red-400 text-2xl font-bold"
+              className="absolute top-4 right-4 text-white hover:text-red-400 text-2xl font-bold transition-colors"
               aria-label="Close About Modal"
             >
               ×
             </button>
 
             {/* Content */}
-<div className="space-y-12 text-left">
-  <div className="mb-25">
-    <h1 className="text-3xl sm:text-4xl font-bold mb-6">About Us</h1>
-    <p className="text-white text-sm  max-w-3xl">
-      We are the dynamic hub for marketing, communication, and brands. Committed to achieving your goals,
-      we provide creative and impactful marketing and communication plans that resonate with your target market and elevate your business.
-    </p>
-  </div>
+            <div className="space-y-12 text-left">
+              <div className="mb-25">
+                <h1 className="text-3xl sm:text-4xl font-bold mb-6">About Us</h1>
+                <p className="text-white text-sm max-w-3xl leading-relaxed">
+                  We are the dynamic hub for marketing, communication, and brands. Committed to achieving your goals,
+                  we provide creative and impactful marketing and communication plans that resonate with your target market and elevate your business.
+                </p>
+              </div>
 
-  {/* Card Container */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    {/* Card 1 */}
-    <div className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6  hover:shadow-lg transition-shadow duration-300">
-      <h2 className="text-lg text-white font-bold mb-2">
-        The Spark to Ignite Your Ideas
-      </h2>
-      <p className="text-white  text-xs ">
-        Ever had a brilliant idea you can’t quite express? At Advera, we transform your vision into reality—often before you can finish the thought.
-      </p>
-    </div>
+              {/* Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {cards.map(({ title, text }, idx) => (
+                  <motion.div
+                    key={idx}
+                    className="relative bg-black/20 backdrop-blur-md"
+                    style={{
+                      borderRadius: borderRadius,
+                      padding: 24,
+                    }}
+                    initial="rest"
+                    whileHover="hover"
+                    animate="rest"
+                  >
+                    {/* SVG border exactly on outer edge */}
+                    <svg
+                      className="absolute -inset-[1px] w-[calc(100%+2px)] h-[calc(100%+2px)] z-0 pointer-events-none"
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                      style={{ borderRadius }}
+                    >
+                      <defs>
+                        <linearGradient id={`grad-${idx}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#61dafb" />
+                          <stop offset="50%" stopColor="#ffffff" />
+                          <stop offset="100%" stopColor="#61dafb" />
+                        </linearGradient>
+                        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                          <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#61dafb" floodOpacity="0.35" />
+                        </filter>
+                      </defs>
 
-    {/* Card 2 */}
-    <div className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6  hover:shadow-lg transition-shadow duration-300">
-      <h2 className="text-lg text-white font-bold mb-2">
-        Teamwork Makes the Dream Work
-      </h2>
-      <p className="text-white  text-xs ">
-        At Advera, collaboration drives every project. Our team ensures every detail is crafted thoughtfully because, as the saying goes,
-        the sum is greater than the parts.
-      </p>
-    </div>
+                      <motion.rect
+                        x={halfStroke}
+                        y={halfStroke}
+                        width={100 - strokeWidth}
+                        height={100 - strokeWidth}
+                        rx={borderRadius}
+                        ry={borderRadius}
+                        fill="none"
+                        stroke={`url(#grad-${idx})`}
+                        strokeWidth={strokeWidth}
+                        strokeDasharray={strokeDasharray}
+                        strokeDashoffset={strokeDasharray}
+                        filter="url(#glow)"
+                        variants={{
+                          rest: { opacity: 0 },
+                          hover: {
+                            opacity: 1,
+                            strokeDashoffset: 0,
+                            transition: {
+                              duration: 4,
+                              repeat: Infinity,
+                              repeatType: 'loop',
+                              ease: 'linear',
+                            },
+                          },
+                        }}
+                      />
+                    </svg>
 
-    {/* Card 3 */}
-    <div className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6  hover:shadow-lg transition-shadow duration-300">
-      <h2 className="text-lg text-white font-bold mb-2">
-        Precision or Passion?
-      </h2>
-      <p className="text-white  text-xs ">
-        We’re never satisfied with “good enough.” Every idea and word is crafted with care to reflect your vision perfectly.
-        We ensure your brand is polished and ready to captivate.
-      </p>
-    </div>
-  </div>
-</div>
+                    <h2 className="text-lg text-white font-bold mb-2 relative z-10">{title}</h2>
+                    <p className="text-white text-xs relative z-10">{text}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       )}

@@ -21,7 +21,7 @@ import AboutModal from '@/component/AboutModal';
 import FAQPage from '@/component/faqmodal';
 import ServicesModal from '@/component/ServicesModal';
 import TeamModal from '@/component/TeamModal';
-import { motion, AnimatePresence, useAnimation,Variants } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { HiOutlineChatBubbleLeftEllipsis } from 'react-icons/hi2';
 // Very close match — message bubble + ellipsis
 import { IoMdMenu } from 'react-icons/io';
@@ -50,15 +50,62 @@ export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+  const [activeProjectId, setActiveProjectId] = useState<number | null>(null);
+
   // Predefined logos for the marquee                                   
  
+const socialLinks = [
+  {
+    icon: FaFacebook,
+    href: 'https://web.facebook.com/profile.php?id=61573495564965',
+    label: 'Facebook',
+  },
+  {
+    icon: FaInstagram,
+    href: 'https://www.instagram.com/adveracreatives/',
+    label: 'Instagram',
+  },
+  {
+    icon: FaTiktok,
+    href: 'https://www.tiktok.com/@adveracreatives',
+    label: 'TikTok',
+  },
+  {
+    icon: FaLinkedin,
+    href: 'https://www.linkedin.com/company/adveracreative',
+    label: 'LinkedIn',
+  },
+];
 
 //   const waveCount = 3;
 // const waveDuration = 1.5;
 // const delayBetweenWaves = 0.5;
-const text = "THINK, CRAFT & IMPACT."; // The text to be revealed
+useEffect(() => {
+  // Only run this effect on mobile screens
+  if (window.innerWidth > 768) return;
 
-  // Lock body scroll when modal open
+  function onScroll() {
+    const windowHeight = window.innerHeight;
+
+    for (const project of PROJECTS) {
+      const el = document.getElementById(`project-${project.id}`);
+      if (!el) continue;
+
+      const rect = el.getBoundingClientRect();
+      if (rect.top < windowHeight * 0.75 && rect.bottom > windowHeight * 0.25) {
+        setActiveProjectId(project.id);
+        return;
+      }
+    }
+
+    setActiveProjectId(null);
+  }
+
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+
+  return () => window.removeEventListener('scroll', onScroll);
+}, [PROJECTS]);  // Lock body scroll when modal open
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.body.style.overflow = selectedProject ? 'hidden' : '';
@@ -82,28 +129,7 @@ const text = "THINK, CRAFT & IMPACT."; // The text to be revealed
     controls.start("visible");
   }, [controls]);
 
-  const container = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.07, delayChildren: 1.5 },
-    },
-  };
 
-  const letter: Variants = {
-    hidden: { opacity: 0, y: 30, scale: 0.8, rotate: -10 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      rotate: 0,
-      transition: { type: "spring" as const, stiffness: 500, damping: 30 },
-    },
-    bounce: {
-      y: [0, -8, 0],
-      transition: { delay: 2.5, duration: 0.6, ease: "easeInOut" },
-    },
-  };
   
   const nextImage = () =>
     setCurrentImageIndex((prev) => (prev + 1) % (selectedProject?.images.length ?? 1));
@@ -151,7 +177,7 @@ const text = "THINK, CRAFT & IMPACT."; // The text to be revealed
   </div>
 
   {/* Toggle Menu Button */}
-  <div className="fixed top-4 right-4 z-50 md:hidden">
+  <div className="fixed top-4 right-6 z-50 md:hidden">
     <button
       onClick={() => setIsOpen((prev) => !prev)}
       className="p-2 rounded-md bg-[#ee5225]/100 text-white focus:outline-none"
@@ -160,35 +186,32 @@ const text = "THINK, CRAFT & IMPACT."; // The text to be revealed
       <IoMdMenu size={24} />
     </button>
   </div>
-
   {/* Animated Mobile Nav */}
-  <ul
-    className={`nav-links transition-all duration-500 ease-in-out ${
-      isOpen ? 'open' : ''
-    }`}
-  >
-    {['Home', 'About Us', 'Services', 'Team', 'FAQ'].map((section) => (
-      <li key={section}>
-        <button
-          onClick={() => {
+<ul className={`menu-bar nav-links ${isOpen ? 'open' : ''}`}>
+  {['Home', 'About Us', 'Services', 'Portfolio', 'Team', 'FAQ'].map((section) => (
+    <li key={section}>
+      <button
+        onClick={() => {
+          if (section === 'Home') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
             handleNavigate(section);
-            setIsOpen(false);
-          }}
-          className="w-full text-white hover:text-orange-300 transition-all font-medium text-left"
+          }
+          setIsOpen(false);
+        }}
+        className="w-full text-white hover:text-orange-300 transition-all font-medium text-left"
+      >
+        <span
+          className={`inline-block w-full ${
+            section === 'About Us' || section === 'Services' ? 'pl-8' : 'pl-6'
+          }`}
         >
-          <span
-            className={`inline-block w-full ${
-              section === 'About Us' || section === 'Services'
-                ? 'pl-8'
-                : 'pl-6'
-            }`}
-          >
-            {section}
-          </span>
-        </button>
-      </li>
-    ))}
-  </ul>
+          {section}
+        </span>
+      </button>
+    </li>
+  ))}
+</ul>
 </div>
     <div className="flex flex-grow ">
         <div className="fixed top-0 left-0 h-screen w-20 lg:w-64 z-40 pointer-events-auto">
@@ -199,56 +222,85 @@ const text = "THINK, CRAFT & IMPACT."; // The text to be revealed
 <section id="projects" className="mb-20 relative">
   {/* Social Icons */}
   <div className="absolute top-2 right-5 z-10 flex gap-4 hidden md:flex">
-    {[FaFacebook, FaInstagram, FaTiktok, FaLinkedin].map((Icon, i) => {
-      const ariaLabels = ['Facebook', 'Instagram', 'Tiktok', 'LinkedIn'];
-      return (
+      {socialLinks.map(({ icon: Icon, href, label }, i) => (
         <a
           key={i}
-          href="#"
+          href={href}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={ariaLabels[i]}
+          aria-label={label}
+          className="text-[#191D49] hover:text-[#ee5225] transition-colors"
         >
-          <Icon className="text-[#191D49] hover:text-orange-500 transition" size={20} />
+          <Icon size={20} />
         </a>
-      );
-    })}
-  </div>
+      ))}
+    </div>
 
   {/* Container for slogan + button + description with top padding */}
   <div className="pt-12 px-4 sm:px-0"> {/* Adjust pt-12 to increase/decrease space */}
     {/* Slogan on top-left with typing animation */}
-<div className="text-left mb-6">
-        <motion.div
-          className="fancy-font"
-          variants={container}
-          initial="hidden"
-          animate={controls}
-        >
-          {text.split("").map((char, index) => {
-            let className = "";
+<div className="text-left mb-8 px-1 sm:px-0">
+  <motion.div
+    className="inline-block"
+    initial={{ opacity: 0, y: 50 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{
+      duration: 1,
+      ease: 'easeOut',
+      delayChildren: 0.3,
+      staggerChildren: 0.2,
+    }}
+  >
+    <motion.h2
+      className="text-2xl sm:text-3xl md:text-5xl font-bold whitespace-nowrap"
+      initial={{ opacity: 0, scale: 0.8, rotateX: -30 }}
+      animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+      transition={{
+        duration: 1.2,
+        ease: 'easeInOut',
+      }}
+    >
+      <motion.span
+        className="text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225]"
+        initial={{ opacity: 0, x: -50, rotate: -10 }}
+        animate={{ opacity: 1, x: 0, rotate: 0 }}
+        transition={{
+          delay: 0.5,
+          duration: 0.8,
+          ease: 'circOut',
+        }}
+      >
+        THINK,
+      </motion.span>
 
-            if ("THINK, CRAFT".includes(char) || (index <= 12 && char !== "&")) {
-              className = "dark-text";
-            } else if (char === "&") {
-              className = "highlight";
-            } else {
-              className = "gradient-text";
-            }
+      <motion.span
+        className="mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225]"
+        initial={{ opacity: 0, x: -50, rotate: 10 }}
+        animate={{ opacity: 1, x: 0, rotate: 0 }}
+        transition={{
+          delay: 0.7,
+          duration: 0.8,
+          ease: 'circOut',
+        }}
+      >
+        CRAFT,
+      </motion.span>
 
-            return (
-              <motion.span
-                key={index}
-                className={`${className} inline-block`}
-                variants={letter}
-                animate={index === text.length - 1 ? "bounce" : undefined}
-              >
-                {char}
-              </motion.span>
-            );
-          })}
-        </motion.div>
-      </div>
+      <motion.span
+        className="text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d]"
+        initial={{ opacity: 0, x: -50, rotate: -10 }}
+        animate={{ opacity: 1, x: 0, rotate: 0 }}
+        transition={{
+          delay: 0.9,
+          duration: 0.8,
+          ease: 'circOut',
+        }}
+      >
+        & IMPACT.
+      </motion.span>
+    </motion.h2>
+  </motion.div>
+</div>
                   {/* Button + Description */}
 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-3">
 <button
@@ -258,56 +310,73 @@ const text = "THINK, CRAFT & IMPACT."; // The text to be revealed
   Our Projects
 </button>
 
-
-
-
   <p className="text-gray-600 text-sm sm:text-base">
     Check out some of our featured work.
   </p>
 </div>
   </div>
-  {/* Project Cards */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-5 mt-8 px-4 sm:px-0">
-    {PROJECTS.map((project) => (
-      <div
-        key={project.id}
-        className="relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
-        onClick={() => {
+{/* Project Cards */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+  {PROJECTS.map((project) => (
+    <div
+      key={project.id}
+      id={`project-${project.id}`}
+      className="relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+      onClick={() => {
+        setSelectedProject(project);
+        setCurrentImageIndex(0);
+        setActiveProjectId(project.id);
+      }}
+      onTouchEnd={() => setActiveProjectId(project.id)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
           setSelectedProject(project);
           setCurrentImageIndex(0);
-        }}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            setSelectedProject(project);
-            setCurrentImageIndex(0);
-          }
-        }}
-        tabIndex={0}
-        role="button"
-        aria-label={`View project: ${project.title}`}
-      >
-        <div className="relative w-full h-52">
-          <Image
-            src={project.images[0]}
-            alt={project.title}
-            fill
-            className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-            draggable={false}
-          />
-        </div>
-
-        <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none" />
-
-        <div className="absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-white">
-          <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
-          <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">
-            {project.summary}
-          </p>
-        </div>
+          setActiveProjectId(project.id);
+        }
+      }}
+      tabIndex={0}
+      role="button"
+      aria-label={`View project: ${project.title}`}
+    >
+      <div className="relative w-full h-52">
+        <Image
+          src={project.images[0]}
+          alt={project.title}
+          fill
+          className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+          draggable={false}
+        />
       </div>
-    ))}
-  </div>
 
+      {/* Overlay */}
+      <div
+        className={`absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-500 z-10 pointer-events-none ${
+          activeProjectId === project.id
+            ? 'opacity-100'
+            : 'opacity-0 group-hover:opacity-100'
+        }`}
+      />
+
+      {/* Text */}
+      <div
+        className={`absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 transition-opacity duration-500 text-white ${
+          activeProjectId === project.id
+            ? 'opacity-100'
+            : 'opacity-0 group-hover:opacity-100'
+        }`}
+      >
+        <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
+        <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">
+          {project.summary}
+        </p>
+      </div>
+    </div>
+  ))}
+</div>
+
+
+  
 {/* Floating Contact Button */}
 <div className="fixed bottom-6 right-4 z-[70]">
   <div className="relative w-16 h-16">
@@ -370,8 +439,7 @@ const text = "THINK, CRAFT & IMPACT."; // The text to be revealed
 
   {/* Footer: Only show when filter is 'All' */}
 
-<footer className="w-full ml-0 px-2 sm:ml-0 sm:px-0 mt-12 bg-transparent">
-      <hr className="border-t border-[#ee5225] opacity-50 my-8 w-full" />
+<footer className="w-full px-4 sm:px-0 mt-12 bg-transparent">      <hr className="border-t border-[#ee5225] opacity-50 my-8 w-full" />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-y-10 w-full">
         {/* Logo */}

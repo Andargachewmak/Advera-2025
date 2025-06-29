@@ -50,12 +50,14 @@ const modalVariants = {
   exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
 };
 
+const borderRadius = 8;
+const strokeWidth = 2;
+const halfStroke = strokeWidth / 2;
+const strokeDasharray = 384;
+
 export default function ServicesModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
-    // Lock scroll on mount
     document.body.style.overflow = 'hidden';
-
-    // Unlock scroll on unmount
     return () => {
       document.body.style.overflow = '';
     };
@@ -93,15 +95,72 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {services.map((service) => (
-              <div
+            {services.map((service, idx) => (
+              <motion.div
                 key={service.title}
-                className="bg-white/10 rounded-xl p-5 shadow-md text-center cursor-pointer hover:shadow-xl hover:scale-[1.05] transition-transform duration-300"
+                className="relative bg-white/10 cursor-pointer"
+                style={{
+                  borderRadius,
+                  padding: 24,
+                }}
+                initial="rest"
+                whileHover="hover"
+                animate="rest"
               >
-                <div className="mb-4 flex justify-center">{service.icon}</div>
-                <h3 className="text-lg font-semibold text-white">{service.title}</h3>
-                <p className="text-sm text-white/90 mt-2">{service.description}</p>
-              </div>
+                {/* Animated SVG border on outer edge */}
+                <svg
+                  className="absolute -inset-[1px] w-[calc(100%+2px)] h-[calc(100%+2px)] z-0 pointer-events-none"
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                  style={{ borderRadius }}
+                >
+                  <defs>
+                    <linearGradient id={`grad-service-${idx}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#61dafb" />
+                      <stop offset="50%" stopColor="#ffffff" />
+                      <stop offset="100%" stopColor="#61dafb" />
+                    </linearGradient>
+                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#61dafb" floodOpacity="0.35" />
+                    </filter>
+                  </defs>
+
+                  <motion.rect
+                    x={halfStroke}
+                    y={halfStroke}
+                    width={100 - strokeWidth}
+                    height={100 - strokeWidth}
+                    rx={borderRadius}
+                    ry={borderRadius}
+                    fill="none"
+                    stroke={`url(#grad-service-${idx})`}
+                    strokeWidth={strokeWidth}
+                    strokeDasharray={strokeDasharray}
+                    strokeDashoffset={strokeDasharray}
+                    filter="url(#glow)"
+                    variants={{
+                      rest: { opacity: 0 },
+                      hover: {
+                        opacity: 1,
+                        strokeDashoffset: 0,
+                        transition: {
+                          duration: 4,
+                          repeat: Infinity,
+                          repeatType: 'loop',
+                          ease: 'linear',
+                        },
+                      },
+                    }}
+                  />
+                </svg>
+
+                {/* Content centered */}
+                <div className="flex flex-col items-center text-center relative z-10">
+                  <div className="mb-4 flex justify-center">{service.icon}</div>
+                  <h3 className="text-lg font-semibold text-white">{service.title}</h3>
+                  <p className="text-sm text-white/90 mt-2">{service.description}</p>
+                </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>

@@ -392,7 +392,7 @@ useEffect(() => {
   </div>
 </div>
 {/* Floating Contact Button */}
-<div className="fixed bottom-6 right-4 z-[70]">
+<div className="fixed bottom-6 right-2 z-[70]">
   <div className="relative w-16 h-16">
 
     {/* Meteor Trail */}

@@ -13,8 +13,8 @@ import {
   FaPhoneAlt,
   FaEnvelope,
   FaMapMarkerAlt,
-  
-} from 'react-icons/fa';
+  FaHome, FaInfoCircle, FaBriefcase, FaUsers, FaQuestionCircle 
+ } from 'react-icons/fa';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import Sidebar from '@/component/sidebar';
 import AboutModal from '@/component/AboutModal';
@@ -53,7 +53,14 @@ export default function Home() {
   const [activeProjectId, setActiveProjectId] = useState<number | null>(null);
 
   // Predefined logos for the marquee                                   
- 
+ const navItems = [
+  { label: 'Home', icon: <FaHome size={18} /> },
+  { label: 'About Us', icon: <FaInfoCircle size={18} /> },
+  { label: 'Services', icon: <FaBriefcase size={18} /> },
+  { label: 'Team', icon: <FaUsers size={18} /> },
+  { label: 'FAQ', icon: <FaQuestionCircle size={18} /> },
+];
+
 const socialLinks = [
   {
     icon: FaFacebook,
@@ -142,7 +149,7 @@ useEffect(() => {
   const handleNavigate = (section: string) => {
     const lower = section.toLowerCase();
     if (lower === 'team') setShowTeamModal(true);
-    else if (lower === 'about us' || lower === 'about') setShowAboutModal(true);
+    else if (lower === 'about us' ) setShowAboutModal(true);
     else if (lower === 'services') setShowServicesModal(true);
     else if (lower === 'faq') setShowFAQModal(true);
     else {
@@ -188,25 +195,22 @@ useEffect(() => {
   </div>
   {/* Animated Mobile Nav */}
 <ul className={`menu-bar nav-links ${isOpen ? 'open' : ''}`}>
-  {['Home', 'About Us', 'Services', 'Portfolio', 'Team', 'FAQ'].map((section) => (
-    <li key={section}>
+  {navItems.map(({ label, icon }) => (
+    <li key={label}>
       <button
         onClick={() => {
-          if (section === 'Home') {
+          if (label === 'Home') {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           } else {
-            handleNavigate(section);
+            handleNavigate(label);
           }
           setIsOpen(false);
         }}
-        className="w-full text-white hover:text-orange-300 transition-all font-medium text-left"
+        className="nav-button group"
       >
-        <span
-          className={`inline-block w-full ${
-            section === 'About Us' || section === 'Services' ? 'pl-8' : 'pl-6'
-          }`}
-        >
-          {section}
+        <span className="menu-icon">{icon}</span>
+        <span className="menu-label group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 transition-all duration-300 ease-in-out">
+          {label}
         </span>
       </button>
     </li>
@@ -221,7 +225,7 @@ useEffect(() => {
 <main className="ml-0 sm:ml-20 lg:ml-45 px-2 sm:px-8 py-10 w-full bg-white text-black text-[17px] sm:text-base">
 <section id="projects" className="mb-20 relative">
   {/* Social Icons */}
-  <div className="absolute top-2 right-5 z-10 flex gap-4 hidden md:flex">
+  <div className="absolute top-2 right-2 z-10 flex gap-4 hidden md:flex">
       {socialLinks.map(({ icon: Icon, href, label }, i) => (
         <a
           key={i}
@@ -316,67 +320,77 @@ useEffect(() => {
 </div>
   </div>
 {/* Project Cards */}
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
-  {PROJECTS.map((project) => (
-    <div
-      key={project.id}
-      id={`project-${project.id}`}
-      className="relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
-      onClick={() => {
-        setSelectedProject(project);
-        setCurrentImageIndex(0);
-        setActiveProjectId(project.id);
-      }}
-      onTouchEnd={() => setActiveProjectId(project.id)}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          setSelectedProject(project);
-          setCurrentImageIndex(0);
-          setActiveProjectId(project.id);
-        }
-      }}
-      tabIndex={0}
-      role="button"
-      aria-label={`View project: ${project.title}`}
-    >
-      <div className="relative w-full h-52">
-        <Image
-          src={project.images[0]}
-          alt={project.title}
-          fill
-          className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-          draggable={false}
-        />
-      </div>
+<div className="px-4 sm:px-0">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+    {PROJECTS.map((project) => {
+      const isActive = activeProjectId === project.id;
 
-      {/* Overlay */}
-      <div
-        className={`absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-500 z-10 pointer-events-none ${
-          activeProjectId === project.id
-            ? 'opacity-100'
-            : 'opacity-0 group-hover:opacity-100'
-        }`}
-      />
+      return (
+        <div
+          key={project.id}
+          id={`project-${project.id}`}
+          className={`
+            relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300
+            ${isActive ? 'scale-105' : 'hover:scale-105'}
+          `}
+          onClick={() => {
+            setSelectedProject(project);
+            setCurrentImageIndex(0);
+            setActiveProjectId(project.id);
+          }}
+          onTouchEnd={() => setActiveProjectId(project.id)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              setSelectedProject(project);
+              setCurrentImageIndex(0);
+              setActiveProjectId(project.id);
+            }
+          }}
+          tabIndex={0}
+          role="button"
+          aria-label={`View project: ${project.title}`}
+        >
+          <div className="relative w-full h-58" style={{ height: '232px' }}>
+            <Image
+              src={project.images[0]}
+              alt={project.title}
+              fill
+              className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+              draggable={false}
+            />
+          </div>
 
-      {/* Text */}
-      <div
-        className={`absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 transition-opacity duration-500 text-white ${
-          activeProjectId === project.id
-            ? 'opacity-100'
-            : 'opacity-0 group-hover:opacity-100'
-        }`}
-      >
-        <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
-        <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">
-          {project.summary}
-        </p>
-      </div>
-    </div>
-  ))}
+          {/* Overlay */}
+          <div
+            className={`absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-500 z-10 pointer-events-none
+              ${
+                isActive
+                  ? 'opacity-100'
+                  : 'opacity-0 group-hover:opacity-100 sm:group-hover:opacity-100 sm:opacity-0'
+              }
+            `}
+          />
+
+          {/* Text */}
+          <div
+            className={`absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 transition-opacity duration-500 text-white
+              ${
+                isActive
+                  ? 'opacity-100'
+                  : 'opacity-0 group-hover:opacity-100 sm:group-hover:opacity-100 sm:opacity-0'
+              }
+            `}
+          >
+            <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
+            <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">
+              {project.summary}
+            </p>
+          </div>
+        </div>
+      );
+    })}
+  </div>
 </div>
-
-
-  
 {/* Floating Contact Button */}
 <div className="fixed bottom-6 right-4 z-[70]">
   <div className="relative w-16 h-16">
@@ -627,11 +641,18 @@ useEffect(() => {
 
     <div className="mt-20">
       <button
-        onClick={() => setSelectedProject(null)}
-        className="px-6 py-2 bg-[#f1f2f2] text-black hover:text-white font-semibold rounded-full hover:bg-[#ee5225] transition"
-      >
-        Back to Projects
-      </button>
+  onClick={() => setSelectedProject(null)}
+ className="px-6 py-2 
+           bg-[#ee5225] text-white 
+           md:bg-[#f1f2f2] md:text-black 
+           hover:text-white font-semibold 
+           rounded-full transition 
+           md:hover:bg-[#ee5225]
+           active:bg-[#d9431d] active:scale-95"
+>
+  Back to Projects
+</button>
+
     </div>
   </div>
 

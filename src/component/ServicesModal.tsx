@@ -50,11 +50,6 @@ const modalVariants = {
   exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
 };
 
-const borderRadius = 8;
-const strokeWidth = 2;
-const halfStroke = strokeWidth / 2;
-const strokeDasharray = 384;
-
 export default function ServicesModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -66,7 +61,7 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
         variants={backdropVariants}
         initial="hidden"
         animate="visible"
@@ -74,7 +69,7 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
         onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-5xl max-h-[90vh] overflow-auto rounded-2xl p-6 sm:p-11 md:p-12 bg-white/20 backdrop-blur-md shadow-lg"
+          className="relative w-full max-w-5xl max-h-[90vh] overflow-auto rounded-2xl p-6 sm:p-11 md:p-12 bg-white/20 backdrop-blur-md shadow-xl"
           variants={modalVariants}
           initial="hidden"
           animate="visible"
@@ -82,84 +77,30 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
           onClick={(e) => e.stopPropagation()}
           layout
         >
+          {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-white hover:text-red-400 text-2xl font-bold transition"
-            aria-label="Close"
+            className="absolute top-4 right-4 text-white hover:text-red-400 text-2xl font-bold"
+            aria-label="Close Services Modal"
           >
-            ✕
+            ×
           </button>
 
+          {/* Title */}
           <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-10">
             Our Services
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {services.map((service, idx) => (
+          {/* Services Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service) => (
               <motion.div
                 key={service.title}
-                className="relative bg-white/10 cursor-pointer"
-                style={{
-                  borderRadius,
-                  padding: 24,
-                }}
-                initial="rest"
-                whileHover="hover"
-                animate="rest"
+                className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 text-center"
               >
-                {/* Animated SVG border on outer edge */}
-                <svg
-                  className="absolute -inset-[1px] w-[calc(100%+2px)] h-[calc(100%+2px)] z-0 pointer-events-none"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="none"
-                  style={{ borderRadius }}
-                >
-                  <defs>
-                    <linearGradient id={`grad-service-${idx}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#61dafb" />
-                      <stop offset="50%" stopColor="#ffffff" />
-                      <stop offset="100%" stopColor="#61dafb" />
-                    </linearGradient>
-                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                      <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#61dafb" floodOpacity="0.35" />
-                    </filter>
-                  </defs>
-
-                  <motion.rect
-                    x={halfStroke}
-                    y={halfStroke}
-                    width={100 - strokeWidth}
-                    height={100 - strokeWidth}
-                    rx={borderRadius}
-                    ry={borderRadius}
-                    fill="none"
-                    stroke={`url(#grad-service-${idx})`}
-                    strokeWidth={strokeWidth}
-                    strokeDasharray={strokeDasharray}
-                    strokeDashoffset={strokeDasharray}
-                    filter="url(#glow)"
-                    variants={{
-                      rest: { opacity: 0 },
-                      hover: {
-                        opacity: 1,
-                        strokeDashoffset: 0,
-                        transition: {
-                          duration: 4,
-                          repeat: Infinity,
-                          repeatType: 'loop',
-                          ease: 'linear',
-                        },
-                      },
-                    }}
-                  />
-                </svg>
-
-                {/* Content centered */}
-                <div className="flex flex-col items-center text-center relative z-10">
-                  <div className="mb-4 flex justify-center">{service.icon}</div>
-                  <h3 className="text-lg font-semibold text-white">{service.title}</h3>
-                  <p className="text-sm text-white/90 mt-2">{service.description}</p>
-                </div>
+                <div className="mb-4 flex justify-center">{service.icon}</div>
+                <h3 className="text-lg font-semibold text-white">{service.title}</h3>
+                <p className="text-sm text-white/90 mt-2">{service.description}</p>
               </motion.div>
             ))}
           </div>

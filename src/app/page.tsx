@@ -13,7 +13,7 @@ import {
   FaPhoneAlt,
   FaEnvelope,
   FaMapMarkerAlt,
-  FaHome, FaInfoCircle, FaBriefcase, FaUsers, FaQuestionCircle 
+  FaHome, FaInfoCircle, FaBriefcase, FaUsers, FaQuestionCircle,FaHandshake 
  } from 'react-icons/fa';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import Sidebar from '@/component/sidebar';
@@ -21,10 +21,12 @@ import AboutModal from '@/component/AboutModal';
 import FAQPage from '@/component/faqmodal';
 import ServicesModal from '@/component/ServicesModal';
 import TeamModal from '@/component/TeamModal';
+import PartnerModal from '@/component/PartnerModal';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { HiOutlineChatBubbleLeftEllipsis } from 'react-icons/hi2';
 // Very close match — message bubble + ellipsis
 import { IoMdMenu } from 'react-icons/io';
+import { logos } from './data/logo';
 type Project = {
   id: number;
   title: string;
@@ -46,11 +48,13 @@ export default function Home() {
   const [showAboutModal, setShowAboutModal] = useState(false);
   const [showServicesModal, setShowServicesModal] = useState(false);
   const [showFAQModal, setShowFAQModal] = useState(false);
+  const [showPartnerModal, setShowPartnerModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [activeProjectId, setActiveProjectId] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   // Predefined logos for the marquee                                   
  const navItems = [
@@ -58,6 +62,7 @@ export default function Home() {
   { label: 'About Us', icon: <FaInfoCircle size={18} /> },
   { label: 'Services', icon: <FaBriefcase size={18} /> },
   { label: 'Team', icon: <FaUsers size={18} /> },
+  { label: 'Our client', icon: <FaHandshake size={18} /> },
   { label: 'FAQ', icon: <FaQuestionCircle size={18} /> },
 ];
 
@@ -132,57 +137,67 @@ useEffect(() => {
   }, [formStatus, setFormStatus]);
  
 
-  useEffect(() => {
-    controls.start("visible");
-  }, [controls]);
+useEffect(() => {
+  controls.start("visible");
+}, [controls]);
 
-
-  
-  const nextImage = () =>
-    setCurrentImageIndex((prev) => (prev + 1) % (selectedProject?.images.length ?? 1));
-
-  const prevImage = () =>
-    setCurrentImageIndex((prev) =>
-      (prev - 1 + (selectedProject?.images.length ?? 1)) % (selectedProject?.images.length ?? 1)
-    );
-
-  const handleNavigate = (section: string) => {
-    const lower = section.toLowerCase();
-    if (lower === 'team') setShowTeamModal(true);
-    else if (lower === 'about us' ) setShowAboutModal(true);
-    else if (lower === 'services') setShowServicesModal(true);
-    else if (lower === 'faq') setShowFAQModal(true);
-    else {
-      const targetId =
-        section === 'Home' ? 'body' : section === 'Portfolio' ? 'projects' : lower.replace(/\s+/g, '-');
-      const target = document.getElementById(targetId);
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-    }
+const [showContact, setShowContact] = useState(false);
+ const handleReload = () => {
+    // Force full page reload (same as reload(true) in older browsers)
+    window.location.href = window.location.href;
   };
+useEffect(() => {
+  if (showContact) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+}, [showContact]);
 
-  const [showContact, setShowContact] = useState(false);
+const nextImage = () =>
+  setCurrentImageIndex((prev) => (prev + 1) % (selectedProject?.images.length ?? 1));
 
-  const [isOpen, setIsOpen] = useState(false);
-  // Simple implementation of CSS steps() easing for framer-motion
-  return (
+const prevImage = () =>
+  setCurrentImageIndex((prev) =>
+    (prev - 1 + (selectedProject?.images.length ?? 1)) % (selectedProject?.images.length ?? 1)
+  );
+
+const handleNavigate = (section: string) => {
+  const lower = section.toLowerCase();
+  if (lower === 'team') setShowTeamModal(true);
+  else if (lower === 'about us' ) setShowAboutModal(true);
+  else if (lower === 'services') setShowServicesModal(true);
+  else if (lower === 'faq') setShowFAQModal(true);
+  else if (lower === 'our client') setShowPartnerModal(true);
+
+  else {
+    const targetId =
+      section === 'Home' ? 'body' : section === 'Portfolio' ? 'projects' : lower.replace(/\s+/g, '-');
+    const target = document.getElementById(targetId);
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  }
+};
+
+const [isOpen, setIsOpen] = useState(false);
+// Simple implementation of CSS steps() easing for framer-motion
+return (
     <div className="flex min-h-screen flex-col">
       {/* Responsive Menu Bar */}
 <div className="menu-bar">
   {/* Logo with Reload on Click */}
-  <div
-    className="logo cursor-pointer select-none flex items-center"
-    onClick={() => window.location.reload()}
-  >
-    <Image
-      src="/Image/advo.svg"
-      alt="Advera Logo"
-      width={100}
-      height={30}
-      className="h-10 w-auto"
-      priority
-    />
-  </div>
-
+ <div
+      className="logo cursor-pointer select-none flex items-center"
+      onClick={handleReload}
+    >
+      <Image
+        src="/Image/advo.svg"
+        alt="Advera Logo"
+        width={100}
+        height={30}
+        className="h-10 w-auto"
+        priority
+      />
+    </div>
   {/* Toggle Menu Button */}
   <div className="fixed top-4 right-6 z-50 md:hidden">
     <button
@@ -195,31 +210,53 @@ useEffect(() => {
   </div>
   {/* Animated Mobile Nav */}
 <ul className={`menu-bar nav-links ${isOpen ? 'open' : ''}`}>
-  {navItems.map(({ label, icon }) => (
-    <li key={label}>
-      <button
-        onClick={() => {
-          if (label === 'Home') {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          } else {
-            handleNavigate(label);
-          }
-          setIsOpen(false);
-        }}
-        className="nav-button group"
-      >
-        <span className="menu-icon">{icon}</span>
-        <span className="menu-label group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0 transition-all duration-300 ease-in-out">
-          {label}
-        </span>
-      </button>
-    </li>
-  ))}
+  {navItems.map(({ label, icon }) => {
+    const isCenteredIcon = label === 'Services' || label === 'About Us';
+    const isPartner = label === 'Our client';
+
+    return (
+      <li key={label}>
+        <button
+          onClick={() => {
+            if (label === 'Home') {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              handleNavigate(label);
+            }
+            setIsOpen(false);
+          }}
+          className="w-full text-white transition-all font-medium flex flex-col items-center justify-center py-2"
+        >
+          {/* Icon */}
+          <span
+            className={`text-lg mb-1 ${
+              isPartner ? '-translate-x-1' : isCenteredIcon ? '-translate-x-1' : '-translate-x-1'
+            }`}
+          >
+            {icon}
+          </span>
+
+          {/* Label */}
+          <span
+            className={`text-[0.7rem] whitespace-nowrap ${
+              isPartner ? '-translate-x-3' : isCenteredIcon ? '-translate-x-4' : '-translate-x-2'
+            }`}
+          >
+            {label}
+          </span>
+        </button>
+      </li>
+    );
+  })}
 </ul>
 </div>
     <div className="flex flex-grow ">
         <div className="fixed top-0 left-0 h-screen w-20 lg:w-64 z-40 pointer-events-auto">
-          <Sidebar onSectionClick={handleNavigate} onFAQClick={() => setShowFAQModal(true)} />
+          <Sidebar
+            onSectionClick={handleNavigate}
+            onFAQClick={() => setShowFAQModal(true)}
+            onAboutClick={() => setShowAboutModal(true)}
+          />
         </div>
 
 <main className="ml-0 sm:ml-20 lg:ml-45 px-2 sm:px-8 py-10 w-full bg-white text-black text-[17px] sm:text-base">
@@ -243,69 +280,78 @@ useEffect(() => {
   {/* Container for slogan + button + description with top padding */}
   <div className="pt-12 px-4 sm:px-0"> {/* Adjust pt-12 to increase/decrease space */}
     {/* Slogan on top-left with typing animation */}
-<div className="text-left mb-8 px-1 sm:px-0">
-  <motion.div
-    className="inline-block"
-    initial={{ opacity: 0, y: 50 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{
-      duration: 1,
-      ease: 'easeOut',
-      delayChildren: 0.3,
-      staggerChildren: 0.2,
-    }}
-  >
-    <motion.h2
-      className="text-2xl sm:text-3xl md:text-5xl font-bold whitespace-nowrap"
-      initial={{ opacity: 0, scale: 0.8, rotateX: -30 }}
-      animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-      transition={{
-        duration: 1.2,
-        ease: 'easeInOut',
-      }}
-    >
-      <motion.span
-        className="text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225]"
-        initial={{ opacity: 0, x: -50, rotate: -10 }}
-        animate={{ opacity: 1, x: 0, rotate: 0 }}
+ <div className="text-left mb-8 px-1 sm:px-0">
+      <motion.div
+        className="inline-block"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{
-          delay: 0.5,
-          duration: 0.8,
-          ease: 'circOut',
+          duration: 1,
+          ease: 'easeOut',
+          delayChildren: 0.3,
+          staggerChildren: 0.2,
         }}
       >
-        THINK,
-      </motion.span>
+        <motion.h2
+          className="text-2xl sm:text-3xl md:text-5xl font-bold"
+          initial={{ opacity: 0, scale: 0.8, rotateX: -30 }}
+          animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+          transition={{
+            duration: 1.2,
+            ease: 'easeInOut',
+          }}
+        >
+          {/* THINK */}
+          <motion.span
+            className={`text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] ${
+              isOpen ? 'block' : 'inline'
+            } sm:inline`}
+            initial={{ opacity: 0, x: -50, rotate: -10 }}
+            animate={{ opacity: 1, x: 0, rotate: 0 }}
+            transition={{
+              delay: 0.5,
+              duration: 0.8,
+              ease: 'circOut',
+            }}
+          >
+            THINK,
+          </motion.span>
 
-      <motion.span
-        className="mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225]"
-        initial={{ opacity: 0, x: -50, rotate: 10 }}
-        animate={{ opacity: 1, x: 0, rotate: 0 }}
-        transition={{
-          delay: 0.7,
-          duration: 0.8,
-          ease: 'circOut',
-        }}
-      >
-        CRAFT,
-      </motion.span>
+          {/* CRAFT */}
+          <motion.span
+            className={`mx-0 sm:mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] ${
+              isOpen ? 'block' : 'inline'
+            } sm:inline`}
+            initial={{ opacity: 0, x: -50, rotate: 10 }}
+            animate={{ opacity: 1, x: 0, rotate: 0 }}
+            transition={{
+              delay: 0.7,
+              duration: 0.8,
+              ease: 'circOut',
+            }}
+          >
+            CRAFT,
+          </motion.span>
 
-      <motion.span
-        className="text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d]"
-        initial={{ opacity: 0, x: -50, rotate: -10 }}
-        animate={{ opacity: 1, x: 0, rotate: 0 }}
-        transition={{
-          delay: 0.9,
-          duration: 0.8,
-          ease: 'circOut',
-        }}
-      >
-        & IMPACT.
-      </motion.span>
-    </motion.h2>
-  </motion.div>
-</div>
-                  {/* Button + Description */}
+          {/* & IMPACT */}
+          <motion.span
+            className={`text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d] ${
+              isOpen ? 'block' : 'inline'
+            } sm:inline`}
+            initial={{ opacity: 0, x: -50, rotate: -10 }}
+            animate={{ opacity: 1, x: 0, rotate: 0 }}
+            transition={{
+              delay: 0.9,
+              duration: 0.8,
+              ease: 'circOut',
+            }}
+          >
+            & IMPACT.
+          </motion.span>
+        </motion.h2>
+      </motion.div>
+    </div>
+                      {/* Button + Description */}
 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-3">
 <button
   onClick={() => {}}
@@ -329,10 +375,8 @@ useEffect(() => {
         <div
           key={project.id}
           id={`project-${project.id}`}
-          className={`
-            relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300
-            ${isActive ? 'scale-105' : 'hover:scale-105'}
-          `}
+          className={`relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300
+            ${isActive ? 'scale-105' : 'hover:scale-105'}`}
           onClick={() => {
             setSelectedProject(project);
             setCurrentImageIndex(0);
@@ -390,9 +434,9 @@ useEffect(() => {
       );
     })}
   </div>
-</div>
+</div> 
 {/* Floating Contact Button */}
-<div className="fixed bottom-6 right-2 z-[70]">
+<div className="fixed bottom-8 right-2 z-[70]">
   <div className="relative w-16 h-16">
 
     {/* Meteor Trail */}
@@ -695,153 +739,178 @@ useEffect(() => {
   </div>
 )}
 {/* Contact Form Modal */}
-{showContact && (
-  <div
-    className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
-    onClick={() => setShowContact(false)}
-  >
-    <div
-      className="bg-white/20 backdrop-blur-md p-6 sm:p-10 w-full max-w-[95%] sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl relative overflow-y-auto max-h-[90vh]"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        onClick={() => setShowContact(false)}
-        className="absolute top-4 right-4 text-white hover:text-[#ee5225] text-2xl sm:text-3xl font-bold"
-        aria-label="Close Contact Form"
-      >
-        &times;
-      </button>
-
-      <h3 className="text-2xl sm:text-3xl font-bold mb-6 text-white text-center">Get in Touch</h3>
-
-      <form
-        onSubmit={async (e) => {
-          e.preventDefault();
-
-          if (!contactForm.name || !contactForm.email || !contactForm.message) {
-            setFormStatus('error');
-            return;
-          }
-
-          setFormStatus('sending');
-          try {
-            const res = await fetch('https://formspree.io/f/mwpbrjoz', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-              },
-              body: JSON.stringify(contactForm),
-            });
-
-            const data = await res.json();
-            if (data.ok) {
-              setFormStatus('success');
-              setContactForm({ name: '', email: '', message: '' });
-            } else {
-              setFormStatus('error');
-            }
-          } catch (err) {
-            console.error(err);
-            setFormStatus('error');
-          }
-        }}
-        className="flex flex-col gap-5"
-      >
-        <input
-          type="text"
-          name="name"
-          placeholder="Company Name"
-          value={contactForm.name}
-          onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-          required
-          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Your Email"
-          value={contactForm.email}
-          onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-          required
-          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
-        />
-        <textarea
-          name="message"
-          placeholder="Your Message"
-          value={contactForm.message}
-          onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-          required
-          className="border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md resize-none h-28 sm:h-32 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
-        />
-
-        <button
-          type="submit"
-          disabled={formStatus === 'sending'}
-          className="bg-[#ee5225] text-white py-3 rounded-md hover:bg-[#d9431d] transition font-semibold text-base sm:text-lg disabled:opacity-50"
+ {showContact && (
+         <div
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
+          onClick={() => setShowContact(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="contact-modal-title"
         >
-          {formStatus === 'sending' ? 'Sending...' : 'Send Message'}
-        </button>
-
-        <AnimatePresence>
-          {formStatus === 'success' && (
-            <motion.p
-              key="success"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.3 }}
-              className="flex items-center justify-center gap-3 rounded-xl bg-green-600/20 text-green-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
-              role="alert"
+          <div
+            className="bg-white/20 backdrop-blur-md p-6 sm:p-10 w-full max-w-[95%] sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl relative overflow-y-auto max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
+            style={{ WebkitOverflowScrolling: 'touch' }} // smooth iOS scrolling
+          >
+            <button
+              onClick={() => setShowContact(false)}
+              className="absolute top-4 right-4 text-white hover:text-[#ee5225] text-2xl sm:text-3xl font-bold"
+              aria-label="Close Contact Form"
+              style={{ touchAction: 'manipulation' }}
             >
-              <svg
-                className="w-6 h-6 stroke-green-600"
-                fill="none"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                viewBox="0 0 24 24"
-              >
-                <path d="M5 13l4 4L19 7" />
-              </svg>
-              Message sent successfully!
-            </motion.p>
-          )}
+              &times;
+            </button>
 
-          {formStatus === 'error' && (
-            <motion.p
-              key="error"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.3 }}
-              className="flex items-center justify-center gap-3 rounded-xl bg-red-600/20 text-red-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
-              role="alert"
+            <h3
+              id="contact-modal-title"
+              className="text-2xl sm:text-3xl font-bold mb-6 text-white text-center"
             >
-              <svg
-                className="w-6 h-6 stroke-red-600"
-                fill="none"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                viewBox="0 0 24 24"
+              Get in Touch
+            </h3>
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+
+                if (!contactForm.name || !contactForm.email || !contactForm.message) {
+                  setFormStatus('error');
+                  return;
+                }
+
+                setFormStatus('sending');
+                try {
+                  const res = await fetch('https://formspree.io/f/mwpbrjoz', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      Accept: 'application/json',
+                    },
+                    body: JSON.stringify(contactForm),
+                  });
+
+                  const data = await res.json();
+                  if (data.ok) {
+                    setFormStatus('success');
+                    setContactForm({ name: '', email: '', message: '' });
+                  } else {
+                    setFormStatus('error');
+                  }
+                } catch (err) {
+                  console.error(err);
+                  setFormStatus('error');
+                }
+              }}
+              className="flex flex-col gap-5"
+            >
+              <input
+                type="text"
+                name="name"
+                placeholder="Company Name"
+                value={contactForm.name}
+                onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                required
+                className="w-full border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md text-base sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+                autoComplete="organization"
+                inputMode="text"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                value={contactForm.email}
+                onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                required
+                className="w-full border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md text-base sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+                autoComplete="email"
+                inputMode="email"
+              />
+              <textarea
+                name="message"
+                placeholder="Your Message"
+                value={contactForm.message}
+                onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                required
+                className="w-full border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md resize-none h-28 sm:h-32 text-base sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+                rows={5}
+              />
+
+              <button
+                type="submit"
+                disabled={formStatus === 'sending'}
+                className="bg-[#ee5225] text-white py-3 rounded-md hover:bg-[#d9431d] transition font-semibold text-base sm:text-lg disabled:opacity-50"
+                style={{ touchAction: 'manipulation' }}
               >
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-              Something went wrong. Please check your inputs and try again.
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </form>
-    </div>
-  </div>
-)}
+                {formStatus === 'sending' ? 'Sending...' : 'Send Message'}
+              </button>
+
+              <AnimatePresence>
+                {formStatus === 'success' && (
+                  <motion.p
+                    key="success"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center justify-center gap-3 rounded-xl bg-green-600/20 text-green-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
+                    role="alert"
+                  >
+                    <svg
+                      className="w-6 h-6 stroke-green-600"
+                      fill="none"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M5 13l4 4L19 7" />
+                    </svg>
+                    Message sent successfully!
+                  </motion.p>
+                )}
+
+                {formStatus === 'error' && (
+                  <motion.p
+                    key="error"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex items-center justify-center gap-3 rounded-xl bg-red-600/20 text-red-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
+                    role="alert"
+                  >
+                    <svg
+                      className="w-6 h-6 stroke-red-600"
+                      fill="none"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                    Something went wrong. Please check your inputs and try again.
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Other Modals */}
       {showTeamModal && <TeamModal isOpen={showTeamModal} onClose={() => setShowTeamModal(false)} />}
       {showAboutModal && <AboutModal isOpen={showAboutModal} onClose={() => setShowAboutModal(false)} />}
       {showServicesModal && <ServicesModal onClose={() => setShowServicesModal(false)} />}
       {showFAQModal && <FAQPage isOpen={showFAQModal} onClose={() => setShowFAQModal(false)} />}
+       {showPartnerModal && (
+  <PartnerModal
+    allLogos={logos}
+    activeIndex={activeIndex}
+    setActiveIndex={setActiveIndex}
+    onClose={() => setShowPartnerModal(false)}
+  />
+)}
+
     </div>
   );
 }

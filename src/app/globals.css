@@ -204,17 +204,17 @@
 .menu-bar .nav-links li button {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-end; /* aligns both icon and text to the right */
   justify-content: center;
   background: none;
   border: none;
   width: 100%;
-  padding: 0.4rem 2.9rem 0.4rem 0.6rem; /* ✅ increased left, decreased right */
+  padding: 0.4rem 3rem 0.8rem 0.6rem; /* tighter right padding to move content left */
   font-size: 0.75rem;
   color: white;
   text-align: right;
-  transition: all 0.3s ease;
 }
+
 
   .menu-bar .nav-links li:hover {
     background-color: rgba(255, 255, 255, 0.12);
@@ -248,24 +248,23 @@
   position: relative;
   transition: all 0.3s ease;
 }
-
-.menu-icon {
-  font-size: 1.4rem;
-  margin-bottom: 0.25rem;
-}
-
 .menu-label {
   font-size: 0.7rem;
-  opacity: 0;
-  transform: translateY(-6px) scale(0.9);
-  transition: all 0.3s ease;
-  pointer-events: none;
+  opacity: 1;
+  transform: translateX(-4px); /* less negative = shift right */
+  text-align: right;
+}
+.menu-icon {
+  font-size: 1.4rem;
+  margin-bottom: 0.3rem;
+  margin-left: 0.6;           /* center-align, no horizontal offset */
+  align-self: center;        /* centers icon in the button container */
 }
 
-.nav-button:hover .menu-label {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
+
+
+
+
 
 footer .flex-col.items-start.justify-start {
   margin-bottom: 2rem; /* Add gap between categories */

@@ -9,6 +9,7 @@ type Logo = {
   alt: string;
   width: number;
   height: number;
+  description?: string;
 };
 
 type PartnerModalProps = {
@@ -24,17 +25,23 @@ const backdropVariants = {
   exit: { opacity: 0, transition: { duration: 0.2 } },
 };
 
+const modalVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
+  exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
+};
+
 export default function PartnerModal({
   allLogos,
   activeIndex,
   setActiveIndex,
   onClose,
 }: PartnerModalProps) {
-  const currentLogos = allLogos.slice(activeIndex, activeIndex + 2);
+  const currentLogos = allLogos.slice(activeIndex, activeIndex + 4);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 2) % allLogos.length);
+      setActiveIndex((prev) => (prev + 4) % allLogos.length);
     }, 4000);
 
     document.body.style.overflow = 'hidden';
@@ -55,41 +62,62 @@ export default function PartnerModal({
         onClick={onClose}
       >
         <motion.div
-          className="relative max-w-4xl w-full bg-white/20 backdrop-blur-lg rounded-2xl p-8 text-white shadow-xl grid grid-cols-1 sm:grid-cols-2 gap-6"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.3 }}
+          className="relative max-w-4xl w-full mx-4 rounded-xl px-4 py-8 sm:px-8 bg-white/20 backdrop-blur-md shadow-xl text-white overflow-auto max-h-[90vh]"
+          variants={modalVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
           onClick={(e) => e.stopPropagation()}
+          layout
         >
+          {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 text-white hover:text-red-400 text-2xl font-bold"
+            className="absolute top-4 right-4 text-white hover:text-red-400 text-2xl font-bold"
             aria-label="Close Partner Modal"
           >
             ×
           </button>
 
-          {currentLogos.map((logo, i) => (
-            <div key={i} className="text-center">
-              <Image
-                src={logo.src}
-                alt={logo.alt}
-                width={logo.width}
-                height={logo.height}
-                className="h-24 w-auto mx-auto"
-              />
-            </div>
-          ))}
+          {/* Title */}
+          <div className="mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Our Clients</h1>
+            <p className="text-xs sm:text-sm max-w-2xl text-white/80">
+              We’re proud to collaborate with industry leaders who trust us to amplify their brand through innovation, strategy, and meaningful partnership.
+            </p>
+          </div>
 
-          {/* Dots */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-            {Array.from({ length: Math.ceil(allLogos.length / 2) }).map((_, i) => (
+          {/* Logos Grid: 2 columns on mobile, 4 on larger screens */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {currentLogos.map((logo, i) => (
+              <div
+                key={i}
+                className="bg-black/30 border border-white/10 backdrop-blur-md rounded-xl p-3 text-center hover:shadow-md transition-shadow duration-200"
+              >
+                <Image
+                  src={logo.src}
+                  alt={logo.alt}
+                  width={logo.width}
+                  height={logo.height}
+                  className="h-12 w-auto mx-auto mb-2 object-contain"
+                />
+                {logo.description && (
+                  <p className="text-[0.65rem] leading-tight text-white/80">
+                    {logo.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Dots Navigation */}
+          <div className="mt-6 flex justify-center gap-1.5">
+            {Array.from({ length: Math.ceil(allLogos.length / 4) }).map((_, i) => (
               <button
                 key={i}
-                onClick={() => setActiveIndex(i * 2)}
-                className={`w-2.5 h-2.5 rounded-full ${
-                  i * 2 === activeIndex ? 'bg-white' : 'bg-white/40'
+                onClick={() => setActiveIndex(i * 4)}
+                className={`w-2 h-2 rounded-full ${
+                  i * 4 === activeIndex ? 'bg-white' : 'bg-white/40'
                 }`}
                 aria-label={`Slide ${i + 1}`}
               />

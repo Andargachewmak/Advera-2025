@@ -14,9 +14,18 @@ export default function HeaderPage() {
     alert('Open FAQ Modal or Navigate to FAQ Page');
   };
 
+  const handleAboutClick = () => {
+    // You can use a router or modal logic here
+    alert('Open About Modal or Navigate to About Page');
+  };
+
   return (
     <div>
-      <Sidebar onSectionClick={handleSectionClick} onFAQClick={handleFAQClick} />
+      <Sidebar
+        onSectionClick={handleSectionClick}
+        onFAQClick={handleFAQClick}
+        onAboutClick={handleAboutClick}
+      />
     </div>
   );
 }

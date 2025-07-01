@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 type Logo = {
   src: string;
@@ -37,11 +37,26 @@ export default function PartnerModal({
   setActiveIndex,
   onClose,
 }: PartnerModalProps) {
-  const currentLogos = allLogos.slice(activeIndex, activeIndex + 4);
+  const [itemsPerSlide, setItemsPerSlide] = useState(4);
 
+  // Set itemsPerSlide based on screen width
+  useEffect(() => {
+    const updateItemsPerSlide = () => {
+      setItemsPerSlide(window.innerWidth < 640 ? 2 : 4);
+    };
+
+    updateItemsPerSlide(); // Initial check
+    window.addEventListener('resize', updateItemsPerSlide);
+
+    return () => window.removeEventListener('resize', updateItemsPerSlide);
+  }, []);
+
+  const currentLogos = allLogos.slice(activeIndex, activeIndex + itemsPerSlide);
+
+  // Autoplay effect
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 4) % allLogos.length);
+      setActiveIndex((prev) => (prev + itemsPerSlide) % allLogos.length);
     }, 4000);
 
     document.body.style.overflow = 'hidden';
@@ -49,7 +64,7 @@ export default function PartnerModal({
       clearInterval(interval);
       document.body.style.overflow = '';
     };
-  }, [allLogos.length, setActiveIndex]);
+  }, [allLogos.length, itemsPerSlide, setActiveIndex]);
 
   return (
     <AnimatePresence>
@@ -88,7 +103,7 @@ export default function PartnerModal({
           </div>
 
           {/* Logos Grid: 2 columns on mobile, 4 on larger screens */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className={`grid grid-cols-2 ${itemsPerSlide >= 4 ? 'sm:grid-cols-4' : ''} gap-4`}>
             {currentLogos.map((logo, i) => (
               <div
                 key={i}
@@ -112,12 +127,12 @@ export default function PartnerModal({
 
           {/* Dots Navigation */}
           <div className="mt-6 flex justify-center gap-1.5">
-            {Array.from({ length: Math.ceil(allLogos.length / 4) }).map((_, i) => (
+            {Array.from({ length: Math.ceil(allLogos.length / itemsPerSlide) }).map((_, i) => (
               <button
                 key={i}
-                onClick={() => setActiveIndex(i * 4)}
+                onClick={() => setActiveIndex(i * itemsPerSlide)}
                 className={`w-2 h-2 rounded-full ${
-                  i * 4 === activeIndex ? 'bg-white' : 'bg-white/40'
+                  i * itemsPerSlide === activeIndex ? 'bg-white' : 'bg-white/40'
                 }`}
                 aria-label={`Slide ${i + 1}`}
               />

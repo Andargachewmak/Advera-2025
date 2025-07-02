@@ -229,8 +229,8 @@ return (
         >
           {/* Icon */}
           <span
-            className={`text-lg mb-1 ${
-              isPartner ? '-translate-x-1' : isCenteredIcon ? '-translate-x-1' : '-translate-x-1'
+            className={`text-lg  ${
+              isPartner ? '-translate-x-0.5' : isCenteredIcon ? '-translate-x-1' : '-translate-x-1'
             }`}
           >
             {icon}
@@ -280,77 +280,77 @@ return (
   {/* Container for slogan + button + description with top padding */}
   <div className="pt-12 px-4 sm:px-0"> {/* Adjust pt-12 to increase/decrease space */}
     {/* Slogan on top-left with typing animation */}
- <div className="text-left mb-8 px-1 sm:px-0">
-      <motion.div
-        className="inline-block"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
+<div className="text-left px-1 sm:px-0 -mt-4 sm:mt-0 mb-8">
+  <motion.div
+    className="inline-block"
+    initial={{ opacity: 0, y: 50 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{
+      duration: 1,
+      ease: 'easeOut',
+      delayChildren: 0.3,
+      staggerChildren: 0.2,
+    }}
+  >
+    <motion.h2
+      className="text-4xl sm:text-3xl md:text-5xl font-bold"
+      initial={{ opacity: 0, scale: 0.8, rotateX: -30 }}
+      animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+      transition={{
+        duration: 1.2,
+        ease: 'easeInOut',
+      }}
+    >
+      {/* THINK */}
+      <motion.span
+        className={`text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] ${
+          isOpen ? 'block' : 'inline'
+        } sm:inline`}
+        initial={{ opacity: 0, x: -50, rotate: -10 }}
+        animate={{ opacity: 1, x: 0, rotate: 0 }}
         transition={{
-          duration: 1,
-          ease: 'easeOut',
-          delayChildren: 0.3,
-          staggerChildren: 0.2,
+          delay: 0.5,
+          duration: 0.8,
+          ease: 'circOut',
         }}
       >
-        <motion.h2
-          className="text-2xl sm:text-3xl md:text-5xl font-bold"
-          initial={{ opacity: 0, scale: 0.8, rotateX: -30 }}
-          animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-          transition={{
-            duration: 1.2,
-            ease: 'easeInOut',
-          }}
-        >
-          {/* THINK */}
-          <motion.span
-            className={`text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] ${
-              isOpen ? 'block' : 'inline'
-            } sm:inline`}
-            initial={{ opacity: 0, x: -50, rotate: -10 }}
-            animate={{ opacity: 1, x: 0, rotate: 0 }}
-            transition={{
-              delay: 0.5,
-              duration: 0.8,
-              ease: 'circOut',
-            }}
-          >
-            THINK,
-          </motion.span>
+        THINK,
+      </motion.span>
 
-          {/* CRAFT */}
-          <motion.span
-            className={`mx-0 sm:mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] ${
-              isOpen ? 'block' : 'inline'
-            } sm:inline`}
-            initial={{ opacity: 0, x: -50, rotate: 10 }}
-            animate={{ opacity: 1, x: 0, rotate: 0 }}
-            transition={{
-              delay: 0.7,
-              duration: 0.8,
-              ease: 'circOut',
-            }}
-          >
-            CRAFT,
-          </motion.span>
+      {/* CRAFT */}
+      <motion.span
+        className={`mx-0 sm:mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] ${
+          isOpen ? 'block' : 'inline'
+        } sm:inline`}
+        initial={{ opacity: 0, x: -50, rotate: 10 }}
+        animate={{ opacity: 1, x: 0, rotate: 0 }}
+        transition={{
+          delay: 0.7,
+          duration: 0.8,
+          ease: 'circOut',
+        }}
+      >
+        CRAFT,<span className="text-[#191D49]"> & </span>
+      </motion.span>
 
-          {/* & IMPACT */}
-          <motion.span
-            className={`text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d] ${
-              isOpen ? 'block' : 'inline'
-            } sm:inline`}
-            initial={{ opacity: 0, x: -50, rotate: -10 }}
-            animate={{ opacity: 1, x: 0, rotate: 0 }}
-            transition={{
-              delay: 0.9,
-              duration: 0.8,
-              ease: 'circOut',
-            }}
-          >
-            & IMPACT.
-          </motion.span>
-        </motion.h2>
-      </motion.div>
-    </div>
+      {/* IMPACT */}
+      <motion.span
+        className={`text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d] ${
+          isOpen ? 'block' : 'inline'
+        } sm:inline`}
+        initial={{ opacity: 0, x: -50, rotate: -10 }}
+        animate={{ opacity: 1, x: 0, rotate: 0 }}
+        transition={{
+          delay: 0.9,
+          duration: 0.8,
+          ease: 'circOut',
+        }}
+      >
+        IMPACT.
+      </motion.span>
+    </motion.h2>
+  </motion.div>
+</div>
                       {/* Button + Description */}
 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-3">
 <button
@@ -380,9 +380,9 @@ return (
           onClick={() => {
             setSelectedProject(project);
             setCurrentImageIndex(0);
-            setActiveProjectId(project.id);
+            setActiveProjectId(activeProjectId === project.id ? null : project.id);
           }}
-          onTouchEnd={() => setActiveProjectId(project.id)}
+          onTouchStart={() => setActiveProjectId(project.id)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               setSelectedProject(project);
@@ -394,7 +394,8 @@ return (
           role="button"
           aria-label={`View project: ${project.title}`}
         >
-          <div className="relative w-full h-58" style={{ height: '232px' }}>
+          {/* Image */}
+          <div className="relative w-full" style={{ height: '278px' }}>
             <Image
               src={project.images[0]}
               alt={project.title}
@@ -406,24 +407,16 @@ return (
 
           {/* Overlay */}
           <div
-            className={`absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-500 z-10 pointer-events-none
-              ${
-                isActive
-                  ? 'opacity-100'
-                  : 'opacity-0 group-hover:opacity-100 sm:group-hover:opacity-100 sm:opacity-0'
-              }
-            `}
+            className={`absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none
+              transition-opacity duration-500
+              ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
           />
 
           {/* Text */}
           <div
-            className={`absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 transition-opacity duration-500 text-white
-              ${
-                isActive
-                  ? 'opacity-100'
-                  : 'opacity-0 group-hover:opacity-100 sm:group-hover:opacity-100 sm:opacity-0'
-              }
-            `}
+            className={`absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 text-white
+              transition-opacity duration-500
+              ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
           >
             <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
             <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">
@@ -434,7 +427,7 @@ return (
       );
     })}
   </div>
-</div> 
+</div>
 {/* Floating Contact Button */}
 <div className="fixed bottom-8 right-2 z-[70]">
   <div className="relative w-16 h-16">

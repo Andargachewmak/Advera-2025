@@ -1,14 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400;500;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
-@font-face {
-  font-family: 'Mona Sans';
-  src:
-    url('/fonts/Mona-Sans.woff2') format('woff2 supports variations'),
-    url('/fonts/Mona-Sans.woff2') format('woff2-variations');
-  font-weight: 200 900;
-  font-display: swap;
-  font-style: normal;
-}
+
 
 /* :root {
   --font-mona-sans: 'Mona Sans', var(--font-sans), sans-serif;
@@ -125,9 +118,10 @@
 
 @layer base {
   html, body {
-    font-family: 'Satoshi', sans-serif;
+    font-family: 'Maven Pro', sans-serif;
   }
 }
+
 .menu-bar {
   display: none;
   align-items: center;
@@ -226,12 +220,11 @@
     width: 100%;
     text-align: right;
     padding: 0rem 0.1rem;
-    margin-top: 0.15rem;
+    margin-top: 0.05rem;
   }
 
   .menu-bar .nav-links li button .menu-icon {
-    font-size: 1.3rem;
-    margin-bottom: 0.4rem;
+    font-size: 1.0rem;
   }
 
   .menu-bar .nav-links li button .menu-label {
@@ -256,16 +249,9 @@
 }
 .menu-icon {
   font-size: 1.4rem;
-  margin-bottom: 0.3rem;
-  margin-left: 0.6;           /* center-align, no horizontal offset */
+  margin-left: 1.0;           /* center-align, no horizontal offset */
   align-self: center;        /* centers icon in the button container */
 }
-
-
-
-
-
-
 footer .flex-col.items-start.justify-start {
   margin-bottom: 2rem; /* Add gap between categories */
 }

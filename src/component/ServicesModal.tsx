@@ -22,10 +22,11 @@ const services = [
     description: 'Digital ads, banners, web campaigns, and print advertisements.',
   },
   {
-    title: 'Web development',
-    icon: <FaLaptopCode size={32} className="text-green-400" />,
-    description: 'Signage, billboards, and exhibition designs that make spaces speak.',
-  },
+  title: 'Web development',
+  icon: <FaLaptopCode size={32} className="text-green-400" />,
+  description: 'Crafting seamless, dynamic websites that power your digital presence and captivate your audience.',
+},
+
   {
     title: 'Print Design',
     icon: <FaBook size={32} className="text-pink-400" />,

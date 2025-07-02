@@ -2,14 +2,13 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 type Logo = {
   src: string;
   alt: string;
   width: number;
   height: number;
-  description?: string;
 };
 
 type PartnerModalProps = {
@@ -26,9 +25,9 @@ const backdropVariants = {
 };
 
 const modalVariants = {
-  hidden: { opacity: 0, scale: 0.95 },
+  hidden: { opacity: 0, scale: 0.9 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
-  exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
+  exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
 };
 
 export default function PartnerModal({
@@ -37,34 +36,15 @@ export default function PartnerModal({
   setActiveIndex,
   onClose,
 }: PartnerModalProps) {
-  const [itemsPerSlide, setItemsPerSlide] = useState(4);
-
-  // Set itemsPerSlide based on screen width
-  useEffect(() => {
-    const updateItemsPerSlide = () => {
-      setItemsPerSlide(window.innerWidth < 640 ? 2 : 4);
-    };
-
-    updateItemsPerSlide(); // Initial check
-    window.addEventListener('resize', updateItemsPerSlide);
-
-    return () => window.removeEventListener('resize', updateItemsPerSlide);
-  }, []);
-
+  const itemsPerSlide = 4;
   const currentLogos = allLogos.slice(activeIndex, activeIndex + itemsPerSlide);
 
-  // Autoplay effect
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + itemsPerSlide) % allLogos.length);
-    }, 4000);
-
     document.body.style.overflow = 'hidden';
     return () => {
-      clearInterval(interval);
       document.body.style.overflow = '';
     };
-  }, [allLogos.length, itemsPerSlide, setActiveIndex]);
+  }, []);
 
   return (
     <AnimatePresence>
@@ -77,7 +57,7 @@ export default function PartnerModal({
         onClick={onClose}
       >
         <motion.div
-          className="relative max-w-4xl w-full mx-4 rounded-xl px-4 py-8 sm:px-8 bg-white/20 backdrop-blur-md shadow-xl text-white overflow-auto max-h-[90vh]"
+          className="relative max-w-5xl w-full mx-4 rounded-2xl p-6 sm:p-11 md:p-12 bg-white/20 backdrop-blur-md shadow-xl text-white overflow-auto max-h-[90vh]"
           variants={modalVariants}
           initial="hidden"
           animate="visible"
@@ -96,31 +76,29 @@ export default function PartnerModal({
 
           {/* Title */}
           <div className="mb-6">
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Our Clients</h1>
-            <p className="text-xs sm:text-sm max-w-2xl text-white/80">
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-white text-center">
+              Our Clients
+            </h1>
+            <p className="text-xs sm:text-sm max-w-2xl text-white/80 mx-auto text-center mb-10">
               We’re proud to collaborate with industry leaders who trust us to amplify their brand through innovation, strategy, and meaningful partnership.
             </p>
           </div>
 
-          {/* Logos Grid: 2 columns on mobile, 4 on larger screens */}
-          <div className={`grid grid-cols-2 ${itemsPerSlide >= 4 ? 'sm:grid-cols-4' : ''} gap-4`}>
+          {/* Logos Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {currentLogos.map((logo, i) => (
               <div
                 key={i}
-                className="bg-black/30 border border-white/10 backdrop-blur-md rounded-xl p-3 text-center hover:shadow-md transition-shadow duration-200"
+                className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 text-center flex flex-col items-center"
               >
                 <Image
                   src={logo.src}
                   alt={logo.alt}
                   width={logo.width}
                   height={logo.height}
-                  className="h-12 w-auto mx-auto mb-2 object-contain"
+                  className="mx-auto mb-4 object-contain"
+                  draggable={false}
                 />
-                {logo.description && (
-                  <p className="text-[0.65rem] leading-tight text-white/80">
-                    {logo.description}
-                  </p>
-                )}
               </div>
             ))}
           </div>

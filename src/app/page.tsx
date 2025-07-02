@@ -375,12 +375,13 @@ return (
         <div
           key={project.id}
           id={`project-${project.id}`}
-          className={`relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300
-            ${isActive ? 'scale-105' : 'hover:scale-105'}`}
+          className={`relative group cursor-pointer overflow-hidden rounded-xl shadow-md ring-1 ring-transparent transition-all duration-300
+            ${isActive ? 'scale-[1.03] ring-[#ee5225]' : 'hover:scale-[1.03]'}`}
           onClick={() => {
+            const alreadyActive = activeProjectId === project.id;
+            setActiveProjectId(alreadyActive ? null : project.id);
             setSelectedProject(project);
             setCurrentImageIndex(0);
-            setActiveProjectId(activeProjectId === project.id ? null : project.id);
           }}
           onTouchStart={() => setActiveProjectId(project.id)}
           onKeyDown={(e) => {
@@ -394,8 +395,8 @@ return (
           role="button"
           aria-label={`View project: ${project.title}`}
         >
-          {/* Image */}
-          <div className="relative w-full" style={{ height: '278px' }}>
+          {/* Project Image */}
+          <div className="relative w-full h-[278px]">
             <Image
               src={project.images[0]}
               alt={project.title}
@@ -405,17 +406,16 @@ return (
             />
           </div>
 
-          {/* Overlay */}
+          {/* Overlay Gradient */}
           <div
             className={`absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none
               transition-opacity duration-500
               ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
           />
 
-          {/* Text */}
+          {/* Text Content Over Image */}
           <div
-            className={`absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 text-white
-              transition-opacity duration-500
+            className={`absolute bottom-2 left-0 right-0 px-4 pb-3 z-20 transition-opacity duration-500 text-white
               ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
           >
             <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>

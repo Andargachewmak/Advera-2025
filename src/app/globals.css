@@ -204,14 +204,7 @@
   text-align: right;
 }
 
-
-  .menu-bar .nav-links li:hover {
-    background-color: rgba(255, 255, 255, 0.12);
-    transform: scale(1.02);
-  }
-
   .menu-bar .nav-links li button span {
-    display: block;
     width: 100%;
     text-align: right;
     padding: 0rem 0.1rem;

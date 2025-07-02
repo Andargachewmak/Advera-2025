@@ -68,8 +68,10 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
             {/* Content */}
             <div className="space-y-12 text-left">
               <div className="mb-8">
-                <h1 className="text-3xl sm:text-4xl font-bold mb-6">About Us</h1>
-                <p className="text-white text-sm max-w-3xl leading-relaxed">
+                <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight">
+                  About Us
+                </h1>
+                <p className="text-white text-base max-w-3xl leading-relaxed tracking-wide">
                   We are the dynamic hub for marketing, communication, and brands. Committed to achieving your goals,
                   we provide creative and impactful marketing and communication plans that resonate with your target
                   market and elevate your business.
@@ -118,8 +120,8 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                         {title}
                       </h2>
                       <p
-                        className={`text-white text-sm leading-snug text-justify ${
-                          idx === 1 ? 'tracking-normal' : 'tracking-tight'
+                        className={`text-white text-sm leading-snug text-left ${
+                          idx === 1 ? 'tracking-tighter' : 'tracking-tighter'
                         }`}
                       >
                         {text}

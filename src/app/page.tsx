@@ -55,7 +55,7 @@ export default function Home() {
   const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [activeProjectId, setActiveProjectId] = useState<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;  // Predefined logos for the marquee                                   
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
  const navItems = [
   { label: 'Home', icon: <FaHome size={18} /> },
   { label: 'About Us', icon: <FaInfoCircle size={18} /> },
@@ -121,10 +121,10 @@ useEffect(() => {
 }, [controls]);
 
 const [showContact, setShowContact] = useState(false);
- const handleReload = () => {
-    // Force full page reload (same as reload(true) in older browsers)
-    window.location.href = window.location.href;
-  };
+//  const handleReload = () => {
+//     // Force full page reload (same as reload(true) in older browsers)
+//     window.location.href = window.location.href;
+//   };
 useEffect(() => {
   if (showContact) {
     document.body.style.overflow = 'hidden';
@@ -164,19 +164,12 @@ return (
       {/* Responsive Menu Bar */}
 <div className="menu-bar">
   {/* Logo with Reload on Click */}
- <div
-      className="logo cursor-pointer select-none flex items-center"
-      onClick={handleReload}
-    >
-      <Image
-        src="/Image/advo.svg"
-        alt="Advera Logo"
-        width={100}
-        height={30}
-        className="h-10 w-auto"
-        priority
-      />
-    </div>
+<div
+  className="logo cursor-pointer select-none flex items-center"
+  onClick={() => window.location.reload()}
+>
+  <Image src="/Image/advo.svg" alt="Advera Logo" width={100} height={30} className="h-10 w-auto" priority />
+</div>
   {/* Toggle Menu Button */}
   <div className="fixed top-4 right-6 z-50 md:hidden">
     <button
@@ -204,16 +197,15 @@ return (
             }
             setIsOpen(false);
           }}
-          className="w-full text-white transition-all font-medium flex flex-col items-center justify-center py-2"
+          className="w-full text-white transition-all font-medium flex flex-col items-center justify-center py-2 
+                     bg-transparent border-none outline-none focus:outline-none focus:ring-0 active:outline-none 
+                     appearance-none select-none touch-manipulation"
+          style={{ WebkitTapHighlightColor: 'transparent' }}
         >
           {/* Icon */}
           <span
-            className={`text-x1 ${
-              isOurClient
-                ? '-translate-x-1'
-                : isCenteredIcon
-                ? '-translate-x-1'
-                : '-translate-x-1'
+            className={`text-xl ${
+              isOurClient || isCenteredIcon ? '-translate-x-1' : '-translate-x-1'
             }`}
           >
             {icon}
@@ -353,65 +345,79 @@ return (
 </div>
   </div>
 {/* Project Cards */}
- <div className="px-4 sm:px-0">
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
-      {PROJECTS.map((project) => {
-        const isActive = activeProjectId === project.id;
+<div className="px-4 sm:px-0">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+    {PROJECTS.map((project) => {
+      const isActive = activeProjectId === project.id;
 
-        return (
-          <div
-            key={project.id}
-            id={`project-${project.id}`}
-            className={`relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ${
-              isActive ? 'scale-105' : 'hover:scale-105'
-            }`}
-            onClick={() => {
-              if (!isMobile) {
-                setSelectedProject(project);
+      return (
+        <div
+          key={project.id}
+          id={`project-${project.id}`}
+          className={`relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ${
+            isActive ? 'scale-105' : 'hover:scale-105'
+          }`}
+          onTouchStart={() => {
+            if (isMobile) {
+              // First tap: just activate hover effect
+              if (activeProjectId !== project.id) {
                 setActiveProjectId(project.id);
               }
-            }}
-            onTouchStart={() => {
-              // On mobile, immediately activate and open popup on touch
-              setActiveProjectId(project.id);
+            }
+          }}
+          onClick={() => {
+            if (isMobile) {
+              // Second tap (if already active): open modal
+              if (activeProjectId === project.id) {
+                setSelectedProject(project);
+              } else {
+                // If not active yet, just activate (handled in onTouchStart)
+                setActiveProjectId(project.id);
+              }
+            } else {
+              // Desktop: click opens modal
               setSelectedProject(project);
-            }}
-            tabIndex={0}
-            role="button"
-            aria-label={`View project: ${project.title}`}
-          >
-            {/* Image */}
-            <div className="relative w-full" style={{ height: '278px' }}>
-              <Image
-                src={project.images[0]}
-                alt={project.title}
-                fill
-                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-                draggable={false}
-              />
-            </div>
-
-            {/* Overlay */}
-            <div
-              className={`absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none transition-opacity duration-500 ${
-                isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-              }`}
+              setActiveProjectId(project.id);
+            }
+          }}
+          tabIndex={0}
+          role="button"
+          aria-label={`View project: ${project.title}`}
+        >
+          {/* Image */}
+          <div className="relative w-full" style={{ height: '278px' }}>
+            <Image
+              src={project.images[0]}
+              alt={project.title}
+              fill
+              className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+              draggable={false}
             />
-
-            {/* Text */}
-            <div
-              className={`absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 text-white transition-opacity duration-500 ${
-                isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-              }`}
-            >
-              <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
-              <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">{project.summary}</p>
-            </div>
           </div>
-        );
-      })}
-    </div>
-  </div> 
+
+          {/* Overlay */}
+          <div
+            className={`absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none transition-opacity duration-500 ${
+              isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}
+          />
+
+          {/* Text */}
+          <div
+            className={`absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 text-white transition-opacity duration-500 ${
+              isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+            }`}
+          >
+            <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
+            <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">
+              {project.summary}
+            </p>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
    {/* Floating Contact Button */}
 <div className="fixed bottom-8 right-2 z-[70]">
   <div className="relative w-16 h-16">

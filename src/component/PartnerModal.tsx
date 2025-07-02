@@ -109,7 +109,7 @@ export default function PartnerModal({
           </button>
 
           {/* Title */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-30">
             <h1 className="text-3xl sm:text-4xl font-bold mb-2">Our Clients</h1>
             <p className="text-xs sm:text-sm max-w-2xl text-white/80 mx-auto">
               We’re proud to collaborate with industry leaders who trust us to amplify their brand through innovation, strategy, and meaningful partnership.

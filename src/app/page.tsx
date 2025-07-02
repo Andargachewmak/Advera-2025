@@ -55,8 +55,7 @@ export default function Home() {
   const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [activeProjectId, setActiveProjectId] = useState<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-
-  // Predefined logos for the marquee                                   
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;  // Predefined logos for the marquee                                   
  const navItems = [
   { label: 'Home', icon: <FaHome size={18} /> },
   { label: 'About Us', icon: <FaInfoCircle size={18} /> },
@@ -95,47 +94,27 @@ const socialLinks = [
 useEffect(() => {
   // Only run this effect on mobile screens
   if (window.innerWidth > 768) return;
+  // You can add mobile-specific logic here if needed
+}, []);
 
-  function onScroll() {
-    const windowHeight = window.innerHeight;
-
-    for (const project of PROJECTS) {
-      const el = document.getElementById(`project-${project.id}`);
-      if (!el) continue;
-
-      const rect = el.getBoundingClientRect();
-      if (rect.top < windowHeight * 0.75 && rect.bottom > windowHeight * 0.25) {
-        setActiveProjectId(project.id);
-        return;
-      }
-    }
-
-    setActiveProjectId(null);
+useEffect(() => {
+  if (typeof document !== 'undefined') {
+    document.body.style.overflow = selectedProject ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
   }
+}, [selectedProject]);
 
-  window.addEventListener('scroll', onScroll);
-  onScroll();
+useEffect(() => {
+  if (formStatus === 'success' || formStatus === 'error') {
+    const timer = setTimeout(() => {
+      setFormStatus('idle'); // reset to initial state
+    }, 3000); // 3 seconds
 
-  return () => window.removeEventListener('scroll', onScroll);
-}, [PROJECTS]);  // Lock body scroll when modal open
-  useEffect(() => {
-    if (typeof document !== 'undefined') {
-      document.body.style.overflow = selectedProject ? 'hidden' : '';
-      return () => {
-        document.body.style.overflow = '';
-      };
-    }
-  }, [selectedProject]);
- useEffect(() => {
-    if (formStatus === 'success' || formStatus === 'error') {
-      const timer = setTimeout(() => {
-        setFormStatus('idle'); // reset to initial state
-      }, 3000); // 3 seconds
-
-      return () => clearTimeout(timer);
-    }
-  }, [formStatus, setFormStatus]);
- 
+    return () => clearTimeout(timer);
+  }
+}, [formStatus, setFormStatus]);
 
 useEffect(() => {
   controls.start("visible");
@@ -212,7 +191,7 @@ return (
 <ul className={`menu-bar nav-links ${isOpen ? 'open' : ''}`}>
   {navItems.map(({ label, icon }) => {
     const isCenteredIcon = label === 'Services' || label === 'About Us';
-    const isPartner = label === 'Our client';
+    const isOurClient = label === 'Our client';
 
     return (
       <li key={label}>
@@ -229,8 +208,12 @@ return (
         >
           {/* Icon */}
           <span
-            className={`text-lg  ${
-              isPartner ? '-translate-x-0.5' : isCenteredIcon ? '-translate-x-1' : '-translate-x-1'
+            className={`text-x1 ${
+              isOurClient
+                ? '-translate-x-1'
+                : isCenteredIcon
+                ? '-translate-x-1'
+                : '-translate-x-1'
             }`}
           >
             {icon}
@@ -239,7 +222,11 @@ return (
           {/* Label */}
           <span
             className={`text-[0.7rem] whitespace-nowrap ${
-              isPartner ? '-translate-x-3' : isCenteredIcon ? '-translate-x-4' : '-translate-x-2'
+              isOurClient
+                ? '-translate-x-5'
+                : isCenteredIcon
+                ? '-translate-x-4'
+                : '-translate-x-2'
             }`}
           >
             {label}
@@ -280,7 +267,7 @@ return (
   {/* Container for slogan + button + description with top padding */}
   <div className="pt-12 px-4 sm:px-0"> {/* Adjust pt-12 to increase/decrease space */}
     {/* Slogan on top-left with typing animation */}
-<div className="text-left px-1 sm:px-0 -mt-4 sm:mt-0 mb-8">
+<div className="text-left px-1 sm:px-0 -mt-10 sm:mt-0 mb-8">
   <motion.div
     className="inline-block"
     initial={{ opacity: 0, y: 50 }}
@@ -293,7 +280,7 @@ return (
     }}
   >
     <motion.h2
-      className="text-4xl sm:text-3xl md:text-5xl font-bold"
+      className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter leading-tighter"
       initial={{ opacity: 0, scale: 0.8, rotateX: -30 }}
       animate={{ opacity: 1, scale: 1, rotateX: 0 }}
       transition={{
@@ -303,8 +290,8 @@ return (
     >
       {/* THINK */}
       <motion.span
-        className={`text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] ${
-          isOpen ? 'block' : 'inline'
+        className={`text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] tracking-tighter ${
+          isOpen ? 'block' : 'inline-block'
         } sm:inline`}
         initial={{ opacity: 0, x: -50, rotate: -10 }}
         animate={{ opacity: 1, x: 0, rotate: 0 }}
@@ -319,8 +306,8 @@ return (
 
       {/* CRAFT */}
       <motion.span
-        className={`mx-0 sm:mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] ${
-          isOpen ? 'block' : 'inline'
+        className={`mx-0 sm:mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] tracking-tighter ${
+          isOpen ? 'block' : 'inline-block'
         } sm:inline`}
         initial={{ opacity: 0, x: -50, rotate: 10 }}
         animate={{ opacity: 1, x: 0, rotate: 0 }}
@@ -335,8 +322,8 @@ return (
 
       {/* IMPACT */}
       <motion.span
-        className={`text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d] ${
-          isOpen ? 'block' : 'inline'
+        className={`text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d] tracking-tighter ${
+          isOpen ? 'block' : 'inline-block'
         } sm:inline`}
         initial={{ opacity: 0, x: -50, rotate: -10 }}
         animate={{ opacity: 1, x: 0, rotate: 0 }}
@@ -366,69 +353,66 @@ return (
 </div>
   </div>
 {/* Project Cards */}
-<div className="px-4 sm:px-0">
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
-    {PROJECTS.map((project) => {
-      const isActive = activeProjectId === project.id;
+ <div className="px-4 sm:px-0">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+      {PROJECTS.map((project) => {
+        const isActive = activeProjectId === project.id;
 
-      return (
-        <div
-          key={project.id}
-          id={`project-${project.id}`}
-          className={`relative group cursor-pointer overflow-hidden rounded-xl shadow-md ring-1 ring-transparent transition-all duration-300
-            ${isActive ? 'scale-[1.03] ring-[#ee5225]' : 'hover:scale-[1.03]'}`}
-          onClick={() => {
-            const alreadyActive = activeProjectId === project.id;
-            setActiveProjectId(alreadyActive ? null : project.id);
-            setSelectedProject(project);
-            setCurrentImageIndex(0);
-          }}
-          onTouchStart={() => setActiveProjectId(project.id)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              setSelectedProject(project);
-              setCurrentImageIndex(0);
+        return (
+          <div
+            key={project.id}
+            id={`project-${project.id}`}
+            className={`relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ${
+              isActive ? 'scale-105' : 'hover:scale-105'
+            }`}
+            onClick={() => {
+              if (!isMobile) {
+                setSelectedProject(project);
+                setActiveProjectId(project.id);
+              }
+            }}
+            onTouchStart={() => {
+              // On mobile, immediately activate and open popup on touch
               setActiveProjectId(project.id);
-            }
-          }}
-          tabIndex={0}
-          role="button"
-          aria-label={`View project: ${project.title}`}
-        >
-          {/* Project Image */}
-          <div className="relative w-full h-[278px]">
-            <Image
-              src={project.images[0]}
-              alt={project.title}
-              fill
-              className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
-              draggable={false}
-            />
-          </div>
-
-          {/* Overlay Gradient */}
-          <div
-            className={`absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none
-              transition-opacity duration-500
-              ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
-          />
-
-          {/* Text Content Over Image */}
-          <div
-            className={`absolute bottom-2 left-0 right-0 px-4 pb-3 z-20 transition-opacity duration-500 text-white
-              ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+              setSelectedProject(project);
+            }}
+            tabIndex={0}
+            role="button"
+            aria-label={`View project: ${project.title}`}
           >
-            <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
-            <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">
-              {project.summary}
-            </p>
+            {/* Image */}
+            <div className="relative w-full" style={{ height: '278px' }}>
+              <Image
+                src={project.images[0]}
+                alt={project.title}
+                fill
+                className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
+                draggable={false}
+              />
+            </div>
+
+            {/* Overlay */}
+            <div
+              className={`absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black/80 to-transparent z-10 pointer-events-none transition-opacity duration-500 ${
+                isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+              }`}
+            />
+
+            {/* Text */}
+            <div
+              className={`absolute bottom-1 left-0 right-0 px-4 pb-3 z-20 text-white transition-opacity duration-500 ${
+                isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+              }`}
+            >
+              <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
+              <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">{project.summary}</p>
+            </div>
           </div>
-        </div>
-      );
-    })}
-  </div>
-</div>
-{/* Floating Contact Button */}
+        );
+      })}
+    </div>
+  </div> 
+   {/* Floating Contact Button */}
 <div className="fixed bottom-8 right-2 z-[70]">
   <div className="relative w-16 h-16">
 

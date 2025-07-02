@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 type Logo = {
   src: string;
@@ -18,18 +18,6 @@ type PartnerModalProps = {
   onClose: () => void;
 };
 
-const backdropVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.3 } },
-  exit: { opacity: 0, transition: { duration: 0.2 } },
-};
-
-const modalVariants = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
-  exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } },
-};
-
 export default function PartnerModal({
   allLogos,
   activeIndex,
@@ -37,7 +25,55 @@ export default function PartnerModal({
   onClose,
 }: PartnerModalProps) {
   const itemsPerSlide = 4;
-  const currentLogos = allLogos.slice(activeIndex, activeIndex + itemsPerSlide);
+  const totalSlides = Math.ceil(allLogos.length / itemsPerSlide);
+  const [isMobile, setIsMobile] = useState(false);
+
+  const currentLogos = isMobile
+    ? allLogos
+    : allLogos.slice(activeIndex, activeIndex + itemsPerSlide);
+
+  useEffect(() => {
+    const updateMobile = () => {
+      setIsMobile(window.innerWidth < 640); // Tailwind's sm breakpoint
+    };
+    updateMobile();
+    window.addEventListener('resize', updateMobile);
+    return () => window.removeEventListener('resize', updateMobile);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') {
+        setActiveIndex((prev) =>
+          Math.min(prev + itemsPerSlide, (totalSlides - 1) * itemsPerSlide)
+        );
+      } else if (e.key === 'ArrowLeft') {
+        setActiveIndex((prev) => Math.max(prev - itemsPerSlide, 0));
+      } else if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      if (!isMobile && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        if (e.deltaX > 0) {
+          setActiveIndex((prev) =>
+            Math.min(prev + itemsPerSlide, (totalSlides - 1) * itemsPerSlide)
+          );
+        } else {
+          setActiveIndex((prev) => Math.max(prev - itemsPerSlide, 0));
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('wheel', handleWheel, { passive: true });
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('wheel', handleWheel);
+    };
+  }, [itemsPerSlide, totalSlides, setActiveIndex, onClose, isMobile]);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -50,15 +86,13 @@ export default function PartnerModal({
     <AnimatePresence>
       <motion.div
         className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] flex items-center justify-center p-4"
-        variants={backdropVariants}
         initial="hidden"
         animate="visible"
         exit="exit"
         onClick={onClose}
       >
         <motion.div
-          className="relative max-w-5xl w-full mx-4 rounded-2xl p-6 sm:p-11 md:p-12 bg-white/20 backdrop-blur-md shadow-xl text-white overflow-auto max-h-[90vh]"
-          variants={modalVariants}
+          className="relative w-full max-w-5xl mx-4 rounded-2xl p-6 sm:p-10 bg-white/20 backdrop-blur-md shadow-xl text-white overflow-auto max-h-[90vh] min-h-[600px]"
           initial="hidden"
           animate="visible"
           exit="exit"
@@ -75,47 +109,49 @@ export default function PartnerModal({
           </button>
 
           {/* Title */}
-          <div className="mb-6">
-            <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-white text-center">
-              Our Clients
-            </h1>
-            <p className="text-xs sm:text-sm max-w-2xl text-white/80 mx-auto text-center mb-10">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold mb-2">Our Clients</h1>
+            <p className="text-xs sm:text-sm max-w-2xl text-white/80 mx-auto">
               We’re proud to collaborate with industry leaders who trust us to amplify their brand through innovation, strategy, and meaningful partnership.
             </p>
           </div>
 
           {/* Logos Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center min-h-[250px]">
             {currentLogos.map((logo, i) => (
               <div
                 key={i}
-                className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 text-center flex flex-col items-center"
+                className="w-full h-[180px] bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 flex items-center justify-center"
               >
                 <Image
                   src={logo.src}
                   alt={logo.alt}
                   width={logo.width}
                   height={logo.height}
-                  className="mx-auto mb-4 object-contain"
+                  className="object-contain max-h-[100px]"
                   draggable={false}
                 />
               </div>
             ))}
           </div>
 
-          {/* Dots Navigation */}
-          <div className="mt-6 flex justify-center gap-1.5">
-            {Array.from({ length: Math.ceil(allLogos.length / itemsPerSlide) }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveIndex(i * itemsPerSlide)}
-                className={`w-2 h-2 rounded-full ${
-                  i * itemsPerSlide === activeIndex ? 'bg-white' : 'bg-white/40'
-                }`}
-                aria-label={`Slide ${i + 1}`}
-              />
-            ))}
-          </div>
+          {/* Pagination Dots (only for desktop) */}
+          {!isMobile && (
+            <div className="mt-8 flex justify-center gap-2">
+              {Array.from({ length: totalSlides }).map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveIndex(i * itemsPerSlide)}
+                  className={`w-2.5 h-2.5 rounded-full ${
+                    i * itemsPerSlide === activeIndex
+                      ? 'bg-white'
+                      : 'bg-white/40'
+                  }`}
+                  aria-label={`Slide ${i + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </motion.div>
       </motion.div>
     </AnimatePresence>

@@ -30,11 +30,7 @@ const modalVariants = {
 
 export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
@@ -80,29 +76,52 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                 </p>
               </div>
 
-              {/* Card Container */}
+              {/* Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[
                   {
-                    title: 'The Spark to Ignite Your Ideas',
-                    text: 'Ever had a brilliant idea you can’t quite express? At Advera, we transform your vision into reality—often before you can finish the thought.',
+                    title: (
+                      <>
+                        The Spark to <br />
+                        Ignite Your Ideas
+                      </>
+                    ),
+                    text:
+                      'Ever had a brilliant idea you can’t quite express? At Advera, we transform your vision into reality—often before you can finish the thought.',
                   },
                   {
-                    title: 'Teamwork Makes the Dream Work',
-                    text: 'At Advera, collaboration drives every project. Our team ensures every detail is crafted thoughtfully because, as the saying goes, the sum is greater than the parts.',
+                    title: (
+                      <>
+                        Teamwork Makes <br />
+                        the Dream Work
+                      </>
+                    ),
+                    text:
+                      'At Advera, collaboration drives every project. Our team ensures every detail is crafted thoughtfully because, as the saying goes, the sum is greater than the parts.',
                   },
                   {
                     title: 'Precision or Passion?',
-                    text: 'We’re never satisfied with “good enough.” Every idea and word is crafted with care to reflect your vision perfectly. We ensure your brand is polished and ready to captivate.',
+                    text:
+                      'We’re never satisfied with “good enough.” Every idea and word is crafted with care to reflect your vision perfectly. We ensure your brand is polished and ready to captivate.',
                   },
                 ].map(({ title, text }, idx) => (
                   <div
                     key={idx}
-                    className="flex flex-col justify-between h-full min-h-[220px] bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300"
+                    className="flex flex-col justify-between bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 h-full min-h-[220px]"
                   >
-                    <div>
-                      <h2 className="text-lg font-bold text-white mb-2">{title}</h2>
-                      <p className="text-white text-xs leading-relaxed">
+                    <div className="flex flex-col justify-between h-full">
+                      <h2
+                        className={`text-lg font-bold text-white leading-snug tracking-tight ${
+                          idx === 1 ? 'mb-2' : 'mb-1'
+                        }`}
+                      >
+                        {title}
+                      </h2>
+                      <p
+                        className={`text-white text-sm leading-snug text-justify ${
+                          idx === 1 ? 'tracking-normal' : 'tracking-tight'
+                        }`}
+                      >
                         {text}
                       </p>
                     </div>

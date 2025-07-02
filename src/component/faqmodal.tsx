@@ -52,14 +52,8 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-  // Disable background scroll when modal is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    // Clean up on unmount
+    document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
@@ -69,7 +63,7 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[1000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[1000] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
           variants={backdropVariants}
           initial="hidden"
           animate="visible"
@@ -77,7 +71,7 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
           onClick={onClose}
         >
           <motion.div
-            className="relative max-w-3xl w-full max-h-[90vh] overflow-auto rounded-2xl p-5 sm:p-8 bg-white/20 backdrop-blur-md shadow-lg"
+            className="relative max-w-3xl w-full max-h-[90vh] overflow-auto rounded-2xl px-6 py-10 sm:px-10 bg-white/20 backdrop-blur-md shadow-xl text-white"
             variants={modalVariants}
             initial="hidden"
             animate="visible"
@@ -85,27 +79,25 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
             onClick={(e) => e.stopPropagation()}
             layout
           >
-            {/* Header */}
-            <header className="flex justify-between items-start sm:items-center mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-4xl font-bold text-white">
-                Frequently Asked Questions
-              </h1>
-              <button
-                aria-label="Close FAQ"
-                onClick={onClose}
-                className="text-white hover:text-red-400 transition text-2xl font-bold ml-4 sm:ml-0"
-              >
-                &times;
-              </button>
-            </header>
+            {/* Close Button */}
+            <button
+              aria-label="Close FAQ"
+              onClick={onClose}
+              className="absolute top-4 right-4 text-white hover:text-red-400 text-2xl font-bold"
+            >
+              &times;
+            </button>
 
-            {/* FAQ Items */}
-            <section className="space-y-4 sm:space-y-6">
+            {/* Header */}
+            <h1 className="text-3xl sm:text-4xl font-bold mb-8">Frequently Asked Questions</h1>
+
+            {/* FAQ List */}
+            <section className="space-y-5">
               {faqs.map((faq, index) => (
                 <motion.div
                   key={index}
                   layout
-                  className="border border-white/40 rounded-xl p-4 bg-white/10 shadow-sm"
+                  className="bg-black/20 border border-white/10 backdrop-blur-md rounded-xl p-5 hover:shadow-lg transition-shadow duration-300"
                 >
                   <button
                     onClick={() => toggleFAQ(index)}
@@ -116,7 +108,7 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
                       animate={{ rotate: openIndex === index ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <ChevronDown size={18} className="text-white/70" />
+                      <ChevronDown size={20} className="text-white/70" />
                     </motion.div>
                   </button>
 
@@ -127,7 +119,7 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="overflow-hidden mt-3 text-white/90 text-sm"
+                        className="overflow-hidden mt-3 text-white/90 text-sm leading-relaxed"
                       >
                         {faq.answer}
                       </motion.div>

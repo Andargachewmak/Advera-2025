@@ -197,15 +197,16 @@ return (
             }
             setIsOpen(false);
           }}
-          className="w-full text-white transition-all font-medium flex flex-col items-center justify-center py-2 
-                     bg-transparent border-none outline-none focus:outline-none focus:ring-0 active:outline-none 
-                     appearance-none select-none touch-manipulation"
-          style={{ WebkitTapHighlightColor: 'transparent' }}
+          className="w-full text-white transition-all font-medium flex flex-col items-center justify-center py-1"
         >
           {/* Icon */}
           <span
-            className={`text-xl ${
-              isOurClient || isCenteredIcon ? '-translate-x-1' : '-translate-x-1'
+            className={`text-x1 ${
+              isOurClient
+                ? '-translate-x-1'
+                : isCenteredIcon
+                ? '-translate-x-1'
+                : '-translate-x-1'
             }`}
           >
             {icon}
@@ -237,9 +238,7 @@ return (
             onAboutClick={() => setShowAboutModal(true)}
           />
         </div>
-
-<main className="ml-0 sm:ml-20 lg:ml-45 px-2 sm:px-8 py-10 w-full bg-white text-black text-[17px] sm:text-base">
-<section id="projects" className="mb-20 relative">
+<main className="ml-0 sm:ml-20 lg:ml-45 px-2 sm:px-8 py-10 w-full bg-white text-black text-[17px] sm:text-base"> <section id="projects" className="mb-20 relative">
   {/* Social Icons */}
   <div className="absolute top-2 right-2 z-10 flex gap-4 hidden md:flex">
       {socialLinks.map(({ icon: Icon, href, label }, i) => (
@@ -259,7 +258,7 @@ return (
   {/* Container for slogan + button + description with top padding */}
   <div className="pt-12 px-4 sm:px-0"> {/* Adjust pt-12 to increase/decrease space */}
     {/* Slogan on top-left with typing animation */}
-<div className="text-left px-1 sm:px-0 -mt-10 sm:mt-0 mb-8">
+<div className="text-left px-1 sm:px-5 -mt-15 sm:mt-0 mb-8">
   <motion.div
     className="inline-block"
     initial={{ opacity: 0, y: 50 }}
@@ -280,58 +279,59 @@ return (
         ease: 'easeInOut',
       }}
     >
-      {/* THINK */}
-      <motion.span
-        className={`text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] tracking-tighter ${
-          isOpen ? 'block' : 'inline-block'
-        } sm:inline`}
-        initial={{ opacity: 0, x: -50, rotate: -10 }}
-        animate={{ opacity: 1, x: 0, rotate: 0 }}
-        transition={{
-          delay: 0.5,
-          duration: 0.8,
-          ease: 'circOut',
-        }}
-      >
-        THINK,
-      </motion.span>
+     
+{/* THINK */}
+<motion.span
+  className={`text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] tracking-tighter ${
+    isOpen ? 'block leading-none mb-[-4px]' : 'inline-block'
+  } sm:inline`}
+  initial={{ opacity: 0, x: -50, rotate: -10 }}
+  animate={{ opacity: 1, x: 0, rotate: 0 }}
+  transition={{
+    delay: 0.5,
+    duration: 0.8,
+    ease: 'circOut',
+  }}
+>
+  THINK,
+</motion.span>
 
-      {/* CRAFT */}
-      <motion.span
-        className={`mx-0 sm:mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] tracking-tighter ${
-          isOpen ? 'block' : 'inline-block'
-        } sm:inline`}
-        initial={{ opacity: 0, x: -50, rotate: 10 }}
-        animate={{ opacity: 1, x: 0, rotate: 0 }}
-        transition={{
-          delay: 0.7,
-          duration: 0.8,
-          ease: 'circOut',
-        }}
-      >
-        CRAFT,<span className="text-[#191D49]"> & </span>
-      </motion.span>
+{/* CRAFT */}
+<motion.span
+  className={`text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] tracking-tighter ${
+    isOpen ? 'block leading-none mb-[-4px]' : 'inline-block'
+  } sm:inline mx-0 sm:mx-2`}
+  initial={{ opacity: 0, x: -50, rotate: 10 }}
+  animate={{ opacity: 1, x: 0, rotate: 0 }}
+  transition={{
+    delay: 0.7,
+    duration: 0.8,
+    ease: 'circOut',
+  }}
+>
+  CRAFT,<span className="text-[#191D49] mr-1 inline-block"> & </span>
+</motion.span>
 
-      {/* IMPACT */}
-      <motion.span
-        className={`text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d] tracking-tighter ${
-          isOpen ? 'block' : 'inline-block'
-        } sm:inline`}
-        initial={{ opacity: 0, x: -50, rotate: -10 }}
-        animate={{ opacity: 1, x: 0, rotate: 0 }}
-        transition={{
-          delay: 0.9,
-          duration: 0.8,
-          ease: 'circOut',
-        }}
-      >
-        IMPACT.
-      </motion.span>
+{/* IMPACT */}
+<motion.span
+  className={`text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d] tracking-tighter ${
+    isOpen ? 'block leading-none' : 'inline-block'
+  } sm:inline`}
+  initial={{ opacity: 0, x: -50, rotate: -10 }}
+  animate={{ opacity: 1, x: 0, rotate: 0 }}
+  transition={{
+    delay: 0.9,
+    duration: 0.8,
+    ease: 'circOut',
+  }}
+>
+  IMPACT.
+</motion.span>
     </motion.h2>
   </motion.div>
 </div>
                       {/* Button + Description */}
-<div className="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-3">
+<div className="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-3 ml-2 sm:ml-7">
 <button
   onClick={() => {}}
   className="fit-text-mobile sm:w-auto w-auto text-left px-4 py-2 sm:px-5 sm:py-2 bg-[#ee5225] hover:bg-[#d9431d] text-sm sm:text-base text-white font-semibold rounded-full shadow-md transition-all duration-300 leading-none"
@@ -345,8 +345,8 @@ return (
 </div>
   </div>
 {/* Project Cards */}
-<div className="px-4 sm:px-0">
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
+<div className="px-4 sm:px-6 md:px-8 max-w-screen-xl mx-auto">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-10">
     {PROJECTS.map((project) => {
       const isActive = activeProjectId === project.id;
 
@@ -354,12 +354,11 @@ return (
         <div
           key={project.id}
           id={`project-${project.id}`}
-          className={`relative group cursor-pointer overflow-hidden rounded-lg shadow-lg transition-transform duration-300 ${
+          className={`relative group cursor-pointer overflow-hidden rounded-xl shadow-lg transition-transform duration-300 ${
             isActive ? 'scale-105' : 'hover:scale-105'
           }`}
           onTouchStart={() => {
             if (isMobile) {
-              // First tap: just activate hover effect
               if (activeProjectId !== project.id) {
                 setActiveProjectId(project.id);
               }
@@ -367,15 +366,12 @@ return (
           }}
           onClick={() => {
             if (isMobile) {
-              // Second tap (if already active): open modal
               if (activeProjectId === project.id) {
                 setSelectedProject(project);
               } else {
-                // If not active yet, just activate (handled in onTouchStart)
                 setActiveProjectId(project.id);
               }
             } else {
-              // Desktop: click opens modal
               setSelectedProject(project);
               setActiveProjectId(project.id);
             }
@@ -385,13 +381,14 @@ return (
           aria-label={`View project: ${project.title}`}
         >
           {/* Image */}
-          <div className="relative w-full" style={{ height: '278px' }}>
+          <div className="relative w-full" style={{ height: '260px' }}>
             <Image
               src={project.images[0]}
               alt={project.title}
               fill
               className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
               draggable={false}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           </div>
 
@@ -408,7 +405,7 @@ return (
               isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
             }`}
           >
-            <h3 className="text-lg font-semibold drop-shadow-sm">{project.title}</h3>
+            <h3 className="text-base sm:text-lg font-semibold drop-shadow-sm truncate">{project.title}</h3>
             <p className="text-sm text-white/90 line-clamp-2 drop-shadow-sm">
               {project.summary}
             </p>

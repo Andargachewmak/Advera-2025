@@ -61,7 +61,7 @@ export const PROJECTS: Project[] = [  //Web development
     client: 'Cultural Beats',
     contributors: 'Art Studio',
     summary: 'Designed a vibrant poster for a multicultural event.',
-    images: ['/Image/graphic1.png'],
+    images: ['/Image/abela2.jpg'],
     testimonials: [
       {
         quote: "Captured the event’s essence beautifully!",

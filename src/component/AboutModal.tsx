@@ -71,7 +71,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                 <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight">
                   About Us
                 </h1>
-                <p className="text-white text-base max-w-3xl leading-relaxed tracking-wide">
+                <p className="text-white text-base max-w-3xl leading-relaxed tracking-tighter">
                   We are the dynamic hub for marketing, communication, and brands. Committed to achieving your goals,
                   we provide creative and impactful marketing and communication plans that resonate with your target
                   market and elevate your business.
@@ -113,17 +113,14 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
                   >
                     <div className="flex flex-col justify-between h-full">
                       <h2
-                        className={`text-lg font-bold text-white leading-snug tracking-tight ${
-                          idx === 1 ? 'mb-2' : 'mb-1'
+                        className={`text-lg font-bold text-white leading-snug tracking-tighter ${
+                          idx === 0 || idx === 2 ? 'mb-0.05' : 'mb-0.07'
                         }`}
                       >
                         {title}
                       </h2>
-                      <p
-                        className={`text-white text-sm leading-snug text-left ${
-                          idx === 1 ? 'tracking-tighter' : 'tracking-tighter'
-                        }`}
-                      >
+
+                      <p className="text-white text-sm leading-snug text-left tracking-tighter">
                         {text}
                       </p>
                     </div>

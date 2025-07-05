@@ -348,7 +348,7 @@ return (
   Our Projects
 </button>
 
-  <p className="text-gray-600 text-sm sm:text-base">
+  <p className="text-black font-semibold text-sm sm:text-base">
     Check out some of our featured work.
   </p>
 </div>

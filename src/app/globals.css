@@ -127,7 +127,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  font-family: 'Satoshi', sans-serif;
+  font-family: 'Maven Pro';
 }
 
 .menu-bar .logo {
@@ -208,7 +208,7 @@
     width: 100%;
     text-align: right;
     padding: 0rem 0.1rem;
-    margin-top: -0.2rem;
+    margin-top: -0.1rem;
   }
 
   .menu-bar .nav-links li button .menu-icon {

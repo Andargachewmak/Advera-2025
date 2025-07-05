@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 type Logo = {
   src: string;
@@ -18,58 +18,44 @@ type PartnerModalProps = {
   onClose: () => void;
 };
 
+const itemsPerSlide = 3;
+
+import { easeInOut } from 'framer-motion';
+
+const slideVariants = {
+  hidden: (direction: number) => ({
+    x: direction > 0 ? 300 : -300,
+    opacity: 0,
+  }),
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.5, ease: easeInOut },
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? -300 : 300,
+    opacity: 0,
+    transition: { duration: 0.5, ease: easeInOut },
+  }),
+};
+
 export default function PartnerModal({
   allLogos,
   activeIndex,
   setActiveIndex,
   onClose,
 }: PartnerModalProps) {
-  const itemsPerSlide = 4;
   const totalSlides = Math.ceil(allLogos.length / itemsPerSlide);
   const [isMobile, setIsMobile] = useState(false);
+  const [direction, setDirection] = useState(0);
+  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const updateMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
+    const updateMobile = () => setIsMobile(window.innerWidth < 1024);
     updateMobile();
     window.addEventListener('resize', updateMobile);
     return () => window.removeEventListener('resize', updateMobile);
   }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight') {
-        setActiveIndex((prev) =>
-          Math.min(prev + itemsPerSlide, (totalSlides - 1) * itemsPerSlide)
-        );
-      } else if (e.key === 'ArrowLeft') {
-        setActiveIndex((prev) => Math.max(prev - itemsPerSlide, 0));
-      } else if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    const handleWheel = (e: WheelEvent) => {
-      if (!isMobile && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-        if (e.deltaX > 0) {
-          setActiveIndex((prev) =>
-            Math.min(prev + itemsPerSlide, (totalSlides - 1) * itemsPerSlide)
-          );
-        } else {
-          setActiveIndex((prev) => Math.max(prev - itemsPerSlide, 0));
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('wheel', handleWheel, { passive: true });
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('wheel', handleWheel);
-    };
-  }, [itemsPerSlide, totalSlides, setActiveIndex, onClose, isMobile]);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -78,75 +64,81 @@ export default function PartnerModal({
     };
   }, []);
 
-  if (isMobile) {
-    return (
-      <AnimatePresence>
-        <motion.div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] flex items-center justify-center p-4"
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          onClick={onClose}
-        >
-          <motion.div
-            className="relative w-full max-w-4xl mx-4 rounded-2xl px-6 py-10 sm:px-12 bg-white/20 backdrop-blur-md shadow-xl text-white overflow-auto max-h-[90vh] min-h-[300px]"
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            onClick={(e) => e.stopPropagation()}
-            layout
-          >
-            <button
-              onClick={onClose}
-              className="absolute top-4 right-4 text-white hover:text-red-400 text-2xl font-bold"
-              aria-label="Close Partner Modal"
-            >
-              ×
-            </button>
-            <div className="text-center mb-10">
-              <h1 className="text-3xl sm:text-4xl font-bold mb-2">Our Clients</h1>
-              <p className="text-xs sm:text-sm max-w-2xl text-white/80 mx-auto">
-                We’re proud to collaborate with industry leaders who trust us to amplify their brand through innovation, strategy, and meaningful partnership.
-              </p>
-            </div>
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' && !isMobile) {
+        setDirection(1);
+        setActiveIndex((prev) =>
+          Math.min(prev + itemsPerSlide, (totalSlides - 1) * itemsPerSlide)
+        );
+      } else if (e.key === 'ArrowLeft' && !isMobile) {
+        setDirection(-1);
+        setActiveIndex((prev) => Math.max(prev - itemsPerSlide, 0));
+      } else if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isMobile, setActiveIndex, onClose]);
 
-            {/* Grid with AboutModal card style */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {allLogos.map((logo, i) => (
-                <div
-                  key={i}
-                  className="flex flex-col justify-between bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 min-h-[220px]"
-                >
-                  <div className="flex justify-center items-center h-full">
-                    <Image
-                      src={logo.src}
-                      alt={logo.alt}
-                      width={logo.width}
-                      height={logo.height}
-                      className="object-contain max-h-[100px]"
-                      draggable={false}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
-    );
-  }
+  useEffect(() => {
+    if (isMobile) return;
+    const onWheel = (e: WheelEvent) => {
+      const scrollAmount = e.deltaX || (e.shiftKey ? e.deltaY : 0);
+      if (scrollAmount === 0) return;
+      e.preventDefault();
+      if (wheelTimeoutRef.current) return;
+
+      if (scrollAmount > 0) {
+        setDirection(1);
+        setActiveIndex((prev) =>
+          Math.min(prev + itemsPerSlide, (totalSlides - 1) * itemsPerSlide)
+        );
+      } else if (scrollAmount < 0) {
+        setDirection(-1);
+        setActiveIndex((prev) => Math.max(prev - itemsPerSlide, 0));
+      }
+
+      wheelTimeoutRef.current = setTimeout(() => {
+        wheelTimeoutRef.current = null;
+      }, 400);
+    };
+
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      window.removeEventListener('wheel', onWheel);
+      if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
+    };
+  }, [isMobile, setActiveIndex]);
+
+  const renderLogoCard = (logo: Logo, i: number) => (
+    <div
+      key={i}
+      className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 flex items-center justify-center min-h-[220px]"
+    >
+      <Image
+        src={logo.src}
+        alt={logo.alt}
+        width={logo.width}
+        height={logo.height}
+        className="object-contain max-h-[100px] mx-auto"
+        draggable={false}
+      />
+    </div>
+  );
 
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] flex items-center justify-center p-4"
+        className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
         initial="hidden"
         animate="visible"
         exit="exit"
         onClick={onClose}
       >
         <motion.div
-          className="relative max-w-4xl w-full mx-4 rounded-2xl px-6 py-10 sm:px-12 bg-white/20 backdrop-blur-md shadow-xl text-white overflow-hidden max-h-[90vh] min-h-[300px]"
+          className="relative w-full max-w-5xl max-h-[90vh] overflow-auto rounded-2xl p-6 sm:p-11 md:p-12 bg-white/20 backdrop-blur-md shadow-xl"
           initial="hidden"
           animate="visible"
           exit="exit"
@@ -162,26 +154,24 @@ export default function PartnerModal({
           </button>
 
           <div className="text-center mb-10">
-            <h1 className="text-3xl sm:text-4xl font-bold mb-2">Our Clients</h1>
-            <p className="text-xs sm:text-sm max-w-2xl text-white/80 mx-auto">
-              We’re proud to collaborate with industry leaders who trust us to amplify their brand through innovation, strategy, and meaningful partnership.
+            <h1 className="text-4xl sm:text-5xl font-bold mb-3 leading-tight text-white">
+              Our Clients
+            </h1>
+            <p className="text-sm sm:text-base max-w-2xl mx-auto text-white/80 leading-relaxed">
+              Explore our trusted partnerships with leading organizations and visionary brands.
+              Their belief in our process fuels the collaboration that drives innovation, growth,
+              and mutual success.
             </p>
           </div>
 
-          <div className="overflow-hidden min-h-[250px]">
-            <motion.div
-              className="flex gap-6"
-              animate={{ x: `-${(activeIndex / itemsPerSlide) * 100}%` }}
-              transition={{ type: 'spring', stiffness: 120, damping: 20 }}
-              style={{ width: `${totalSlides * 100}%` }}
-            >
+          {isMobile ? (
+            <div className="flex flex-col gap-6">
               {allLogos.map((logo, i) => (
                 <div
                   key={i}
-                  className="flex flex-col justify-between flex-shrink-0 bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 min-h-[220px]"
-                  style={{ flex: '0 0 calc(25% - 18px)' }}
+                  className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 text-center"
                 >
-                  <div className="flex justify-center items-center h-full">
+                  <div className="mb-4 flex justify-center">
                     <Image
                       src={logo.src}
                       alt={logo.alt}
@@ -193,21 +183,51 @@ export default function PartnerModal({
                   </div>
                 </div>
               ))}
-            </motion.div>
-          </div>
+            </div>
+          ) : (
+            <>
+              <AnimatePresence mode="wait" custom={direction}>
+                <motion.div
+                  key={activeIndex}
+                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  variants={slideVariants}
+                  custom={direction}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  {allLogos
+                  .slice(activeIndex, activeIndex + itemsPerSlide)
+                  .map((logo, i) => (
+                    <div key={activeIndex + i}>
+                    {renderLogoCard(logo, activeIndex + i)}
+                    </div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
 
-          <div className="mt-8 flex justify-center gap-2">
-            {Array.from({ length: totalSlides }).map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveIndex(i * itemsPerSlide)}
-                className={`w-2.5 h-2.5 rounded-full ${
-                  i * itemsPerSlide === activeIndex ? 'bg-white' : 'bg-white/40'
-                }`}
-                aria-label={`Slide ${i + 1}`}
-              />
-            ))}
-          </div>
+              <div className="mt-8 flex justify-center gap-2">
+                {Array.from({ length: totalSlides }).map((_, i) => {
+                  const newIndex = i * itemsPerSlide;
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setDirection(newIndex > activeIndex ? 1 : -1);
+                        setActiveIndex(newIndex);
+                      }}
+                      className={`w-2.5 h-2.5 rounded-full ${
+                        newIndex === activeIndex
+                          ? 'bg-white'
+                          : 'bg-white/40 hover:bg-white/70'
+                      }`}
+                      aria-label={`Slide ${i + 1}`}
+                    />
+                  );
+                })}
+              </div>
+            </>
+          )}
         </motion.div>
       </motion.div>
     </AnimatePresence>

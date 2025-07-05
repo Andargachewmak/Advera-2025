@@ -66,7 +66,7 @@ const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/90 backdrop-blur-sm"
           variants={backdropVariants}
           initial="hidden"
           animate="visible"

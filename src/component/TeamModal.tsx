@@ -66,7 +66,7 @@ const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/90 backdrop-blur-sm"
+          className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
           variants={backdropVariants}
           initial="hidden"
           animate="visible"
@@ -74,7 +74,8 @@ const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
           onClick={onClose}
         >
           <motion.div
-            className="relative max-w-5xl w-full max-h-[90vh] overflow-auto rounded-2xl p-6 sm:p-11 md:p-12 bg-white/20 backdrop-blur-md shadow-xl text-white"
+            className="relative  overflow-auto rounded-2xl p-6 sm:p-11 md:p-12 bg-black/38  text-white"
+                        style={{ width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
             variants={modalVariants}
             initial="hidden"
             animate="visible"
@@ -85,23 +86,23 @@ const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 text-white hover:text-red-400 text-2xl font-bold"
+              className="absolute top-4 right-6 text-white hover:text-red-400 text-2xl font-bold"
               aria-label="Close Team Modal"
             >
               ×
             </button>
 
             {/* Title */}
-            <h2 className="text-3xl sm:text-4xl font-bold text-white text-center mb-10">
+            <h2 className="text-[42px] sm:text-4xl font-bold text-white text-center mt-12 mb-10">
               Meet Our Team
             </h2>
 
             {/* Team Grid */}
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-36 ml-3.5">
               {team.map((member) => (
                 <motion.div
                   key={member.name}
-                  className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 text-center"
+                  className="bg-[#4d4d4d]/35 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 text-center w-[251px] h-[251px]"
                 >
                   <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-4 rounded-full overflow-hidden relative ring-1 ring-white/50">
                     <Image
@@ -112,8 +113,8 @@ const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
                       className="object-cover"
                     />
                   </div>
-                  <h3 className="text-base sm:text-lg font-semibold text-white">{member.name}</h3>
-                  <p className="text-xs text-white/90 mb-2">{member.role}</p>
+                  <h3 className="text-[21px] sm:text-lg font-bold text-white">{member.name}</h3>
+                  <p className="text-[15px] leading-[18px] text-white/90 mb-2">{member.role}</p>
                   <div className="flex justify-center gap-4">
                     {member.linkedin && (
                       <a href={member.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">

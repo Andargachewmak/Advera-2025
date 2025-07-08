@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, easeInOut } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState, useRef } from 'react';
 
@@ -20,25 +20,6 @@ type PartnerModalProps = {
 
 const itemsPerSlide = 3;
 
-import { easeInOut } from 'framer-motion';
-
-const slideVariants = {
-  hidden: (direction: number) => ({
-    x: direction > 0 ? 300 : -300,
-    opacity: 0,
-  }),
-  visible: {
-    x: 0,
-    opacity: 1,
-    transition: { duration: 0.5, ease: easeInOut },
-  },
-  exit: (direction: number) => ({
-    x: direction > 0 ? -300 : 300,
-    opacity: 0,
-    transition: { duration: 0.5, ease: easeInOut },
-  }),
-};
-
 export default function PartnerModal({
   allLogos,
   activeIndex,
@@ -47,9 +28,9 @@ export default function PartnerModal({
 }: PartnerModalProps) {
   const totalSlides = Math.ceil(allLogos.length / itemsPerSlide);
   const [isMobile, setIsMobile] = useState(false);
-  const [direction, setDirection] = useState(0);
-  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const autoSlideRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Detect screen size
   useEffect(() => {
     const updateMobile = () => setIsMobile(window.innerWidth < 1024);
     updateMobile();
@@ -57,6 +38,7 @@ export default function PartnerModal({
     return () => window.removeEventListener('resize', updateMobile);
   }, []);
 
+  // Prevent body scroll
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
@@ -64,15 +46,14 @@ export default function PartnerModal({
     };
   }, []);
 
+  // Keyboard nav
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' && !isMobile) {
-        setDirection(1);
         setActiveIndex((prev) =>
           Math.min(prev + itemsPerSlide, (totalSlides - 1) * itemsPerSlide)
         );
       } else if (e.key === 'ArrowLeft' && !isMobile) {
-        setDirection(-1);
         setActiveIndex((prev) => Math.max(prev - itemsPerSlide, 0));
       } else if (e.key === 'Escape') {
         onClose();
@@ -82,40 +63,24 @@ export default function PartnerModal({
     return () => window.removeEventListener('keydown', handleKey);
   }, [isMobile, setActiveIndex, onClose]);
 
+  // Auto-slide on desktop
   useEffect(() => {
     if (isMobile) return;
-    const onWheel = (e: WheelEvent) => {
-      const scrollAmount = e.deltaX || (e.shiftKey ? e.deltaY : 0);
-      if (scrollAmount === 0) return;
-      e.preventDefault();
-      if (wheelTimeoutRef.current) return;
+    autoSlideRef.current = setInterval(() => {
+      setActiveIndex((prev) =>
+        prev + itemsPerSlide >= allLogos.length ? 0 : prev + itemsPerSlide
+      );
+    }, 4000);
 
-      if (scrollAmount > 0) {
-        setDirection(1);
-        setActiveIndex((prev) =>
-          Math.min(prev + itemsPerSlide, (totalSlides - 1) * itemsPerSlide)
-        );
-      } else if (scrollAmount < 0) {
-        setDirection(-1);
-        setActiveIndex((prev) => Math.max(prev - itemsPerSlide, 0));
-      }
-
-      wheelTimeoutRef.current = setTimeout(() => {
-        wheelTimeoutRef.current = null;
-      }, 400);
-    };
-
-    window.addEventListener('wheel', onWheel, { passive: false });
     return () => {
-      window.removeEventListener('wheel', onWheel);
-      if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
+      if (autoSlideRef.current) clearInterval(autoSlideRef.current);
     };
-  }, [isMobile, setActiveIndex]);
+  }, [isMobile, allLogos.length, setActiveIndex]);
 
   const renderLogoCard = (logo: Logo, i: number) => (
     <div
       key={i}
-      className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 flex items-center justify-center min-h-[220px]"
+      className="bg-[#4d4d4d]/35 ml-2.5  rounded-2xl p-6 hover:shadow-lg transition-shadow duration-100 flex items-center justify-center min-h-[220px] w-[251px] h-[251px]"
     >
       <Image
         src={logo.src}
@@ -131,33 +96,34 @@ export default function PartnerModal({
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-        initial="hidden"
-        animate="visible"
-        exit="exit"
+        className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-5xl max-h-[90vh] overflow-auto rounded-2xl p-6 sm:p-11 md:p-12 bg-white/20 backdrop-blur-md shadow-xl"
-          initial="hidden"
-          animate="visible"
-          exit="exit"
+          className="relative  overflow-auto rounded-3xl p-6 sm:p-11 md:p-12 bg-black/38 "
+           style={{ width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
+          initial={{ scale: 0.98 }}
+          animate={{ scale: 1 }}
+          exit={{ scale: 0.98 }}
           onClick={(e) => e.stopPropagation()}
           layout
         >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-white hover:text-red-400 text-2xl font-bold"
+            className="absolute top-4 right-6 text-white hover:text-red-400 text-2xl font-bold"
             aria-label="Close Partner Modal"
           >
             ×
           </button>
 
-          <div className="text-center mb-10">
-            <h1 className="text-4xl sm:text-5xl font-bold mb-3 leading-tight text-white">
+          <div className="text-center mt-10 mb-22">
+            <h1 className="text-[42px] sm:text-4xl font-bold mb-3 leading-tight text-white">
               Our Clients
             </h1>
-            <p className="text-sm sm:text-base max-w-2xl mx-auto text-white/80 leading-relaxed">
+            <p className="text-[15px] sm:text-[15px] max-w-2xl mx-auto text-white/80 leading-[18px]">
               Explore our trusted partnerships with leading organizations and visionary brands.
               Their belief in our process fuels the collaboration that drives innovation, growth,
               and mutual success.
@@ -169,7 +135,7 @@ export default function PartnerModal({
               {allLogos.map((logo, i) => (
                 <div
                   key={i}
-                  className="bg-black/20 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 text-center"
+                  className="bg-[#4d4d4d]/35  rounded-2xl p-6  duration-300 text-center w-[251px] h-[251px] "
                 >
                   <div className="mb-4 flex justify-center">
                     <Image
@@ -177,7 +143,7 @@ export default function PartnerModal({
                       alt={logo.alt}
                       width={logo.width}
                       height={logo.height}
-                      className="object-contain max-h-[100px]"
+                      className="object-contain max-h-[100px] "
                       draggable={false}
                     />
                   </div>
@@ -186,36 +152,46 @@ export default function PartnerModal({
             </div>
           ) : (
             <>
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={activeIndex}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                  variants={slideVariants}
-                  custom={direction}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                >
-                  {allLogos
-                  .slice(activeIndex, activeIndex + itemsPerSlide)
-                  .map((logo, i) => (
-                    <div key={activeIndex + i}>
-                    {renderLogoCard(logo, activeIndex + i)}
-                    </div>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
+              <div className="relative min-h-[250px]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex}
+                    initial={{
+                      scale: 0.98,
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                    }}
+                    animate={{
+                      scale: 1,
+                      transition: { duration: 0.4, ease: easeInOut },
+                    }}
+                    exit={{
+                      scale: 0.98,
+                      transition: { duration: 0.3, ease: easeInOut },
+                    }}
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                  >
+                    {allLogos
+                      .slice(activeIndex, activeIndex + itemsPerSlide)
+                      .map((logo, i) => (
+                        <div key={activeIndex + i}>
+                          {renderLogoCard(logo, activeIndex + i)}
+                        </div>
+                      ))}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
+              {/* Pagination Dots */}
               <div className="mt-8 flex justify-center gap-2">
                 {Array.from({ length: totalSlides }).map((_, i) => {
                   const newIndex = i * itemsPerSlide;
                   return (
                     <button
                       key={i}
-                      onClick={() => {
-                        setDirection(newIndex > activeIndex ? 1 : -1);
-                        setActiveIndex(newIndex);
-                      }}
+                      onClick={() => setActiveIndex(newIndex)}
                       className={`w-2.5 h-2.5 rounded-full ${
                         newIndex === activeIndex
                           ? 'bg-white'

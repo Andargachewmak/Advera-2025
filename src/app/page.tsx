@@ -65,7 +65,23 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
   { label: 'Our client', icon: <FaHandshake size={18} /> },
   { label: 'FAQ', icon: <FaQuestionCircle size={18} /> },
 ];
-
+const texts = [
+  {
+    text: 'THINK',
+    bg: 'bg-gradient-to-r from-[#ee5225] to-[#ee5225]',
+    textColor: 'text-white',
+  },
+  {
+    text: 'CRAFT',
+    bg: 'bg-gradient-to-r from-[#ee5225] to-[#ee5225]',
+    textColor: 'text-white',
+  },
+  {
+    text: '& IMPACT!',
+    bg: 'bg-gradient-to-r from-[#191D49] to-[#191D49]',
+    textColor: 'text-white',
+  },
+];
 const socialLinks = [
   {
     icon: FaFacebook,
@@ -97,7 +113,18 @@ useEffect(() => {
   if (window.innerWidth > 768) return;
   // You can add mobile-specific logic here if needed
 }, []);
+const [currentFace, setCurrentFace] = useState(0);
 
+  // Flip every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentFace((prev) => (prev + 1) % texts.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Rotation angles for each face (0deg, 120deg, 240deg) on X axis
+  const rotateX = -currentFace * 120;
 useEffect(() => {
   if (typeof document !== 'undefined') {
     document.body.style.overflow = selectedProject ? 'hidden' : '';
@@ -268,79 +295,43 @@ return (
   {/* Container for slogan + button + description with top padding */}
   <div className="pt-12 px-4 sm:px-0"> {/* Adjust pt-12 to increase/decrease space */}
     {/* Slogan on top-left with typing animation */}
-<div className="text-left px-1 sm:px-0 -mt-15 sm:mt-0 mb-8">
-  <motion.div
-    className="inline-block"
-    initial={{ opacity: 0, y: 50 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{
-      duration: 1,
-      ease: 'easeOut',
-      delayChildren: 0.3,
-      staggerChildren: 0.2,
-    }}
-  >
-    <motion.h2
-      className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter leading-tighter"
-      initial={{ opacity: 0, scale: 0.8, rotateX: -30 }}
-      animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-      transition={{
-        duration: 1.2,
-        ease: 'easeInOut',
-      }}
-    >
-      {/* THINK */}
-      <motion.span
-        className={`text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] tracking-tighter ${
-          isOpen ? 'block' : 'inline-block'
-        } sm:inline`}
-        initial={{ opacity: 0, x: -50, rotate: -10 }}
-        animate={{ opacity: 1, x: 0, rotate: 0 }}
-        transition={{
-          delay: 0.5,
-          duration: 0.8,
-          ease: 'circOut',
+ <div className="flex justify-start items-center min-h-[80px] perspective-1000 p-8 -mt-18 -ml-8 ">
+      <motion.div
+        className="relative w-50 h-18  cursor-pointer select-none"
+        style={{
+          transformStyle: 'preserve-3d',
+          transform: `rotateX(${rotateX}deg)`,
+          transition: 'transform 1s ease-in-out',
         }}
+        aria-label="Flipping text card"
       >
-        THINK,
-      </motion.span>
-
-      {/* CRAFT */}
-      <motion.span
-        className={`mx-0 sm:mx-2 text-transparent bg-clip-text bg-gradient-to-r from-[#ee5225] to-[#ee5225] tracking-tighter ${
-          isOpen ? 'block' : 'inline-block'
-        } sm:inline`}
-        initial={{ opacity: 0, x: -50, rotate: 10 }}
-        animate={{ opacity: 1, x: 0, rotate: 0 }}
-        transition={{
-          delay: 0.7,
-          duration: 0.8,
-          ease: 'circOut',
-        }}
-      >
-        CRAFT,<span className="text-[#191D49]"> & </span>
-      </motion.span>
-
-      {/* IMPACT */}
-      <motion.span
-        className={`text-transparent bg-clip-text bg-gradient-to-r from-[#191D49] to-[#25296d] tracking-tighter  ${
-          isOpen ? 'block' : 'inline-block'
-        } sm:inline`}
-        initial={{ opacity: 0, x: -50, rotate: -10 }}
-        animate={{ opacity: 1, x: 0, rotate: 0 }}
-        transition={{
-          delay: 0.9,
-          duration: 0.8,
-          ease: 'circOut',
-        }}
-      >
-        IMPACT.
-      </motion.span>
-    </motion.h2>
-  </motion.div>
-</div>
-                      {/* Button + Description */}
-<div className="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-3">
+        {texts.map(({ text, bg, textColor }, i) => {
+          // Each face is rotated by 0, 120, 240 degrees around X axis
+          return (
+            <motion.div
+              key={i}
+              className={`absolute w-50 h-18  flex justify-center rounded-full items-center ${bg}`}
+              style={{
+                backfaceVisibility: 'hidden',
+                transform: `rotateX(${i * 120}deg) translateZ(24px)`,
+                // translateZ = half of height (approx)
+              }}
+            >
+              <motion.h2
+                className={`text-4xl font-bold tracking-tight ${textColor} select-none`}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+              >
+                {text}
+              </motion.h2>
+            </motion.div>
+          );
+        })}
+      </motion.div>
+    </div>
+                          {/* Button + Description */}
+<div className="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-3 mt-5">
 <button
   onClick={() => {}}
   className="fit-text-mobile sm:w-auto w-auto text-left px-4 py-2 sm:px-5 sm:py-2 bg-[#ee5225] hover:bg-[#d9431d] text-sm sm:text-base text-white font-semibold rounded-full shadow-md transition-all duration-300 leading-none"
@@ -602,7 +593,7 @@ return (
   >
     <div
       className="bg-white w-screen h-screen overflow-y-auto shadow-lg relative rounded-none"
-      onClick={(e) => e.stopPropagation()}
+      onClick={e => e.stopPropagation()}
     >
       {/* Hero Image Section */}
       <div className="relative w-full h-48 md:h-[70vh] bg-black overflow-hidden">
@@ -626,7 +617,7 @@ return (
 
         {/* Hero Image */}
         <Image
-          src={selectedProject.images[currentImageIndex]}
+          src={selectedProject.images?.[currentImageIndex]}
           alt={`${selectedProject.title} image ${currentImageIndex + 1}`}
           fill
           className="object-cover"
@@ -644,7 +635,7 @@ return (
 
         {/* Dots */}
         <div className="absolute bottom-3 left-0 right-0 flex justify-center items-center space-x-2 z-40">
-          {selectedProject.images.map((_, index) => (
+          {selectedProject.images?.map((_, index) => (
             <button
               key={index}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
@@ -660,73 +651,72 @@ return (
       </div>
 
       {/* Info Section */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full px-4 md:px-8 py-10 text-[#58595b]">
-  {/* Left Column */}
-  <div className="pl-4 md:pl-8">
-    <h1 className="text-2xl md:text-3xl text-black font-bold mb-4">{selectedProject.title}</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full px-4 md:px-8 py-10 text-[#58595b]">
+        {/* Left Column */}
+        <div className="pl-4 md:pl-8">
+          <h1 className="text-2xl md:text-3xl text-black font-bold mb-4">{selectedProject.title}</h1>
 
-    <div className="mb-3">
-      <h3 className="font-bold text-lg">Client</h3>
-      <p className="text-sm">{selectedProject.client}</p>
-    </div>
+          <div className="mb-3">
+            <h3 className="font-bold text-lg">Client</h3>
+            <p className="text-sm">{selectedProject.client}</p>
+          </div>
 
-    <div className="mb-3">
-      <h3 className="font-bold text-lg">Contributors</h3>
-      <p className="text-sm">{selectedProject.contributors}</p>
-    </div>
+          <div className="mb-3">
+            <h3 className="font-bold text-lg">Contributors</h3>
+            <p className="text-sm">{selectedProject.contributors}</p>
+          </div>
 
-    <div className="mt-20">
-      <button
-  onClick={() => setSelectedProject(null)}
- className="px-6 py-2 
-           bg-[#ee5225] text-white 
-           md:bg-[#f1f2f2] md:text-black 
-           hover:text-white font-semibold 
-           rounded-full transition 
-           md:hover:bg-[#ee5225]
-           active:bg-[#d9431d] active:scale-95"
->
-  Back to Projects
-</button>
-
-    </div>
-  </div>
-
-  {/* Right Column */}
-  <div className="pl-4 md:pl-8">
-    <h3 className="font-bold text-lg mb-2">Project Summary</h3>
-    <p className="whitespace-pre-line mb-6 text-sm md:text-base">{selectedProject.summary}</p>
-
-    {(selectedProject.testimonials?.length ?? 0) > 0 && (
-      <div className="pb-10">
-        <h4 className="text-xl font-semibold text-[#191D49] mb-6">Client Testimonials</h4>
-        <div className="grid grid-cols-1 gap-6">
-          {selectedProject.testimonials?.map((testimonial, index) => (
-            <div
-              key={index}
-              className="bg-[#f1f2f2] rounded-xl border border-orange-100 p-5 shadow-md"
+          <div className="mt-20">
+            <button
+              onClick={() => setSelectedProject(null)}
+              className="px-6 py-2 
+                bg-[#ee5225] text-white 
+                md:bg-[#f1f2f2] md:text-black 
+                hover:text-white font-semibold 
+                rounded-full transition 
+                md:hover:bg-[#ee5225]
+                active:bg-[#d9431d] active:scale-95"
             >
-              <p className="text-sm text-gray-700 italic mb-4">“{testimonial.quote}”</p>
-              <div className="flex items-center gap-4">
-                <Image
-                  src={testimonial.clientImage}
-                  alt={testimonial.clientName}
-                  width={48}
-                  height={48}
-                  className="rounded-full object-cover border-2 border-orange-300 shadow"
-                />
-                <div>
-                  <p className="text-base font-semibold text-gray-800">{testimonial.clientName}</p>
-                  <p className="text-sm text-gray-500">{testimonial.clientTitle}</p>
-                </div>
+              Back to Projects
+            </button>
+          </div>
+        </div>
+
+        {/* Right Column */}
+        <div className="pl-4 md:pl-8">
+          <h3 className="font-bold text-lg mb-2">Project Summary</h3>
+          <p className="whitespace-pre-line mb-6 text-sm md:text-base">{selectedProject.summary}</p>
+
+          {(selectedProject.testimonials?.length ?? 0) > 0 && (
+            <div className="pb-10">
+              <h4 className="text-xl font-semibold text-[#191D49] mb-6">Client Testimonials</h4>
+              <div className="grid grid-cols-1 gap-6">
+                {selectedProject.testimonials?.map((testimonial, index) => (
+                  <div
+                    key={index}
+                    className="bg-[#f1f2f2] rounded-xl border border-orange-100 p-5 shadow-md"
+                  >
+                    <p className="text-sm text-gray-700 italic mb-4">“{testimonial.quote}”</p>
+                    <div className="flex items-center gap-4">
+                      <Image
+                        src={testimonial.clientImage}
+                        alt={testimonial.clientName}
+                        width={48}
+                        height={48}
+                        className="rounded-full object-cover border-2 border-orange-300 shadow"
+                      />
+                      <div>
+                        <p className="text-base font-semibold text-gray-800">{testimonial.clientName}</p>
+                        <p className="text-sm text-gray-500">{testimonial.clientTitle}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
-    )}
-  </div>
-</div>
     </div>
   </div>
 )}

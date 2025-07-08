@@ -75,7 +75,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
             {/* Content */}
             <div className="space-y-12 text-center mt-8 ml-3">
               <div className="mb-29">
-                <h1 className="text-[42px] sm:text-4xl font-extrabold mb-6 tracking-tight">
+                <h1 className="text-[42px] sm:text-4xl font-bold mb-6 tracking-tight">
                   About Us
                 </h1>
                 <p className={`${mavenPro.className} text-white text-[15px] leading-[18px] max-w-3xl tracking-tighter mx-auto`}>

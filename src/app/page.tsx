@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import type { StaticImageData } from 'next/image';
 import { PROJECTS } from './data/projects';
+
 // Chat bubble with 3 dots inside
 import {
   FaFacebook,
@@ -121,7 +122,7 @@ const [currentFace, setCurrentFace] = useState(0);
       setCurrentFace((prev) => (prev + 1) % texts.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [texts.length]);
 
   // Rotation angles for each face (0deg, 120deg, 240deg) on X axis
   const rotateX = -currentFace * 120;
@@ -277,7 +278,7 @@ return (
 <main className="ml-0 sm:ml-20 lg:ml-45 px-2 sm:px-8 py-10 w-full bg-white text-black text-[17px] sm:text-base">
 <section id="projects" className="mb-20 relative">
   {/* Social Icons */}
-  <div className="absolute top-2 right-2 z-10 flex gap-4 hidden md:flex">
+  <div className="absolute top-2 right-2 z-10  gap-4 hidden md:flex">
       {socialLinks.map(({ icon: Icon, href, label }, i) => (
         <a
           key={i}
@@ -730,9 +731,9 @@ return (
           aria-labelledby="contact-modal-title"
         >
           <div
-            className="bg-white/20 backdrop-blur-md p-6 sm:p-10 w-full max-w-[95%] sm:max-w-xl md:max-w-2xl rounded-2xl shadow-xl relative overflow-y-auto max-h-[90vh]"
-            onClick={(e) => e.stopPropagation()}
-            style={{ WebkitOverflowScrolling: 'touch' }} // smooth iOS scrolling
+className="relative rounded-3xl bg-black/38 opacity-89 backdrop-blur-1xl text-white overflow-auto"
+                        onClick={(e) => e.stopPropagation()}
+            style={{ WebkitOverflowScrolling: 'touch' , width: '974.4px', height: '611.1px', padding: '42.78px 58.46px'}} // smooth iOS scrolling
           >
             <button
               onClick={() => setShowContact(false)}

@@ -18,10 +18,11 @@ const services = [
     description: 'Logos and brand guidelines that establish a strong visual identity.',
   },
   {
-    title: 'Digital Marketing',
-    icon: <FaGlobe size={32} className="text-[#ee5225]/80" />,
-    description: 'Social media post design to amplify your digital presence.',
-  },
+  title: 'Digital Marketing',
+  icon: <FaGlobe size={32} className="text-[#ee5225]/80" />,
+  description: 'Social media post design and strategic content to amplify your digital presence.',
+},
+
   {
     title: 'Content Creation',
     icon: <TbWriting size={32} className="text-[#ee5225]/80" />,
@@ -35,7 +36,7 @@ const services = [
   {
     title: 'Print Design',
     icon: <FaBook size={32} className="text-[#ee5225]/80" />,
-    description: 'Brochures, posters, flyers, and packaging that leave a lasting impression.',
+    description: 'Brochures, posters,  & packaging that leave a lasting impression.',
   },
   {
     title: 'Editorial Design',
@@ -53,7 +54,6 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
 
   const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Detect mobile screen size
   useEffect(() => {
     const updateMobile = () => setIsMobile(window.innerWidth < 1024);
     updateMobile();
@@ -84,7 +84,7 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
   }, [onClose, isMobile]);
 
   useEffect(() => {
-    if (isMobile) return; // disable wheel on mobile (vertical scroll)
+    if (isMobile) return;
     const onWheel = (e: WheelEvent) => {
       if (wheelTimeoutRef.current) return;
       const scrollAmount = e.deltaX || (e.shiftKey ? e.deltaY : 0);
@@ -120,8 +120,8 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
         onClick={onClose}
       >
         <motion.div
-          className="relative  overflow-auto rounded-2xl p-6 sm:p-11 md:p-12 bg-black/38"
-                      style={{ width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
+          className="relative overflow-hidden rounded-2xl p-6 sm:p-11 md:p-12 bg-black/38 flex flex-col justify-between"
+          style={{ width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
           initial="hidden"
           animate="visible"
           exit="exit"
@@ -136,25 +136,27 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
             ×
           </button>
 
-          {/* Heading + Description */}
-          <div className="text-center mt-8 mb-25">
-            <h2 className="text-[42px] sm:text-4xl font-bold text-white mb-3">
+          {/* Heading */}
+          <div className="text-center mt-8 mb-12">
+            <h2 className="text-[28px] sm:text-4xl font-bold text-white mb-3 whitespace-nowrap">
               Our Services
             </h2>
-            <p className="text-[15px] sm:text-[15px] leading-[18px] max-w-2xl mx-auto text-white/80">
+            <p className="text-white text-[15px] leading-[18px] max-w-3xl tracking-tighter mx-auto">
               Explore our comprehensive range of creative and technical services designed
               to bring your brand to life. From strategy to execution, we deliver
               impactful solutions tailored to your vision.
             </p>
           </div>
 
-          {/* Show vertical list on mobile */}
           {isMobile ? (
-            <div className="flex flex-col gap-6">
+            <div
+              className="flex flex-col items-center gap-6 overflow-y-auto"
+              style={{ maxHeight: '370px' }}
+            >
               {services.map((service) => (
                 <div
                   key={service.title}
-                  className="bg-[#4d4d4d]/35 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 text-center w-[251px] h-[251px] "
+                  className="bg-[#4d4d4d]/35 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 text-center w-[251px] h-[251px]"
                 >
                   <div className="mb-4 flex justify-center">{service.icon}</div>
                   <h3 className="text-[21px] font-bold text-white">{service.title}</h3>
@@ -163,43 +165,46 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
               ))}
             </div>
           ) : (
-            // Desktop/Table grid with animation and pagination
             <>
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={activeIndex}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  variants={{
-                    hidden: { x: direction > 0 ? 300 : -300, opacity: 0 },
-                    visible: {
-                      x: 0,
-                      opacity: 1,
-                      transition: { duration: 0.5, ease: 'easeInOut' },
-                    },
-                    exit: {
-                      x: direction > 0 ? -300 : 300,
-                      opacity: 0,
-                      transition: { duration: 0.5, ease: 'easeInOut' },
-                    },
-                  }}
-                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                  {services
-                    .slice(activeIndex, activeIndex + itemsPerSlide)
-                    .map((service) => (
-                      <div
-                        key={service.title}
-                        className="bg-[#4d4d4d]/35 rounded-2xl p-10 hover:shadow-lg transition-shadow duration-300 text-center w-[251px] h-[251px]"
-                      >
-                        <div className="mb-4 flex justify-center">{service.icon}</div>
-                        <h3 className="text-[20px] font-bold text-white">{service.title}</h3>
-                        <p className="text-[15px] leading-[18px] text-white/90 mt-2">{service.description}</p>
-                      </div>
-                    ))}
-                </motion.div>
-              </AnimatePresence>
+              <div className="flex-grow flex items-center justify-center" style={{ height: 270 }}>
+                <AnimatePresence mode="wait" custom={direction}>
+                  <motion.div
+                    key={activeIndex}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={{
+                      hidden: { x: direction > 0 ? 300 : -300, opacity: 0 },
+                      visible: {
+                        x: 0,
+                        opacity: 1,
+                        transition: { duration: 0.5, ease: 'easeInOut' },
+                      },
+                      exit: {
+                        x: direction > 0 ? -300 : 300,
+                        opacity: 0,
+                        transition: { duration: 0.5, ease: 'easeInOut' },
+                      },
+                    }}
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  >
+                    {services
+                      .slice(activeIndex, activeIndex + itemsPerSlide)
+                      .map((service) => (
+                        <div
+                          key={service.title}
+                          className="bg-[#4d4d4d]/35 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 text-center w-[251px] h-[251px] flex flex-col items-center justify-center"
+                        >
+                          <div className="mb-4">{service.icon}</div>
+                          <h3 className="text-[20px] font-bold text-white">{service.title}</h3>
+                          <p className="text-[15px] leading-[18px] text-white/90 mt-2">
+                            {service.description}
+                          </p>
+                        </div>
+                      ))}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
               {/* Dot navigation */}
               <div className="mt-8 flex justify-center gap-2">

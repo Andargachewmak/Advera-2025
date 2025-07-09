@@ -232,7 +232,7 @@
 .menu-label {
   font-size: 0.7rem;
   opacity: 1;
-  transform: translateX(-4px); /* less negative = shift right */
+  transform: translateX(-3px); /* less negative = shift right */
   text-align: right;
 }
 .menu-icon {

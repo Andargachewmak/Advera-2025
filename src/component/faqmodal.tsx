@@ -92,8 +92,12 @@ export default function FAQModal({ isOpen, onClose }: FAQModalProps) {
             </button>
 
             {/* Header */}
-            <h1 className="text-[42px] text-center sm:text-4xl font-bold mb-18 mt-8">Frequently Asked Questions</h1>
-
+            <div className="text-center mt-8 mb-10">
+              <h1 className="text-[32px] sm:text-4xl font-bold text-white mb-3">FAQ</h1>
+              <p className="text-white text-[15px] leading-[18px] max-w-3xl tracking-tighter mx-auto">
+                Find answers to the most common questions about our services, process, and support. If you can’t find what you’re looking for, feel free to reach out directly.
+              </p>
+            </div>
             {/* FAQ List */}
             <section className="space-y-5 ">
               {faqs.map((faq, index) => (

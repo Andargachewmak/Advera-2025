@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence, easeInOut } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useEffect, useState, useRef } from 'react';
 
@@ -27,10 +27,10 @@ export default function PartnerModal({
   onClose,
 }: PartnerModalProps) {
   const totalSlides = Math.ceil(allLogos.length / itemsPerSlide);
+  const [direction, setDirection] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const autoSlideRef = useRef<NodeJS.Timeout | null>(null);
+  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Detect screen size
   useEffect(() => {
     const updateMobile = () => setIsMobile(window.innerWidth < 1024);
     updateMobile();
@@ -38,76 +38,73 @@ export default function PartnerModal({
     return () => window.removeEventListener('resize', updateMobile);
   }, []);
 
-  // Prevent body scroll
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, []);
-
-  // Keyboard nav
-  useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' && !isMobile) {
+        setDirection(1);
         setActiveIndex((prev) =>
           Math.min(prev + itemsPerSlide, (totalSlides - 1) * itemsPerSlide)
         );
       } else if (e.key === 'ArrowLeft' && !isMobile) {
+        setDirection(-1);
         setActiveIndex((prev) => Math.max(prev - itemsPerSlide, 0));
       } else if (e.key === 'Escape') {
         onClose();
       }
     };
     window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [isMobile, setActiveIndex, onClose]);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKey);
+      if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
+    };
+  }, [onClose, isMobile]);
 
-  // Auto-slide on desktop
   useEffect(() => {
     if (isMobile) return;
-    autoSlideRef.current = setInterval(() => {
-      setActiveIndex((prev) =>
-        prev + itemsPerSlide >= allLogos.length ? 0 : prev + itemsPerSlide
-      );
-    }, 4000);
+    const onWheel = (e: WheelEvent) => {
+      if (wheelTimeoutRef.current) return;
+      const scrollAmount = e.deltaX || (e.shiftKey ? e.deltaY : 0);
+      if (scrollAmount === 0) return;
+      e.preventDefault();
 
-    return () => {
-      if (autoSlideRef.current) clearInterval(autoSlideRef.current);
+      if (scrollAmount > 0) {
+        setDirection(1);
+        setActiveIndex((prev) =>
+          Math.min(prev + itemsPerSlide, (totalSlides - 1) * itemsPerSlide)
+        );
+      } else if (scrollAmount < 0) {
+        setDirection(-1);
+        setActiveIndex((prev) => Math.max(prev - itemsPerSlide, 0));
+      }
+
+      wheelTimeoutRef.current = setTimeout(() => {
+        wheelTimeoutRef.current = null;
+      }, 400);
     };
-  }, [isMobile, allLogos.length, setActiveIndex]);
 
-  const renderLogoCard = (logo: Logo, i: number) => (
-    <div
-      key={i}
-      className="bg-[#4d4d4d]/35 ml-2.5  rounded-2xl p-6 hover:shadow-lg transition-shadow duration-100 flex items-center justify-center min-h-[220px] w-[251px] h-[251px]"
-    >
-      <Image
-        src={logo.src}
-        alt={logo.alt}
-        width={logo.width}
-        height={logo.height}
-        className="object-contain max-h-[100px] mx-auto"
-        draggable={false}
-      />
-    </div>
-  );
+    window.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      window.removeEventListener('wheel', onWheel);
+    };
+  }, [itemsPerSlide, totalSlides, isMobile]);
 
   return (
     <AnimatePresence>
       <motion.div
         className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
-        initial={{ opacity: 1 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
         onClick={onClose}
       >
         <motion.div
-          className="relative  overflow-auto rounded-3xl p-6 sm:p-11 md:p-12 bg-black/38 "
-           style={{ width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
-          initial={{ scale: 0.98 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0.98 }}
+          className="relative overflow-hidden rounded-2xl p-6 sm:p-11 md:p-12 bg-black/38 flex flex-col justify-between"
+          style={{ width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
           onClick={(e) => e.stopPropagation()}
           layout
         >
@@ -119,88 +116,98 @@ export default function PartnerModal({
             ×
           </button>
 
-          <div className="text-center mt-10 mb-22">
-            <h1 className="text-[42px] sm:text-4xl font-bold mb-3 leading-tight text-white">
-              Our Clients
-            </h1>
-            <p className="text-[15px] sm:text-[15px] max-w-2xl mx-auto text-white/80 leading-[18px]">
-              Explore our trusted partnerships with leading organizations and visionary brands.
-              Their belief in our process fuels the collaboration that drives innovation, growth,
-              and mutual success.
+          {/* Heading */}
+          <div className="text-center mt-8 mb-12">
+            <h2 className="text-[42px] sm:text-4xl font-bold text-white mb-3">Our Clients</h2>
+            <p className="text-white text-[15px] leading-[18px] max-w-3xl tracking-tighter mx-auto">
+              Trusted by top brands and visionary partners who help us shape bold ideas into impactful results,
+              fueling innovation and creating meaningful change across industries worldwide.
             </p>
           </div>
 
+          {/* Card grid */}
           {isMobile ? (
-            <div className="flex flex-col gap-6">
+            <div
+              className="grid grid-cols-1 gap-6 overflow-y-auto justify-items-center"
+              style={{ maxHeight: '370px' }}
+            >
               {allLogos.map((logo, i) => (
                 <div
                   key={i}
-                  className="bg-[#4d4d4d]/35  rounded-2xl p-6  duration-300 text-center w-[251px] h-[251px] "
+                  className="bg-[#4d4d4d]/35 rounded-2xl p-6 flex items-center justify-center w-[251px] h-[251px] shrink-0"
                 >
-                  <div className="mb-4 flex justify-center">
-                    <Image
-                      src={logo.src}
-                      alt={logo.alt}
-                      width={logo.width}
-                      height={logo.height}
-                      className="object-contain max-h-[100px] "
-                      draggable={false}
-                    />
-                  </div>
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    width={logo.width}
+                    height={logo.height}
+                    className="object-contain max-w-[180px] max-h-[100px]"
+                    draggable={false}
+                  />
                 </div>
               ))}
             </div>
           ) : (
             <>
-              <div className="relative min-h-[250px]">
-                <AnimatePresence mode="wait">
+              <div className="flex-grow flex items-center justify-center" style={{ height: 270 }}>
+                <AnimatePresence mode="wait" custom={direction}>
                   <motion.div
                     key={activeIndex}
-                    initial={{
-                      scale: 0.98,
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={{
+                      hidden: { x: direction > 0 ? 300 : -300, opacity: 0 },
+                      visible: {
+                        x: 0,
+                        opacity: 1,
+                        transition: { duration: 0.5, ease: 'easeInOut' },
+                      },
+                      exit: {
+                        x: direction > 0 ? -300 : 300,
+                        opacity: 0,
+                        transition: { duration: 0.5, ease: 'easeInOut' },
+                      },
                     }}
-                    animate={{
-                      scale: 1,
-                      transition: { duration: 0.4, ease: easeInOut },
-                    }}
-                    exit={{
-                      scale: 0.98,
-                      transition: { duration: 0.3, ease: easeInOut },
-                    }}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                   >
                     {allLogos
                       .slice(activeIndex, activeIndex + itemsPerSlide)
                       .map((logo, i) => (
-                        <div key={activeIndex + i}>
-                          {renderLogoCard(logo, activeIndex + i)}
+                        <div
+                          key={i}
+                          className="bg-[#4d4d4d]/35 rounded-2xl p-6 hover:shadow-lg transition-shadow duration-300 flex items-center justify-center w-[251px] h-[251px]"
+                        >
+                          <Image
+                            src={logo.src}
+                            alt={logo.alt}
+                            width={logo.width}
+                            height={logo.height}
+                            className="object-contain max-w-[180px] max-h-[100px]"
+                            draggable={false}
+                          />
                         </div>
                       ))}
                   </motion.div>
                 </AnimatePresence>
               </div>
 
-              {/* Pagination Dots */}
+              {/* Dot navigation */}
               <div className="mt-8 flex justify-center gap-2">
-                {Array.from({ length: totalSlides }).map((_, i) => {
-                  const newIndex = i * itemsPerSlide;
-                  return (
-                    <button
-                      key={i}
-                      onClick={() => setActiveIndex(newIndex)}
-                      className={`w-2.5 h-2.5 rounded-full ${
-                        newIndex === activeIndex
-                          ? 'bg-white'
-                          : 'bg-white/40 hover:bg-white/70'
-                      }`}
-                      aria-label={`Slide ${i + 1}`}
-                    />
-                  );
-                })}
+                {Array.from({ length: totalSlides }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      const newIndex = i * itemsPerSlide;
+                      setDirection(newIndex > activeIndex ? 1 : -1);
+                      setActiveIndex(newIndex);
+                    }}
+                    className={`w-2.5 h-2.5 rounded-full ${
+                      i * itemsPerSlide === activeIndex ? 'bg-white' : 'bg-white/40'
+                    }`}
+                    aria-label={`Slide ${i + 1}`}
+                  />
+                ))}
               </div>
             </>
           )}

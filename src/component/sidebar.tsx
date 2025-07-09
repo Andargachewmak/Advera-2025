@@ -88,7 +88,7 @@ export default function Sidebar({ onSectionClick, onFAQClick, onAboutClick }: Si
                             aria-label="Open FAQ"
                           >
                             <span>{icon}</span>
-                            <span className="ml-3 font-medium text-sm tracking-wide">{name}</span>
+                            <span className="ml-7 font-medium text-sm tracking-wide">{name}</span>
                           </button>
                         </li>
                       );

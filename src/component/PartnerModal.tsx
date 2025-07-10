@@ -59,10 +59,10 @@ export default function PartnerModal({
       window.removeEventListener('keydown', handleKey);
       if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
     };
-  }, [onClose, isMobile]);
+  }, [onClose, isMobile, setActiveIndex, totalSlides]);
 
   useEffect(() => {
-    if (isMobile) return;
+    if (isMobile) return; // Disable wheel on mobile
     const onWheel = (e: WheelEvent) => {
       if (wheelTimeoutRef.current) return;
       const scrollAmount = e.deltaX || (e.shiftKey ? e.deltaY : 0);
@@ -88,26 +88,38 @@ export default function PartnerModal({
     return () => {
       window.removeEventListener('wheel', onWheel);
     };
-  }, [itemsPerSlide, totalSlides, isMobile]);
+  }, [totalSlides, isMobile, setActiveIndex]);
 
   return (
     <AnimatePresence>
+      {/* Backdrop and modal container */}
       <motion.div
         className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
         initial="hidden"
         animate="visible"
         exit="exit"
         onClick={onClose}
+        variants={{
+          hidden: { opacity: 0 },
+          visible: { opacity: 1, transition: { duration: 0.3 } },
+          exit: { opacity: 0, transition: { duration: 0.2 } },
+        }}
       >
         <motion.div
-          className="relative overflow-hidden rounded-2xl p-6 sm:p-11 md:p-12 bg-black/38 flex flex-col justify-between"
+          className="relative rounded-3xl p-6 sm:p-11 md:p-12 bg-black/38 flex flex-col justify-between overflow-y-auto"
           style={{ width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
           initial="hidden"
           animate="visible"
           exit="exit"
           onClick={(e) => e.stopPropagation()}
+          variants={{
+            hidden: { opacity: 0, scale: 0.95 },
+            visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
+            exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } },
+          }}
           layout
         >
+          {/* Close Button */}
           <button
             onClick={onClose}
             className="absolute top-4 right-6 text-white hover:text-red-400 text-2xl font-bold"
@@ -120,17 +132,14 @@ export default function PartnerModal({
           <div className="text-center mt-8 mb-12">
             <h2 className="text-[42px] sm:text-4xl font-bold text-white mb-3">Our Clients</h2>
             <p className="text-white text-[15px] leading-[18px] max-w-3xl tracking-tighter mx-auto">
-              Trusted by top brands and visionary partners who help us shape bold ideas into impactful results,
-              fueling innovation and creating meaningful change across industries worldwide.
+              Trusted by top brands and visionary partners who help us shape bold ideas into impactful
+              results, fueling innovation and creating meaningful change across industries worldwide.
             </p>
           </div>
 
-          {/* Card grid */}
+          {/* Cards grid */}
           {isMobile ? (
-            <div
-              className="grid grid-cols-1 gap-6 overflow-y-auto justify-items-center"
-              style={{ maxHeight: '370px' }}
-            >
+            <div className="grid grid-cols-1 gap-6 justify-items-center">
               {allLogos.map((logo, i) => (
                 <div
                   key={i}

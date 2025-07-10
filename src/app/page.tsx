@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import type { StaticImageData } from 'next/image';
 import { PROJECTS } from './data/projects';
+import { HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
+
 
 // Chat bubble with 3 dots inside
 import {
@@ -15,9 +17,8 @@ import {
   FaPhoneAlt,
   FaEnvelope,
   FaMapMarkerAlt,
-  FaHome, FaInfoCircle, FaBriefcase, FaUsers, FaQuestionCircle,FaHandshake 
+  FaHome, FaInfoCircle, FaBriefcase, FaUsers, FaQuestionCircle,FaHandshake,FaTimes 
  } from 'react-icons/fa';
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
 import Sidebar from '@/component/sidebar';
 import AboutModal from '@/component/AboutModal';
 import FAQPage from '@/component/faqmodal';
@@ -52,7 +53,7 @@ export default function Home() {
   const [showFAQModal, setShowFAQModal] = useState(false);
   const [showPartnerModal, setShowPartnerModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  // Removed unused currentImageIndex state
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
   const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [activeProjectId, setActiveProjectId] = useState<number | null>(null);
@@ -115,6 +116,7 @@ useEffect(() => {
   // You can add mobile-specific logic here if needed
 }, []);
 const [currentFace, setCurrentFace] = useState(0);
+const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Flip every 3 seconds
   useEffect(() => {
@@ -162,13 +164,7 @@ useEffect(() => {
   }
 }, [showContact]);
 
-const nextImage = () =>
-  setCurrentImageIndex((prev) => (prev + 1) % (selectedProject?.images.length ?? 1));
-
-const prevImage = () =>
-  setCurrentImageIndex((prev) =>
-    (prev - 1 + (selectedProject?.images.length ?? 1)) % (selectedProject?.images.length ?? 1)
-  );
+// Removed unused nextImage and prevImage functions
 
 const handleNavigate = (section: string) => {
   const lower = section.toLowerCase();
@@ -590,151 +586,147 @@ return (
 {selectedProject && (
   <div
     className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
-    onClick={() => setSelectedProject(null)}
+    onClick={() => setSelectedProject(null)} // Close modal on outside click
   >
     <div
-      className="bg-white w-screen h-screen overflow-y-auto shadow-lg relative rounded-none"
-      onClick={e => e.stopPropagation()}
+      className="bg-white w-full h-full shadow-lg relative grid grid-cols-1 md:grid-cols-2 overflow-y-auto"
+      onClick={(e) => e.stopPropagation()} // Prevent closing modal when clicking inside
     >
-      {/* Hero Image Section */}
-      <div className="relative w-full h-48 md:h-[70vh] bg-black overflow-hidden">
-        {/* Close Button */}
-        <button
-          className="absolute top-3 right-3 text-white text-3xl z-50 hover:text-[#ee5225] rounded-full w-10 h-10 flex items-center justify-center"
-          onClick={() => setSelectedProject(null)}
-          aria-label="Close Project Modal"
-        >
-          &times;
-        </button>
+      {/* Close Button */}
+      <button
+        onClick={() => setSelectedProject(null)}
+        className="absolute top-4 right-4 z-50 p-2 md:p-3 rounded-full bg-white/40 backdrop-blur-sm hover:bg-white/70 shadow-lg transition"
+        aria-label="Close modal"
+      >
+        <FaTimes className="text-black text-lg md:text-xl" />
+      </button>
 
-        {/* Prev Button */}
-        <button
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-2xl md:text-3xl z-40 bg-white/30 hover:bg-white/50 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
-          onClick={prevImage}
-          aria-label="Previous Image"
-        >
-          <HiChevronLeft />
-        </button>
-
-        {/* Hero Image */}
+      {/* Left: Image Carousel */}
+      <div className="relative w-full h-[400px] md:h-auto bg-black">
+        {/* Main Image */}
         <Image
-          src={selectedProject.images?.[currentImageIndex]}
-          alt={`${selectedProject.title} image ${currentImageIndex + 1}`}
+          src={selectedProject.images[currentImageIndex]}
+          alt={`Project Image ${currentImageIndex + 1}`}
           fill
-          className="object-cover"
-          priority
+          className="object-cover transition-all duration-300"
         />
 
-        {/* Next Button */}
+        {/* Navigation Arrows */}
         <button
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-2xl md:text-3xl z-40 bg-white/30 hover:bg-white/50 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center"
-          onClick={nextImage}
-          aria-label="Next Image"
+          onClick={() =>
+            setCurrentImageIndex((prev) =>
+              prev === 0 ? selectedProject.images.length - 1 : prev - 1
+            )
+          }
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/80 hover:bg-white p-2 rounded-full"
         >
-          <HiChevronRight />
+          <HiOutlineChevronLeft size={20} />
         </button>
-
-        {/* Dots */}
-        <div className="absolute bottom-3 left-0 right-0 flex justify-center items-center space-x-2 z-40">
-          {selectedProject.images?.map((_, index) => (
-            <button
-              key={index}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentImageIndex
-                  ? 'bg-white scale-125'
-                  : 'bg-white/50 hover:bg-white/80'
-              }`}
-              onClick={() => setCurrentImageIndex(index)}
-              aria-label={`Go to image ${index + 1}`}
-            />
-          ))}
-        </div>
+        <button
+          onClick={() =>
+            setCurrentImageIndex((prev) =>
+              prev === selectedProject.images.length - 1 ? 0 : prev + 1
+            )
+          }
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/80 hover:bg-white p-2 rounded-full"
+        >
+          <HiOutlineChevronRight size={20} />
+        </button>
       </div>
 
-      {/* Info Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full px-4 md:px-8 py-10 text-[#58595b]">
-        {/* Left Column */}
-        <div className="pl-4 md:pl-8">
-          <h1 className="text-2xl md:text-3xl text-black font-bold mb-4">{selectedProject.title}</h1>
-
-          <div className="mb-3">
-            <h3 className="font-bold text-lg">Client</h3>
-            <p className="text-sm">{selectedProject.client}</p>
-          </div>
-
-          <div className="mb-3">
-            <h3 className="font-bold text-lg">Contributors</h3>
-            <p className="text-sm">{selectedProject.contributors}</p>
-          </div>
-
-          <div className="mt-20">
-            <button
-              onClick={() => setSelectedProject(null)}
-              className="px-6 py-2 
-                bg-[#ee5225] text-white 
-                md:bg-[#f1f2f2] md:text-black 
-                hover:text-white font-semibold 
-                rounded-full transition 
-                md:hover:bg-[#ee5225]
-                active:bg-[#d9431d] active:scale-95"
+      {/* Right: Info + Thumbnails */}
+      <div className="flex flex-col justify-start px-6 py-8 space-y-8 text-[#58595b] overflow-y-auto">
+        {/* Thumbnails */}
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          {selectedProject.images.map((img, idx) => (
+            <div
+              key={idx}
+              onClick={() => setCurrentImageIndex(idx)}
+              className={`relative w-full aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer border-2 ${
+                idx === currentImageIndex ? 'border-[#ee5225]' : 'border-transparent'
+              }`}
             >
-              Back to Projects
-            </button>
-          </div>
+              <Image src={img} alt={`Thumb ${idx + 1}`} fill className="object-cover" />
+            </div>
+          ))}
         </div>
 
-        {/* Right Column */}
-        <div className="pl-4 md:pl-8">
+        {/* Project Info */}
+        <h1 className="text-2xl font-bold text-black">{selectedProject.title}</h1>
+        <div>
+          <h3 className="font-bold text-lg">Client</h3>
+          <p className="text-sm">{selectedProject.client}</p>
+        </div>
+        <div>
+          <h3 className="font-bold text-lg">Contributors</h3>
+          <p className="text-sm">{selectedProject.contributors}</p>
+        </div>
+        <div>
           <h3 className="font-bold text-lg mb-2">Project Summary</h3>
-          <p className="whitespace-pre-line mb-6 text-sm md:text-base">{selectedProject.summary}</p>
+          <p className="text-sm md:text-base whitespace-pre-line">{selectedProject.summary}</p>
+        </div>
 
-          {(selectedProject.testimonials?.length ?? 0) > 0 && (
-            <div className="pb-10">
-              <h4 className="text-xl font-semibold text-[#191D49] mb-6">Client Testimonials</h4>
-              <div className="grid grid-cols-1 gap-6">
-                {selectedProject.testimonials?.map((testimonial, index) => (
-                  <div
-                    key={index}
-                    className="bg-[#f1f2f2] rounded-xl border border-orange-100 p-5 shadow-md"
-                  >
-                    <p className="text-sm text-gray-700 italic mb-4">“{testimonial.quote}”</p>
-                    <div className="flex items-center gap-4">
-                      <Image
-                        src={testimonial.clientImage}
-                        alt={testimonial.clientName}
-                        width={48}
-                        height={48}
-                        className="rounded-full object-cover border-2 border-orange-300 shadow"
-                      />
-                      <div>
-                        <p className="text-base font-semibold text-gray-800">{testimonial.clientName}</p>
-                        <p className="text-sm text-gray-500">{testimonial.clientTitle}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+        {/* Testimonial */}
+        {(selectedProject.testimonials?.length ?? 0) > 0 && (
+          <div>
+            <h4 className="text-xl font-semibold text-[#191D49] mb-4">Client Testimonials</h4>
+            <div className="bg-[#f1f2f2] p-4 rounded-xl border border-orange-100 shadow-md">
+              <p className="italic text-sm text-gray-700 mb-4">
+                “{selectedProject.testimonials?.[0]?.quote || 'Client feedback goes here...'}”
+              </p>
+              <div className="flex items-center gap-4">
+                <Image
+                  src={
+                    selectedProject.testimonials?.[0]?.clientImage ||
+                    '/client-placeholder.jpg'
+                  }
+                  alt={selectedProject.testimonials?.[0]?.clientName || 'Client'}
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover border-2 border-orange-300 shadow"
+                />
+                <div>
+                  <p className="font-semibold text-gray-800">
+                    {selectedProject.testimonials?.[0]?.clientName || 'Client Name'}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {selectedProject.testimonials?.[0]?.clientTitle || 'Client Title'}
+                  </p>
+                </div>
               </div>
             </div>
-          )}
+          </div>
+        )}
+
+        {/* Back Button */}
+        <div className="flex justify-start">
+          <button
+            onClick={() => setSelectedProject(null)}
+            className="px-5 py-2 bg-[#ee5225] text-white font-medium rounded-full hover:bg-[#d9431d] transition w-fit"
+          >
+            Back to Projects
+          </button>
         </div>
       </div>
     </div>
   </div>
 )}
-{/* Contact Form Modal */}
+  
+  {/* Contact Form Modal */}
  {showContact && (
          <div
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
-          onClick={() => setShowContact(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="contact-modal-title"
-        >
-          <div
-className="relative rounded-3xl bg-black/38 opacity-89 backdrop-blur-1xl text-white overflow-auto"
-                        onClick={(e) => e.stopPropagation()}
-            style={{ WebkitOverflowScrolling: 'touch' , width: '974.4px', height: '611.1px', padding: '42.78px 58.46px'}} // smooth iOS scrolling
-          >
+              className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
+              onClick={() => setShowContact(false)}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="contact-modal-title"
+            >
+         <div
+              className="relative rounded-3xl bg-black/38 backdrop-blur-xl opacity-89 text-white overflow-auto"
+              onClick={(e) => e.stopPropagation()}
+              style={{ WebkitOverflowScrolling: 'touch', width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
+            >
+
             <button
               onClick={() => setShowContact(false)}
               className="absolute top-4 right-4 text-white hover:text-[#ee5225] text-2xl sm:text-3xl font-bold"

@@ -119,17 +119,17 @@ const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
       {isOpen && (
         <motion.div
           className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
-          initial="hidden"
-          animate="visible"
-          exit="exit"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transition: { duration: 0.3 } }}
+          exit={{ opacity: 0, transition: { duration: 0.2 } }}
           onClick={onClose}
         >
           <motion.div
-            className="relative overflow-hidden rounded-2xl p-6 sm:p-11 md:p-12 bg-black/38 flex flex-col justify-between text-white"
+            className="relative rounded-3xl bg-black/38 backdrop-blur-1xl text-white flex flex-col overflow-y-auto"
             style={{ width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1, transition: { duration: 0.3 } }}
+            exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
             onClick={(e) => e.stopPropagation()}
             layout
           >
@@ -143,16 +143,16 @@ const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
             </button>
 
             {/* Title */}
-            <div className="text-center mt-8 mb-14">
-              <h2 className="text-[42px] sm:text-4xl font-bold mb-3"> Our Team</h2>
+            <div className="text-center mb-12">
+              <h2 className="text-[42px] sm:text-4xl font-bold mb-3">Our Team</h2>
               <p className="text-white text-[15px] leading-[18px] max-w-3xl tracking-tighter mx-auto">
-                  A dynamic team of strategists, designers, and developers committed to transforming bold ideas into powerful digital solutions. With a blend of creativity, technology, and strategy, we craft meaningful experiences that drive results and leave a lasting impact.
-                </p>
+                A dynamic team of strategists, designers, and developers committed to transforming bold ideas into powerful digital solutions. With a blend of creativity, technology, and strategy, we craft meaningful experiences that drive results and leave a lasting impact.
+              </p>
             </div>
 
             {/* Team Grid */}
             {isMobile ? (
-              <div className="grid grid-cols-1 gap-6 overflow-y-auto justify-items-center" style={{ maxHeight: '370px' }}>
+              <div className="grid grid-cols-1 gap-6 justify-items-center pb-6">
                 {team.map((member) => (
                   <div
                     key={member.name}
@@ -185,7 +185,7 @@ const TeamModal: FC<TeamModalProps> = ({ isOpen, onClose }) => {
                 ))}
               </div>
             ) : (
-              <div className="flex-grow flex items-center justify-center" style={{ height: 270 }}>
+              <div className="flex justify-center pb-6">
                 <AnimatePresence mode="wait" custom={direction}>
                   <motion.div
                     key={activeIndex}

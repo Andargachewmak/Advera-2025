@@ -25,7 +25,7 @@ export const PROJECTS: Project[] = [  //Web development
     client: 'Global Fest',
     contributors: 'Studio Mix',
     summary: 'Edited an engaging highlight reel for a global music festival.',
-    images: ['/Image/abela4.jpg'],
+    images: ['/Image/abela4.jpg','/Image/abela2.jpg','/Image/abela1.jpg','/Image/graphic.png'],
     
     testimonials: [
       {
@@ -51,7 +51,7 @@ export const PROJECTS: Project[] = [  //Web development
         quote: "Slick, modern and super effective. Loved it!",
         clientName: "Laura Kim",
         clientTitle: "CEO, StartupX",
-        clientImage: "/Image/client3.jpg",
+        clientImage: "/Image/client3.jpg,",
       },
     ],
   },

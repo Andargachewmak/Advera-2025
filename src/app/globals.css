@@ -237,7 +237,7 @@
 }
 .menu-icon {
   font-size: 1.4rem;
-  margin-left: 1.0;           /* center-align, no horizontal offset */
+  margin-left: 1.5;           /* center-align, no horizontal offset */
   align-self: center;        /* centers icon in the button container */
 }
 footer .flex-col.items-start.justify-start {

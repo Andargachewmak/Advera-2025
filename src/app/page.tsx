@@ -64,7 +64,7 @@ const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
   { label: 'About Us', icon: <FaInfoCircle size={18} /> },
   { label: 'Services', icon: <FaBriefcase size={18} /> },
   { label: 'Team', icon: <FaUsers size={18} /> },
-  { label: 'Our client', icon: <FaHandshake size={18} /> },
+  { label: 'Client', icon: <FaHandshake size={18} /> },
   { label: 'FAQ', icon: <FaQuestionCircle size={18} /> },
 ];
 const texts = [
@@ -216,7 +216,8 @@ return (
 <ul className={`menu-bar nav-links ${isOpen ? 'open' : ''}`}>
   {navItems.map(({ label, icon }) => {
     const isCenteredIcon = label === 'Services' || label === 'About Us';
-    const isOurClient = label === 'Our client';
+    const isClient = label === 'Our client';
+    const isFAQ = label === 'FAQ';
 
     return (
       <li key={label}>
@@ -233,12 +234,8 @@ return (
         >
           {/* Icon */}
           <span
-            className={`text-x1 ${
-              isOurClient
-                ? '-translate-x-1'
-                : isCenteredIcon
-                ? '-translate-x-1'
-                : '-translate-x-1'
+            className={`text-xl ${
+              isClient || isFAQ ? 'translate-x-0.6' : ''
             }`}
           >
             {icon}
@@ -247,8 +244,8 @@ return (
           {/* Label */}
           <span
             className={`text-[0.7rem] whitespace-nowrap ${
-              isOurClient
-                ? '-translate-x-5'
+              isClient || isFAQ
+                ? '-translate-x-[2px]'
                 : isCenteredIcon
                 ? '-translate-x-4'
                 : '-translate-x-2'
@@ -586,11 +583,11 @@ return (
 {selectedProject && (
   <div
     className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
-    onClick={() => setSelectedProject(null)} // Close modal on outside click
+    onClick={() => setSelectedProject(null)}
   >
     <div
-      className="bg-white w-full h-full shadow-lg relative grid grid-cols-1 md:grid-cols-2 overflow-y-auto"
-      onClick={(e) => e.stopPropagation()} // Prevent closing modal when clicking inside
+      className="bg-white w-full h-full shadow-lg relative grid grid-cols-1 md:grid-cols-2 overflow-y-auto md:overflow-hidden"
+      onClick={(e) => e.stopPropagation()}
     >
       {/* Close Button */}
       <button
@@ -601,43 +598,62 @@ return (
         <FaTimes className="text-black text-lg md:text-xl" />
       </button>
 
-      {/* Left: Image Carousel */}
-      <div className="relative w-full h-[400px] md:h-auto bg-black">
+      {/* Left: Fullscreen Image Carousel for Desktop */}
+      <div className="relative w-full h-[400px] md:h-screen bg-black flex flex-col">
         {/* Main Image */}
-        <Image
-          src={selectedProject.images[currentImageIndex]}
-          alt={`Project Image ${currentImageIndex + 1}`}
-          fill
-          className="object-cover transition-all duration-300"
-        />
+        <div className="relative w-full h-[300px] md:h-full">
+          <Image
+            src={selectedProject.images[currentImageIndex]}
+            alt={`Project Image ${currentImageIndex + 1}`}
+            fill
+            className="object-cover transition-all duration-300"
+          />
 
-        {/* Navigation Arrows */}
-        <button
-          onClick={() =>
-            setCurrentImageIndex((prev) =>
-              prev === 0 ? selectedProject.images.length - 1 : prev - 1
-            )
-          }
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/80 hover:bg-white p-2 rounded-full"
-        >
-          <HiOutlineChevronLeft size={20} />
-        </button>
-        <button
-          onClick={() =>
-            setCurrentImageIndex((prev) =>
-              prev === selectedProject.images.length - 1 ? 0 : prev + 1
-            )
-          }
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/80 hover:bg-white p-2 rounded-full"
-        >
-          <HiOutlineChevronRight size={20} />
-        </button>
+          {/* Arrows - Always visible */}
+          <button
+            onClick={() =>
+              setCurrentImageIndex((prev) =>
+                prev === 0 ? selectedProject.images.length - 1 : prev - 1
+              )
+            }
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/80 hover:bg-white p-2 rounded-full"
+          >
+            <HiOutlineChevronLeft size={20} />
+          </button>
+          <button
+            onClick={() =>
+              setCurrentImageIndex((prev) =>
+                prev === selectedProject.images.length - 1 ? 0 : prev + 1
+              )
+            }
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/80 hover:bg-white p-2 rounded-full"
+          >
+            <HiOutlineChevronRight size={20} />
+          </button>
+        </div>
+
+        {/* Mobile thumbnails */}
+        <div className="md:hidden mt-3 px-4">
+          <div className="flex gap-3 overflow-x-auto scrollbar-none">
+            {selectedProject.images.map((img, idx) => (
+              <div
+                key={idx}
+                onClick={() => setCurrentImageIndex(idx)}
+                className={`relative flex-shrink-0 w-[30%] aspect-square rounded-lg overflow-hidden cursor-pointer border-4 transition ${
+                  idx === currentImageIndex ? 'border-[#ee5225]' : 'border-transparent'
+                }`}
+              >
+                <Image src={img} alt={`Thumb ${idx + 1}`} fill className="object-cover" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Right: Info + Thumbnails */}
+      {/* Right: Info Panel (scrollable) */}
       <div className="flex flex-col justify-start px-6 py-8 space-y-8 text-[#58595b] overflow-y-auto">
-        {/* Thumbnails */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        {/* Desktop thumbnails */}
+        <div className="hidden md:grid grid-cols-2 gap-4 mb-4">
           {selectedProject.images.map((img, idx) => (
             <div
               key={idx}
@@ -657,10 +673,7 @@ return (
           <h3 className="font-bold text-lg">Client</h3>
           <p className="text-sm">{selectedProject.client}</p>
         </div>
-        <div>
-          <h3 className="font-bold text-lg">Contributors</h3>
-          <p className="text-sm">{selectedProject.contributors}</p>
-        </div>
+
         <div>
           <h3 className="font-bold text-lg mb-2">Project Summary</h3>
           <p className="text-sm md:text-base whitespace-pre-line">{selectedProject.summary}</p>
@@ -715,18 +728,25 @@ return (
   {/* Contact Form Modal */}
  {showContact && (
          <div
-              className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
+              className="fixed inset-0 z-[1000] flex items-center  justify-center  p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
               onClick={() => setShowContact(false)}
               role="dialog"
               aria-modal="true"
               aria-labelledby="contact-modal-title"
             >
-         <div
-              className="relative rounded-3xl bg-black/38 backdrop-blur-xl opacity-89 text-white overflow-auto"
-              onClick={(e) => e.stopPropagation()}
-              style={{ WebkitOverflowScrolling: 'touch', width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
-            >
-
+<div
+  className="relative bg-black/38 rounded-2xl backdrop-blur-xl opacity-89 text-white overflow-auto 
+             px-6 sm:px-[58.46px] pt-[42.78px] sm:pt-[42.78px] pb-4 sm:pb-[42.78px] 
+             flex flex-col justify-center"
+  onClick={(e) => e.stopPropagation()}
+  style={{
+    WebkitOverflowScrolling: 'touch',
+    width: '100%',
+    maxWidth: '974.4px',
+    height: '100%',
+    maxHeight: '611.1px',
+  }}
+>
             <button
               onClick={() => setShowContact(false)}
               className="absolute top-4 right-4 text-white hover:text-[#ee5225] text-2xl sm:text-3xl font-bold"

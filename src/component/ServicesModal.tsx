@@ -112,7 +112,7 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
+        className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm overflow-x-hidden"
         initial="hidden"
         animate="visible"
         exit="exit"
@@ -124,7 +124,7 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
         }}
       >
         <motion.div
-          className="relative rounded-3xl p-6 sm:p-11 md:p-12 bg-black/38 flex flex-col justify-between overflow-y-auto"
+          className="relative rounded-3xl p-6 sm:p-11 md:p-12 bg-black/38 flex flex-col justify-between overflow-y-auto overflow-x-hidden"
           style={{ width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
           initial="hidden"
           animate="visible"
@@ -146,8 +146,8 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
           </button>
 
           {/* Heading */}
-          <div className="text-center mt-8 mb-12">
-            <h2 className="text-[42px] sm:text-4xl font-bold text-white mb-3 whitespace-nowrap">
+          <div className="text-center mt-8 mb-16">
+            <h2 className="text-[42px] sm:text-4xl font-bold text-white mb-4 whitespace-nowrap">
               Our Services
             </h2>
             <p className="text-white text-[15px] leading-[18px] max-w-3xl tracking-tighter mx-auto">
@@ -172,7 +172,7 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
             </div>
           ) : (
             <>
-              <div className="flex-grow flex items-center justify-center" style={{ height: 270 }}>
+              <div className="flex-grow flex items-center justify-center overflow-x-hidden" style={{ height: 270 }}>
                 <AnimatePresence mode="wait" custom={direction}>
                   <motion.div
                     key={activeIndex}
@@ -192,7 +192,7 @@ export default function ServicesModal({ onClose }: { onClose: () => void }) {
                         transition: { duration: 0.5, ease: 'easeInOut' },
                       },
                     }}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-hidden"
                   >
                     {services
                       .slice(activeIndex, activeIndex + itemsPerSlide)

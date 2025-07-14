@@ -40,6 +40,7 @@ export default function PartnerModal({
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-open');
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' && !isMobile) {
         setDirection(1);
@@ -56,13 +57,14 @@ export default function PartnerModal({
     window.addEventListener('keydown', handleKey);
     return () => {
       document.body.style.overflow = '';
+      document.body.classList.remove('modal-open');
       window.removeEventListener('keydown', handleKey);
       if (wheelTimeoutRef.current) clearTimeout(wheelTimeoutRef.current);
     };
   }, [onClose, isMobile, setActiveIndex, totalSlides]);
 
   useEffect(() => {
-    if (isMobile) return; // Disable wheel on mobile
+    if (isMobile) return;
     const onWheel = (e: WheelEvent) => {
       if (wheelTimeoutRef.current) return;
       const scrollAmount = e.deltaX || (e.shiftKey ? e.deltaY : 0);
@@ -85,16 +87,13 @@ export default function PartnerModal({
     };
 
     window.addEventListener('wheel', onWheel, { passive: false });
-    return () => {
-      window.removeEventListener('wheel', onWheel);
-    };
+    return () => window.removeEventListener('wheel', onWheel);
   }, [totalSlides, isMobile, setActiveIndex]);
 
   return (
     <AnimatePresence>
-      {/* Backdrop and modal container */}
       <motion.div
-        className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
+        className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm overflow-x-hidden"
         initial="hidden"
         animate="visible"
         exit="exit"
@@ -106,8 +105,7 @@ export default function PartnerModal({
         }}
       >
         <motion.div
-          className="relative rounded-3xl p-6 sm:p-11 md:p-12 bg-black/38 flex flex-col justify-between overflow-y-auto"
-          style={{ width: '974.4px', height: '611.1px', padding: '42.78px 58.46px' }}
+          className="relative rounded-3xl px-[58.46px] py-[42.78px] bg-black/38 flex flex-col justify-between overflow-y-auto overflow-x-hidden w-full max-w-[974px] max-h-[90vh]"
           initial="hidden"
           animate="visible"
           exit="exit"
@@ -121,6 +119,7 @@ export default function PartnerModal({
         >
           {/* Close Button */}
           <button
+            type="button"
             onClick={onClose}
             className="absolute top-4 right-6 text-white hover:text-red-400 text-2xl font-bold"
             aria-label="Close Partner Modal"
@@ -129,7 +128,7 @@ export default function PartnerModal({
           </button>
 
           {/* Heading */}
-          <div className="text-center mt-8 mb-12">
+          <div className="text-center mt-8 mb-18">
             <h2 className="text-[42px] sm:text-4xl font-bold text-white mb-3">Our Clients</h2>
             <p className="text-white text-[15px] leading-[18px] max-w-3xl tracking-tighter mx-auto">
               Trusted by top brands and visionary partners who help us shape bold ideas into impactful
@@ -137,7 +136,7 @@ export default function PartnerModal({
             </p>
           </div>
 
-          {/* Cards grid */}
+          {/* Grid or Slider */}
           {isMobile ? (
             <div className="grid grid-cols-1 gap-6 justify-items-center">
               {allLogos.map((logo, i) => (
@@ -158,7 +157,7 @@ export default function PartnerModal({
             </div>
           ) : (
             <>
-              <div className="flex-grow flex items-center justify-center" style={{ height: 270 }}>
+              <div className="flex-grow flex items-center justify-center overflow-x-hidden" style={{ height: 270 }}>
                 <AnimatePresence mode="wait" custom={direction}>
                   <motion.div
                     key={activeIndex}
@@ -178,7 +177,7 @@ export default function PartnerModal({
                         transition: { duration: 0.5, ease: 'easeInOut' },
                       },
                     }}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-hidden"
                   >
                     {allLogos
                       .slice(activeIndex, activeIndex + itemsPerSlide)
@@ -201,11 +200,12 @@ export default function PartnerModal({
                 </AnimatePresence>
               </div>
 
-              {/* Dot navigation */}
+              {/* Dots */}
               <div className="mt-8 flex justify-center gap-2">
                 {Array.from({ length: totalSlides }).map((_, i) => (
                   <button
                     key={i}
+                    type="button"
                     onClick={() => {
                       const newIndex = i * itemsPerSlide;
                       setDirection(newIndex > activeIndex ? 1 : -1);

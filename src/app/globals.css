@@ -286,3 +286,7 @@ footer .flex-col.items-start.justify-start {
     display: inline-block !important; /* Prevent block-level full width */
   }
 }
+/* globals.css or styles.css */
+body.modal-open .bottom-nav {
+  display: none;
+}

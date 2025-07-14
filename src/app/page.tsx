@@ -230,7 +230,7 @@ return (
             }
             setIsOpen(false);
           }}
-          className="w-full text-white transition-all font-medium flex flex-col items-center justify-center py-1"
+          className="w-full text-white transition-all font-medium flex flex-col items-center justify-center py-1 gap-1"
         >
           {/* Icon */}
           <span
@@ -582,41 +582,40 @@ return (
       {/* Modal Preview */}
 {selectedProject && (
   <div
-    className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+    className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm"
     onClick={() => setSelectedProject(null)}
   >
     <div
-      className="bg-white w-full h-full shadow-lg relative grid grid-cols-1 md:grid-cols-2 overflow-y-auto md:overflow-hidden"
+      className="bg-white w-full h-full shadow-lg relative grid grid-cols-1 md:grid-cols-[65vw_35vw] overflow-y-auto md:overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
       {/* Close Button */}
       <button
         onClick={() => setSelectedProject(null)}
-        className="absolute top-4 right-4 z-50 p-2 md:p-3 rounded-full bg-white/40 backdrop-blur-sm hover:bg-white/70 shadow-lg transition"
+        className="absolute top-4 right-4 z-50 p-2 md:p-3    transition"
         aria-label="Close modal"
       >
         <FaTimes className="text-black text-lg md:text-xl" />
       </button>
 
-      {/* Left: Fullscreen Image Carousel for Desktop */}
-      <div className="relative w-full h-[400px] md:h-screen bg-black flex flex-col">
-        {/* Main Image */}
-        <div className="relative w-full h-[300px] md:h-full">
+      {/* Left: Image Carousel */}
+      <div className="relative w-full h-[400px] md:h-screen flex flex-col pt-2.5 pb-2.5 px-4">
+        {/* Carousel Image */}
+        <div className="relative w-full h-[300px] md:h-full rounded-2xl overflow-hidden shadow-lg">
           <Image
             src={selectedProject.images[currentImageIndex]}
             alt={`Project Image ${currentImageIndex + 1}`}
             fill
             className="object-cover transition-all duration-300"
           />
-
-          {/* Arrows - Always visible */}
+          {/* Arrows */}
           <button
             onClick={() =>
               setCurrentImageIndex((prev) =>
                 prev === 0 ? selectedProject.images.length - 1 : prev - 1
               )
             }
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/80 hover:bg-white p-2 rounded-full"
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 text-white p-2 rounded-full"
           >
             <HiOutlineChevronLeft size={20} />
           </button>
@@ -626,20 +625,20 @@ return (
                 prev === selectedProject.images.length - 1 ? 0 : prev + 1
               )
             }
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/80 hover:bg-white p-2 rounded-full"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 text-white p-2 rounded-full"
           >
             <HiOutlineChevronRight size={20} />
           </button>
         </div>
 
-        {/* Mobile thumbnails */}
-        <div className="md:hidden mt-3 px-4">
-          <div className="flex gap-3 overflow-x-auto scrollbar-none">
+        {/* Mobile Thumbnails */}
+        <div className="md:hidden mt-3 px-2">
+          <div className="flex gap-3 overflow-x-auto no-scrollbar">
             {selectedProject.images.map((img, idx) => (
               <div
                 key={idx}
                 onClick={() => setCurrentImageIndex(idx)}
-                className={`relative flex-shrink-0 w-[30%] aspect-square rounded-lg overflow-hidden cursor-pointer border-4 transition ${
+                className={`relative flex-shrink-0 w-[31.5%] aspect-square rounded-lg overflow-hidden cursor-pointer border-4 transition ${
                   idx === currentImageIndex ? 'border-[#ee5225]' : 'border-transparent'
                 }`}
               >
@@ -650,15 +649,18 @@ return (
         </div>
       </div>
 
-      {/* Right: Info Panel (scrollable) */}
-      <div className="flex flex-col justify-start px-6 py-8 space-y-8 text-[#58595b] overflow-y-auto">
-        {/* Desktop thumbnails */}
-        <div className="hidden md:grid grid-cols-2 gap-4 mb-4">
+      {/* Right Panel */}
+      <div
+        className="flex flex-col justify-start px-4 md:px-1 lg:px-8 py-8 space-y-8 text-[#58595b] overflow-y-auto h-full max-h-screen min-w-0 bg-white"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
+        {/* Desktop Thumbnails */}
+        <div className="hidden md:grid grid-cols-2 gap-2   justify-start -mb-1 -mt-3 mx-35 ml-0.5">
           {selectedProject.images.map((img, idx) => (
             <div
               key={idx}
               onClick={() => setCurrentImageIndex(idx)}
-              className={`relative w-full aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer border-2 ${
+              className={`relative max-w-[150px] aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer border-2 ${
                 idx === currentImageIndex ? 'border-[#ee5225]' : 'border-transparent'
               }`}
             >
@@ -670,49 +672,46 @@ return (
         {/* Project Info */}
         <h1 className="text-2xl font-bold text-black">{selectedProject.title}</h1>
         <div>
-          <h3 className="font-bold text-lg">Client</h3>
+          <h3 className="font-bold -mt-6 text-lg">Client</h3>
           <p className="text-sm">{selectedProject.client}</p>
         </div>
 
         <div>
-          <h3 className="font-bold text-lg mb-2">Project Summary</h3>
-          <p className="text-sm md:text-base whitespace-pre-line">{selectedProject.summary}</p>
+          <h3 className="font-bold text-lg -mt-6 mb-1">Project Summary</h3>
+          <p className="text-sm md:text-base leading-relaxed whitespace-pre-line">
+            {selectedProject.summary}
+          </p>
         </div>
 
-        {/* Testimonial */}
-        {(selectedProject.testimonials?.length ?? 0) > 0 && (
+        {/* Testimonials */}
+{selectedProject.testimonials && selectedProject.testimonials.length > 0 && (
+  <div className="max-w-md">
+    <h4 className="text-xl font-semibold text-[#191D49] -mt-4 mb-4">Client Testimonials</h4>
+    {selectedProject.testimonials.map((testimonial, index) => (
+      <div
+        key={index}
+        className="bg-[#f1f2f2] p-4 rounded-xl border border-orange-100 shadow-md hover:shadow-lg transition mb-6"
+      >
+        <p className="italic text-sm text-gray-700 mb-2">“{testimonial.quote}”</p>
+        <div className="flex items-center gap-4">
+          <Image
+            src={testimonial.clientImage || '/client-placeholder.jpg'}
+            alt={testimonial.clientName || 'Client'}
+            width={48}
+            height={48}
+            className="rounded-full object-cover border-2 border-orange-300 shadow"
+          />
           <div>
-            <h4 className="text-xl font-semibold text-[#191D49] mb-4">Client Testimonials</h4>
-            <div className="bg-[#f1f2f2] p-4 rounded-xl border border-orange-100 shadow-md">
-              <p className="italic text-sm text-gray-700 mb-4">
-                “{selectedProject.testimonials?.[0]?.quote || 'Client feedback goes here...'}”
-              </p>
-              <div className="flex items-center gap-4">
-                <Image
-                  src={
-                    selectedProject.testimonials?.[0]?.clientImage ||
-                    '/client-placeholder.jpg'
-                  }
-                  alt={selectedProject.testimonials?.[0]?.clientName || 'Client'}
-                  width={48}
-                  height={48}
-                  className="rounded-full object-cover border-2 border-orange-300 shadow"
-                />
-                <div>
-                  <p className="font-semibold text-gray-800">
-                    {selectedProject.testimonials?.[0]?.clientName || 'Client Name'}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {selectedProject.testimonials?.[0]?.clientTitle || 'Client Title'}
-                  </p>
-                </div>
-              </div>
-            </div>
+            <p className="font-semibold text-gray-800">{testimonial.clientName}</p>
+            <p className="text-sm text-gray-500">{testimonial.clientTitle}</p>
           </div>
-        )}
-
+        </div>
+      </div>
+    ))}
+  </div>
+)}
         {/* Back Button */}
-        <div className="flex justify-start">
+        <div className="flex justify-start -mt-4 px-4 md:px-0">
           <button
             onClick={() => setSelectedProject(null)}
             className="px-5 py-2 bg-[#ee5225] text-white font-medium rounded-full hover:bg-[#d9431d] transition w-fit"
@@ -721,10 +720,10 @@ return (
           </button>
         </div>
       </div>
+      </div>
     </div>
-  </div>
-)}
   
+)}  
   {/* Contact Form Modal */}
  {showContact && (
          <div

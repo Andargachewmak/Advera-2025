@@ -725,18 +725,20 @@ return (
   
 )}  
   {/* Contact Form Modal */}
- {showContact && (
-         <div
-              className="fixed inset-0 z-[1000] flex items-center  justify-center  p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
-              onClick={() => setShowContact(false)}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="contact-modal-title"
-            >
+{showContact && (
+  <div
+    className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-[#1a1a1a]/92 backdrop-blur-sm"
+    onClick={() => setShowContact(false)}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="contact-modal-title"
+  >
 <div
   className="relative bg-black/38 rounded-2xl backdrop-blur-xl opacity-89 text-white overflow-auto 
-             px-6 sm:px-[58.46px] pt-[42.78px] sm:pt-[42.78px] pb-4 sm:pb-[42.78px] 
-             flex flex-col justify-center"
+             px-4 sm:px-[58.46px] 
+             pt-16 sm:pt-[42.78px]  // ⬅️ Increased padding top on mobile
+             pb-2 sm:pb-[24px]      // ⬅️ Reduced padding bottom on mobile
+             flex flex-col justify-start"
   onClick={(e) => e.stopPropagation()}
   style={{
     WebkitOverflowScrolling: 'touch',
@@ -746,151 +748,150 @@ return (
     maxHeight: '611.1px',
   }}
 >
-            <button
-              onClick={() => setShowContact(false)}
-              className="absolute top-4 right-4 text-white hover:text-[#ee5225] text-2xl sm:text-3xl font-bold"
-              aria-label="Close Contact Form"
-              style={{ touchAction: 'manipulation' }}
+      <button
+        onClick={() => setShowContact(false)}
+        className="absolute top-4 right-4 text-white hover:text-[#ee5225] text-2xl sm:text-3xl font-bold"
+        aria-label="Close Contact Form"
+        style={{ touchAction: 'manipulation' }}
+      >
+        &times;
+      </button>
+
+      <h3
+        id="contact-modal-title"
+        className="text-2xl sm:text-3xl font-bold mb-6 text-white text-center"
+      >
+        Get in Touch
+      </h3>
+
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+
+          if (!contactForm.name || !contactForm.email || !contactForm.message) {
+            setFormStatus('error');
+            return;
+          }
+
+          setFormStatus('sending');
+          try {
+            const res = await fetch('https://formspree.io/f/mwpbrjoz ', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              body: JSON.stringify(contactForm),
+            });
+
+            const data = await res.json();
+            if (data.ok) {
+              setFormStatus('success');
+              setContactForm({ name: '', email: '', message: '' });
+            } else {
+              setFormStatus('error');
+            }
+          } catch (err) {
+            console.error(err);
+            setFormStatus('error');
+          }
+        }}
+        className="flex flex-col gap-5"
+      >
+        <input
+          type="text"
+          name="name"
+          placeholder="Company Name"
+          value={contactForm.name}
+          onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+          required
+          className="w-full border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+          autoComplete="organization"
+          inputMode="text"
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Your Email"
+          value={contactForm.email}
+          onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+          required
+          className="w-full border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+          autoComplete="email"
+          inputMode="email"
+        />
+        <textarea
+          name="message"
+          placeholder="Your Message"
+          value={contactForm.message}
+          onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+          required
+          className="w-full border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md resize-none h-28 sm:h-32 text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
+          rows={5}
+        />
+
+        <button
+          type="submit"
+          disabled={formStatus === 'sending'}
+          className="bg-[#ee5225] text-white py-3 rounded-md hover:bg-[#d9431d] transition font-semibold text-base sm:text-lg disabled:opacity-50"
+          style={{ touchAction: 'manipulation' }}
+        >
+          {formStatus === 'sending' ? 'Sending...' : 'Send Message'}
+        </button>
+
+        <AnimatePresence>
+          {formStatus === 'success' && (
+            <motion.p
+              key="success"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center justify-center gap-3 rounded-xl bg-green-600/20 text-green-600 px-6 py-3 font-semibold shadow-lg text-center select-none mt-2"
+              role="alert"
             >
-              &times;
-            </button>
-
-            <h3
-              id="contact-modal-title"
-              className="text-2xl sm:text-3xl font-bold mb-6 text-white text-center"
-            >
-              Get in Touch
-            </h3>
-
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-
-                if (!contactForm.name || !contactForm.email || !contactForm.message) {
-                  setFormStatus('error');
-                  return;
-                }
-
-                setFormStatus('sending');
-                try {
-                  const res = await fetch('https://formspree.io/f/mwpbrjoz', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                      Accept: 'application/json',
-                    },
-                    body: JSON.stringify(contactForm),
-                  });
-
-                  const data = await res.json();
-                  if (data.ok) {
-                    setFormStatus('success');
-                    setContactForm({ name: '', email: '', message: '' });
-                  } else {
-                    setFormStatus('error');
-                  }
-                } catch (err) {
-                  console.error(err);
-                  setFormStatus('error');
-                }
-              }}
-              className="flex flex-col gap-5"
-            >
-              <input
-                type="text"
-                name="name"
-                placeholder="Company Name"
-                value={contactForm.name}
-                onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                required
-                className="w-full border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md text-base sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
-                autoComplete="organization"
-                inputMode="text"
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                value={contactForm.email}
-                onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                required
-                className="w-full border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md text-base sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
-                autoComplete="email"
-                inputMode="email"
-              />
-              <textarea
-                name="message"
-                placeholder="Your Message"
-                value={contactForm.message}
-                onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                required
-                className="w-full border border-white/50 bg-white/10 text-white placeholder-white px-4 py-3 rounded-md resize-none h-28 sm:h-32 text-base sm:text-base focus:outline-none focus:ring-2 focus:ring-[#ee5225]"
-                rows={5}
-              />
-
-              <button
-                type="submit"
-                disabled={formStatus === 'sending'}
-                className="bg-[#ee5225] text-white py-3 rounded-md hover:bg-[#d9431d] transition font-semibold text-base sm:text-lg disabled:opacity-50"
-                style={{ touchAction: 'manipulation' }}
+              <svg
+                className="w-6 h-6 stroke-green-600"
+                fill="none"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
               >
-                {formStatus === 'sending' ? 'Sending...' : 'Send Message'}
-              </button>
+                <path d="M5 13l4 4L19 7" />
+              </svg>
+              Message sent successfully!
+            </motion.p>
+          )}
 
-              <AnimatePresence>
-                {formStatus === 'success' && (
-                  <motion.p
-                    key="success"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex items-center justify-center gap-3 rounded-xl bg-green-600/20 text-green-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
-                    role="alert"
-                  >
-                    <svg
-                      className="w-6 h-6 stroke-green-600"
-                      fill="none"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M5 13l4 4L19 7" />
-                    </svg>
-                    Message sent successfully!
-                  </motion.p>
-                )}
-
-                {formStatus === 'error' && (
-                  <motion.p
-                    key="error"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex items-center justify-center gap-3 rounded-xl bg-red-600/20 text-red-600 px-6 py-3 font-semibold shadow-lg text-center select-none"
-                    role="alert"
-                  >
-                    <svg
-                      className="w-6 h-6 stroke-red-600"
-                      fill="none"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M18 6L6 18M6 6l12 12" />
-                    </svg>
-                    Something went wrong. Please check your inputs and try again.
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </form>
-          </div>
-        </div>
-      )}
-
+          {formStatus === 'error' && (
+            <motion.p
+              key="error"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center justify-center gap-3 rounded-xl bg-red-600/20 text-red-600 px-6 py-3 font-semibold shadow-lg text-center select-none mt-2"
+              role="alert"
+            >
+              <svg
+                className="w-6 h-6 stroke-red-600"
+                fill="none"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+              Something went wrong. Please check your inputs and try again.
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </form>
+    </div>
+  </div>
+)}
       {/* Other Modals */}
       {showTeamModal && <TeamModal isOpen={showTeamModal} onClose={() => setShowTeamModal(false)} />}
       {showAboutModal && <AboutModal isOpen={showAboutModal} onClose={() => setShowAboutModal(false)} />}

@@ -172,7 +172,7 @@ const handleNavigate = (section: string) => {
   else if (lower === 'about us' ) setShowAboutModal(true);
   else if (lower === 'services') setShowServicesModal(true);
   else if (lower === 'faq') setShowFAQModal(true);
-  else if (lower === 'our client') setShowPartnerModal(true);
+  else if (lower === 'client') setShowPartnerModal(true);
 
   else {
     const targetId =
@@ -246,6 +246,7 @@ return (
             className={`text-[0.7rem] whitespace-nowrap ${
               isClient || isFAQ
                 ? '-translate-x-[2px]'
+                
                 : isCenteredIcon
                 ? '-translate-x-4'
                 : '-translate-x-2'

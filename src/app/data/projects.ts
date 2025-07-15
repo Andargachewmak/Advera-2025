@@ -24,7 +24,7 @@ export const PROJECTS: Project[] = [  //Web development
     title: 'Web develope',
     client: 'Global Fest',
     contributors: 'Studio Mix',
-    summary: 'Edited an engaging highlight reel for a global music festival.',
+summary: 'Edited an engaging highlight reel and branded recap (BR) for a global music festival. Showcased key performances, audience moments, and high-energy visuals to capture the event’s essence.',
     images: ['/Image/abela4.jpg','/Image/abela2.jpg','/Image/abela1.jpg','/Image/graphic.png'],
     
     testimonials: [
@@ -45,7 +45,7 @@ export const PROJECTS: Project[] = [  //Web development
     client: 'StartupX',
     contributors: 'Editor Pro',
     summary: 'Crafted a punchy promo video with animations and transitions.',
-    images: ['/Image/abela1.jpg'],
+    images: ['/Image/abela1.jpg','/Image/abela4.jpg','/Image/abela2.jpg','/Image/graphic.png'],
     testimonials: [
       {
         quote: "Slick, modern and super effective. Loved it!",

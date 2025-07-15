@@ -37,7 +37,7 @@ export default function Sidebar({ onSectionClick, onFAQClick, onAboutClick }: Si
     <>
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-50 w-43 ${baseBg} transition-all duration-500 ease-in-out
+        className={`fixed top-0 left-0 z-50 w-43 ${baseBg} transition-all  duration-500 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 relative shadow-xl font-monasans`}
       >
         <aside className="relative min-h-screen flex flex-col justify-between px-4 py-6 md:py-10 overflow-y-auto pt-[env(safe-area-inset-top)]">

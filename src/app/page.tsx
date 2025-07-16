@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import type { StaticImageData } from 'next/image';
 import { PROJECTS } from './data/projects';
 import { HiOutlineChevronLeft, HiOutlineChevronRight,HiArrowLeft } from 'react-icons/hi';
@@ -187,7 +187,23 @@ const handleNavigate = (section: string) => {
     if (target) target.scrollIntoView({ behavior: 'smooth' });
   }
 };
- const router = useRouter();
+  const router = useRouter();
+  const pathname = usePathname();  // Get current path
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setVisible(true);
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const handleClick = () => {
+    if (pathname !== '/') {
+      router.push('/');
+    }
+  };
 const [isOpen, setIsOpen] = useState(false);
 // Simple implementation of CSS steps() easing for framer-motion
 return (
@@ -195,20 +211,22 @@ return (
       {/* Responsive Menu Bar */}
 <div className="menu-bar">
   {/* Logo with Reload on Click */}
-<div
-  className="logo cursor-pointer select-none flex items-center h-10 w-[100px]"
-  onClick={() => router.push('/')}
->
-  <Image
-    src="/Image/advo.svg"
-    alt="Advera Logo"
-    width={100}
-    height={30}
-    className="h-10 w-auto"
-    priority
-  />
-</div>
-      {/* Toggle Menu Button */}
+ <div
+      className={`logo cursor-pointer select-none flex items-center h-10 w-[100px] transition-opacity duration-700 ease-in-out ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
+      }`}
+      onClick={handleClick}
+    >
+      <Image
+        src="/Image/advo.svg"
+        alt="Advera Logo"
+        width={100}
+        height={30}
+        className="h-10 w-auto"
+        priority
+      />
+    </div>
+          {/* Toggle Menu Button */}
   <div className="fixed top-4 right-6 z-50 md:hidden">
     <button
       onClick={() => setIsOpen((prev) => !prev)}
@@ -249,9 +267,9 @@ return (
 
           {/* Label */}
           <span
-            className={`text-[0.7rem] whitespace-nowrap ${
+            className={`text-[0.8rem] whitespace-nowrap ${
               isClient || isFAQ
-                ? '-translate-x-[2px]'
+                ? '-translate-x-[2.5px]'
                 
                 : isCenteredIcon
                 ? '-translate-x-4'

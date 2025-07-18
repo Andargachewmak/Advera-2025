@@ -290,3 +290,8 @@ footer .flex-col.items-start.justify-start {
 body.modal-open .bottom-nav {
   display: none;
 }
+.logo {
+  pointer-events: auto; /* Ensure click events work */
+  transform: none !important; /* Disable transformations */
+  transition: none !important; /* Disable transitions */
+}

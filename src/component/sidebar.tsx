@@ -18,7 +18,7 @@ const navbar = [
   { name: 'About Us', key: 'about', href: '#about-us', icon: <FaInfoCircle size={18} /> },
   { name: 'Services', key: 'services', href: '#services', icon: <FaBriefcase size={18} /> },
   { name: 'Team', key: 'team', href: '#team', icon: <FaUsers size={18} /> },
-  { name: 'Client', key: 'our client', href: '#our client', icon: <FaHandshake size={18} /> },
+  { name: 'Client', key: 'client', href: '#our client', icon: <FaHandshake size={18} /> },
   { name: 'FAQ', key: 'faq', href: '#faq', icon: <FaQuestionCircle size={18} /> }
 
 ];

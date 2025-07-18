@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import {  useRouter } from 'next/navigation';
 import type { StaticImageData } from 'next/image';
 import { PROJECTS } from './data/projects';
 import { HiOutlineChevronLeft, HiOutlineChevronRight,HiArrowLeft } from 'react-icons/hi';
@@ -52,6 +52,8 @@ export default function Home() {
   const [formStatus, setFormStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [activeProjectId, setActiveProjectId] = useState<number | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+
 const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
  const navItems = [
   { label: 'Home', icon: <FaHome size={18} /> },
@@ -188,102 +190,113 @@ const handleNavigate = (section: string) => {
   }
 };
   const router = useRouter();
-  const pathname = usePathname();  // Get current path
-  const [visible, setVisible] = useState(false);
+  // const pathname = usePathname();  // Get current path
+  // const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setVisible(true);
-    }, 100);
+  // useEffect(() => {
+  //   const timeout = setTimeout(() => {
+  //     setVisible(true);
+  //   }, 100);
 
-    return () => clearTimeout(timeout);
-  }, []);
+  //   return () => clearTimeout(timeout);
+  // }, []);
 
-  const handleClick = () => {
-    if (pathname !== '/') {
-      router.push('/');
-    }
-  };
-const [isOpen, setIsOpen] = useState(false);
+  // const handleClick = () => {
+  //   if (pathname !== '/') {
+  //     router.push('/');
+  //   }
+  // };
 // Simple implementation of CSS steps() easing for framer-motion
+useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const menu = document.querySelector('.menu-bar.nav-links');
+      if (menu && !menu.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 return (
-    <div className="flex min-h-screen flex-col">
+ <div className="flex min-h-screen flex-col">
       {/* Responsive Menu Bar */}
-<div className="menu-bar">
-  {/* Logo with Reload on Click */}
- <div
-      className={`logo cursor-pointer select-none flex items-center h-10 w-[100px] transition-opacity duration-700 ease-in-out ${
-        visible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1'
-      }`}
-      onClick={handleClick}
-    >
-      <Image
-        src="/Image/advo.svg"
-        alt="Advera Logo"
-        width={100}
-        height={30}
-        className="h-10 w-auto"
-        priority
-      />
-    </div>
-          {/* Toggle Menu Button */}
-  <div className="fixed top-4 right-6 z-50 md:hidden">
-    <button
-      onClick={() => setIsOpen((prev) => !prev)}
-      className="p-2 rounded-md bg-[#ee5225]/100 text-white focus:outline-none"
-      aria-label="Toggle Menu"
-    >
-      <IoMdMenu size={24} />
-    </button>
-  </div>
-  {/* Animated Mobile Nav */}
-<ul className={`menu-bar nav-links ${isOpen ? 'open' : ''}`}>
-  {navItems.map(({ label, icon }) => {
-    const isCenteredIcon = label === 'Services' || label === 'About Us';
-    const isClient = label === 'Our client';
-    const isFAQ = label === 'FAQ';
-
-    return (
-      <li key={label}>
-        <button
-          onClick={() => {
-            if (label === 'Home') {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-              handleNavigate(label);
-            }
-            setIsOpen(false);
-          }}
-          className="w-full text-white transition-all font-medium flex flex-col items-center justify-center py-1 gap-1"
+      <div className="menu-bar">
+        {/* Logo with Reload on Click */}
+        <div
+          className="logo cursor-pointer select-none flex items-center h-10 w-[100px] transition-opacity duration-700 ease-in-out"
+          onClick={() => router.push('/')}
         >
-          {/* Icon */}
-          <span
-            className={`text-xl ${
-              isClient || isFAQ ? 'translate-x-0.6' : ''
-            }`}
-          >
-            {icon}
-          </span>
+          <Image
+            src="/Image/advo.svg"
+            alt="Advera Logo"
+            width={100}
+            height={30}
+            className="h-10 w-auto"
+            priority
+          />
+        </div>
 
-          {/* Label */}
-          <span
-            className={`text-[0.8rem] whitespace-nowrap ${
-              isClient || isFAQ
-                ? '-translate-x-[2.5px]'
-                
-                : isCenteredIcon
-                ? '-translate-x-4'
-                : '-translate-x-2'
-            }`}
+        {/* Toggle Menu Button */}
+        <div className="fixed top-4 right-6 z-50 md:hidden">
+          <button
+            onClick={() => setIsOpen((prev) => !prev)}
+            className="p-2 rounded-md bg-[#ee5225]/100 text-white focus:outline-none"
+            aria-label="Toggle Menu"
           >
-            {label}
-          </span>
-        </button>
-      </li>
-    );
-  })}
-</ul>
-</div>
+            <IoMdMenu size={24} />
+          </button>
+        </div>
+
+        {/* Animated Mobile Nav */}
+        <ul className={`menu-bar nav-links ${isOpen ? 'open' : ''}`}>
+          {navItems.map(({ label, icon }) => {
+            const isCenteredIcon = label === 'Services' || label === 'About Us';
+            const isClient = label === 'Client';
+            const isFAQ = label === 'FAQ';
+            return (
+              <li key={label}>
+                <button
+                  onClick={() => {
+                    if (label === 'Home') {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                      handleNavigate(label);
+                    }
+                  }}
+                  className="w-full text-white transition-all font-medium flex flex-col items-center justify-center py-1 gap-1"
+                >
+                  {/* Icon */}
+                  <span
+                    className={`text-xl ${
+                      isClient || isFAQ ? 'translate-x-0.6' : ''
+                    }`}
+                  >
+                    {icon}
+                  </span>
+                  {/* Label */}
+                  <span
+                    className={`text-[0.8rem] whitespace-nowrap ${
+                      isClient || isFAQ
+                        ? '-translate-x-[2.5px]'
+                        : isCenteredIcon
+                        ? '-translate-x-4'
+                        : '-translate-x-2'
+                    }`}
+                  >
+                    {label}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        </div>
     <div className="flex flex-grow ">
         <div className="fixed top-0 left-0 h-screen w-20 lg:w-64 z-40 pointer-events-auto">
           <Sidebar
@@ -312,7 +325,7 @@ return (
     </div>
 
   {/* Container for slogan + button + description with top padding */}
-  <div className="pt-12 px-4 sm:px-0"> {/* Adjust pt-12 to increase/decrease space */}
+  <div className="pt-12 px-3.5 sm:px-0"> {/* Adjust pt-12 to increase/decrease space */}
     {/* Slogan on top-left with typing animation */}
  <div className="flex justify-start items-center min-h-[80px] perspective-1000 p-8 -mt-18 -ml-8 ">
       <motion.div
@@ -432,9 +445,12 @@ return (
   </div>
 </div>
    {/* Floating Contact Button */}
-<div className="fixed bottom-4 right-4 z-[70]">
+<div
+  className={`fixed bottom-4 z-[70] ${
+    isOpen ? 'right-2.5 sm:right-6' : 'right-6'
+  }`}
+>
   <div className="relative w-16 h-16">
-
     {/* Meteor Trail */}
     <motion.span
       className="absolute w-10 h-[2px] bg-[#ee5225] rounded-full opacity-40 blur-sm"
@@ -601,22 +617,21 @@ return (
       {/* Modal Preview */}
 {selectedProject && (
   <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
-    {/* Modal Content */}
     <div
       className="bg-white w-full h-full relative grid grid-cols-1 md:grid-cols-[80vw_30vw] overflow-y-auto md:overflow-hidden"
-      onClick={(e) => e.stopPropagation()} // Prevent outside clicks from closing
+      onClick={(e) => e.stopPropagation()}
     >
-      {/* Left: Image Carousel */}
-      <div className="relative w-full h-[400px] md:h-screen flex flex-col pt-5 pb-5 px-5">
-        {/* Carousel Image */}
-        <div className="relative w-full h-[300px] md:h-full rounded-2xl overflow-hidden">
+      {/* LEFT PANEL */}
+      <div className="relative w-full md:h-screen flex flex-col pt-5 pb-5 px-5">
+
+        {/* ✅ Desktop Carousel */}
+        <div className="hidden md:block relative w-full h-full rounded-2xl overflow-hidden">
           <Image
             src={selectedProject.images[currentImageIndex]}
             alt={`Project Image ${currentImageIndex + 1}`}
             fill
             className="object-cover transition-all duration-300"
           />
-          {/* Arrows */}
           <button
             onClick={() =>
               setCurrentImageIndex((prev) =>
@@ -639,83 +654,121 @@ return (
           </button>
         </div>
 
-        {/* Mobile Thumbnails */}
-        <div className="md:hidden -mb-8 mt-3 px-1">
-          <div
-            ref={scrollRef}
-            className="flex gap-3 -ml-2 -mr-1 overflow-x-auto no-scrollbar"
-          >
-            {selectedProject.images.map((img, idx) => (
-              <div
-                key={idx}
-                onClick={() => setCurrentImageIndex(idx)}
-                className={`relative flex-shrink-0 w-[31.5%] aspect-square rounded-lg overflow-hidden cursor-pointer border-4 transition ${
-                  idx === currentImageIndex ? 'border-[#ee5225]' : 'border-transparent'
-                }`}
-              >
-                <Image
-                  src={img}
-                  alt={`Thumb ${idx + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            ))}
+        {/* ✅ Mobile Carousel */}
+        <div className="block md:hidden w-full">
+          <div className="relative w-full h-[240px] rounded-2xl overflow-hidden mb-1">
+            <Image
+              src={selectedProject.images[currentImageIndex]}
+              alt={`Project Image ${currentImageIndex + 1}`}
+              fill
+              className="object-cover transition-all duration-300"
+            />
+            <button
+              onClick={() =>
+                setCurrentImageIndex((prev) =>
+                  prev === 0 ? selectedProject.images.length - 1 : prev - 1
+                )
+              }
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 text-white p-1.5 rounded-full"
+            >
+              <HiOutlineChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() =>
+                setCurrentImageIndex((prev) =>
+                  prev === selectedProject.images.length - 1 ? 0 : prev + 1
+                )
+              }
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 text-white p-1.5 rounded-full"
+            >
+              <HiOutlineChevronRight size={18} />
+            </button>
+          </div>
+
+          {/* Mobile Thumbnails */}
+          <div className="mb-3 mt-4   px-1">
+            <div
+              ref={scrollRef}
+              className="flex gap-2.5 -ml-1 -mr-1 overflow-x-auto no-scrollbar"
+            >
+              {selectedProject.images.map((img, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setCurrentImageIndex(idx)}
+                  className={`relative flex-shrink-0 w-[31.6%] aspect-square rounded-lg overflow-hidden cursor-pointer border-4 transition ${
+                    idx === currentImageIndex ? 'border-[#ee5225]' : 'border-transparent'
+                  }`}
+                >
+                  <Image
+                    src={img}
+                    alt={`Thumb ${idx + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                
+              ))}
+            </div>
           </div>
         </div>
       </div>
+      {/* Mobile View */}
+          <div className="block md:hidden -mt-12 px-4.5 pb-2 pr-4.5 pl-5 space-y-3.5">
+            <h1 className="text-2xl font-bold mb-2 text-black break-words">
+              {selectedProject.title}
+            </h1>
+            <div>
+              <h3 className="font-bold text-[#58595b] text-md">Client</h3>
+              <p className="text-[15px] text-[#58595b] break-words">{selectedProject.client}</p>
+            </div>
+            <h3 className="font-bold text-[#58595b] text-md pr-2.5 mt-3">Project Summary</h3>
+            <p className="text-[15px] leading-[19px] text-[#58595b] whitespace-pre-line break-all">
+              {selectedProject.summary}
+            </p>
+          </div>
 
-      {/* Right Panel */}
+      {/* RIGHT PANEL */}
       <div
         className="relative flex flex-col justify-start px-6 md:px-2.5 py-5 space-y-8 text-[#58595b] overflow-y-auto h-full max-h-screen min-w-0 bg-white"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {/* Desktop Thumbnails */}
-<div className="hidden md:grid grid-cols-2 gap-x-3 gap-y-3.5 pr-42">
-  {selectedProject.images.map((img, idx) => (
-    <div
-      key={idx}
-      onClick={() => setCurrentImageIndex(idx)}
-      className="relative max-w-[125px] aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer"
-    >
-      <Image
-        src={img}
-        alt={`Thumb ${idx + 1}`}
-        fill
-        className={`
-          object-cover transition-transform duration-300
-          ${idx === currentImageIndex ? 'scale-105 ring-2 ring-[#ee5225]' : 'scale-100'}
-        `}
-      />
-    </div>
-  ))}
-</div>
+        <div className="hidden md:grid grid-cols-2 gap-x-3 gap-y-4 pr-42">
+          {selectedProject.images.map((img, idx) => (
+            <div
+              key={idx}
+              onClick={() => setCurrentImageIndex(idx)}
+              className="relative max-w-[125px] aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer"
+            >
+              <Image
+                src={img}
+                alt={`Thumb ${idx + 1}`}
+                fill
+                className={`object-cover transition-transform duration-300 ${
+                  idx === currentImageIndex ? 'scale-105 ring-2 ring-[#ee5225]' : 'scale-100'
+                }`}
+              />
+            </div>
+          ))}
+        </div>
 
         {/* Project Info */}
         <div className="flex flex-col justify-start pt-1 pr-4 space-y-5 text-[#58595b]">
-          <h1 className="text-2xl font-bold text-black">{selectedProject.title}</h1>
+          
 
-          <div>
-            <h3 className="font-bold mt-2 text-md">Client</h3>
-            <p className="text-sm break-words">{selectedProject.client}</p>
+          {/* Desktop View */}
+          <div className="hidden md:block">
+            <h1 className="text-2xl font-bold text-black">{selectedProject.title}</h1>
+            <div>
+              <h3 className="font-bold mt-2 text-md">Client</h3>
+              <p className="text-sm break-words">{selectedProject.client}</p>
+            </div>
+            <h3 className="font-bold mt-2 text-md">Project Summary</h3>
+            <p className="text-sm leading-[19px] pr-39 whitespace-pre-line break-all">
+              {selectedProject.summary}
+            </p>
           </div>
-
-          {/* Mobile View */}
-<div className="block md:hidden ">
-  <h3 className="font-bold  text-md">Project Summary</h3>
-  <p className="text-[16px] leading-[18px] whitespace-pre-line break-all -mr-4.5  ">
-    {selectedProject.summary}
-  </p>
-</div>
-
-{/* Desktop View */}
-<div className="hidden md:block">
-  <h3 className="font-bold mt-2 text-md">Project Summary</h3>
-  <p className="text-sm leading-[18px] pr-37.5 whitespace-pre-line break-all">
-    {selectedProject.summary}
-  </p>
-</div>
-</div>
+        </div>
 
         {/* Back Button */}
         <div className="absolute bottom-5 left-3">
@@ -766,7 +819,7 @@ return (
 
       <h3
         id="contact-modal-title"
-        className="text-2xl sm:text-3xl font-bold mb-6 text-white text-center"
+        className="text-2xl sm:text-3xl font-bold mb-10 mt-5 text-white text-center"
       >
         Get in Touch
       </h3>
@@ -840,7 +893,7 @@ return (
         <button
           type="submit"
           disabled={formStatus === 'sending'}
-          className="bg-[#ee5225] text-white py-3 rounded-md hover:bg-[#d9431d] transition font-semibold text-base sm:text-lg disabled:opacity-50"
+          className="bg-[#ee5225] text-white py-3 rounded-md mt-8 hover:bg-[#d9431d] transition font-semibold text-base sm:text-lg disabled:opacity-50"
           style={{ touchAction: 'manipulation' }}
         >
           {formStatus === 'sending' ? 'Sending...' : 'Send Message'}

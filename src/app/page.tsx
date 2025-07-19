@@ -671,7 +671,7 @@ return (
 
         {/* ✅ Mobile Carousel */}
         <div className="block md:hidden w-full">
-          <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden mb-2">
+          <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden mb-1.5">
             <Image
               src={selectedProject.images[currentImageIndex]}
               alt={`Project Image ${currentImageIndex + 1}`}
@@ -701,10 +701,10 @@ return (
           </div>
 
           {/* ✅ Updated Mobile Thumbnails (macOS-friendly) */}
-          <div className="-mt-1.5 mb-4 px-2  ">
+          <div className="-mt-1.5 mb-4 pr-1 -pl-0.5   ">
             <div
               ref={scrollRef}
-              className="flex gap-2 overflow-x-auto no-scrollbar h-[110px] items-center"
+              className="flex gap-3.5  h-[110px] items-center"
               style={{ scrollbarGutter: 'stable' }}
             >
               {selectedProject.images.map((img, idx) => (

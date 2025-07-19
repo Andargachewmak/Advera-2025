@@ -635,41 +635,39 @@ return (
     >
       {/* LEFT PANEL */}
       <div className="relative w-full md:h-screen flex flex-col pt-4 pb-4 px-4 sm:px-5">
-
         {/* ✅ Desktop Carousel */}
-<div className="hidden md:block relative w-full h-full rounded-2xl overflow-hidden">
-  <Image
-    src={selectedProject.images[currentImageIndex]}
-    alt={`Project Image ${currentImageIndex + 1}`}
-    fill
-    className="object-cover transition-all duration-300"
-    priority
-    sizes="(min-width: 768px) 100vw"
-  />
-  <button
-    onClick={() =>
-      setCurrentImageIndex((prev) =>
-        prev === 0 ? selectedProject.images.length - 1 : prev - 1
-      )
-    }
-    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 text-white p-2 rounded-full"
-    aria-label="Previous Image"
-  >
-    <HiOutlineChevronLeft size={20} />
-  </button>
-  <button
-    onClick={() =>
-      setCurrentImageIndex((prev) =>
-        prev === selectedProject.images.length - 1 ? 0 : prev + 1
-      )
-    }
-    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 text-white p-2 rounded-full"
-    aria-label="Next Image"
-  >
-    <HiOutlineChevronRight size={20} />
-  </button>
-</div>
-
+        <div className="hidden md:block relative w-full h-full rounded-2xl overflow-hidden">
+          <Image
+            src={selectedProject.images[currentImageIndex]}
+            alt={`Project Image ${currentImageIndex + 1}`}
+            fill
+            className="object-cover transition-all duration-300"
+            priority
+            sizes="(min-width: 768px) 100vw"
+          />
+          <button
+            onClick={() =>
+              setCurrentImageIndex((prev) =>
+                prev === 0 ? selectedProject.images.length - 1 : prev - 1
+              )
+            }
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 text-white p-2 rounded-full"
+            aria-label="Previous Image"
+          >
+            <HiOutlineChevronLeft size={20} />
+          </button>
+          <button
+            onClick={() =>
+              setCurrentImageIndex((prev) =>
+                prev === selectedProject.images.length - 1 ? 0 : prev + 1
+              )
+            }
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 bg-white/60 hover:bg-white/80 text-white p-2 rounded-full"
+            aria-label="Next Image"
+          >
+            <HiOutlineChevronRight size={20} />
+          </button>
+        </div>
 
         {/* ✅ Mobile Carousel */}
         <div className="block md:hidden w-full">
@@ -702,18 +700,19 @@ return (
             </button>
           </div>
 
-          {/* Mobile Thumbnails */}
+          {/* ✅ Updated Mobile Thumbnails (macOS-friendly) */}
           <div className="mt-2 mb-4 px-1">
             <div
               ref={scrollRef}
-              className="flex gap-2 overflow-x-auto no-scrollbar"
+              className="flex gap-2 overflow-x-auto no-scrollbar h-[110px] items-center"
+              style={{ scrollbarGutter: 'stable' }}
             >
               {selectedProject.images.map((img, idx) => (
                 <div
                   key={idx}
                   onClick={() => setCurrentImageIndex(idx)}
                   className={`relative flex-shrink-0 w-[30%] min-w-[85px] max-w-[120px] aspect-square rounded-lg overflow-hidden cursor-pointer border-4 transition ${
-                    idx === currentImageIndex ? 'border-[#ee5225]' : 'border-transparent'
+                    idx === currentImageIndex ? '' : 'border-transparent'
                   }`}
                 >
                   <Image
@@ -729,10 +728,14 @@ return (
 
           {/* Mobile Info */}
           <div className="space-y-3">
-            <h1 className="text-2xl font-bold text-black break-words">{selectedProject.title}</h1>
+            <h1 className="text-2xl font-bold text-black break-words">
+              {selectedProject.title}
+            </h1>
             <div>
               <h3 className="font-bold text-[#58595b] text-md">Client</h3>
-              <p className="text-[15px] text-[#58595b] break-words">{selectedProject.client}</p>
+              <p className="text-[15px] text-[#58595b] break-words">
+                {selectedProject.client}
+              </p>
             </div>
             <div>
               <h3 className="font-bold text-[#58595b] text-md">Project Summary</h3>
@@ -744,36 +747,36 @@ return (
         </div>
       </div>
 
-      {/* RIGHT PANEL (Desktop Only Info + Thumbnails) */}
+      {/* RIGHT PANEL (Desktop Info + Thumbnails) */}
       <div
         className="relative flex flex-col justify-start px-4 sm:px-6 md:px-3 py-5 space-y-8 text-[#58595b] overflow-y-auto h-full max-h-screen bg-white"
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {/* Desktop Thumbnails */}
-<div className="hidden md:grid grid-cols-2 gap-3 pr-42">
-  {selectedProject.images.map((img, idx) => (
-    <div
-      key={idx}
-      onClick={() => setCurrentImageIndex(idx)}
-      className={`relative max-w-[125px] aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer group ${
-        idx === currentImageIndex ? 'ring-2 ring-[#ee5225]' : ''
-      }`}
-    >
-      <Image
-        src={img}
-        alt={`Thumb ${idx + 1}`}
-        fill
-        className={`object-cover transition-transform duration-300 ${
-          idx === currentImageIndex ? 'scale-105' : ''
-        } group-hover:scale-110`}
-      />
-    </div>
-  ))}
-</div>
+        <div className="hidden md:grid grid-cols-2 gap-3 pr-42">
+          {selectedProject.images.map((img, idx) => (
+            <div
+              key={idx}
+              onClick={() => setCurrentImageIndex(idx)}
+              className={`relative max-w-[125px] aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer group`}
+            >
+              <Image
+                src={img}
+                alt={`Thumb ${idx + 1}`}
+                fill
+                className={`object-cover transition-transform duration-300 ${
+                  idx === currentImageIndex ? 'scale-105' : ''
+                } group-hover:scale-110`}
+              />
+            </div>
+          ))}
+        </div>
 
         {/* Desktop Info */}
         <div className="hidden md:flex flex-col justify-start pt-1 pr-4 space-y-5 text-[#58595b]">
-          <h1 className="text-2xl font-bold text-black">{selectedProject.title}</h1>
+          <h1 className="text-2xl font-bold text-black">
+            {selectedProject.title}
+          </h1>
           <div>
             <h3 className="font-bold text-md">Client</h3>
             <p className="text-sm break-words">{selectedProject.client}</p>
@@ -787,15 +790,27 @@ return (
         </div>
 
         {/* Back Button */}
-        <div className="absolute bottom-5 left-4">
-          <button
-            onClick={() => setSelectedProject(null)}
-            className="flex items-center gap-1 pl-3 pr-5 py-2 bg-[#ee5225] text-white font-medium rounded-full hover:bg-[#d9431d] transition"
-          >
-            <HiArrowLeft className="text-lg" />
-            Back
-          </button>
-        </div>
+{/* Desktop Back Button (Top Left) */}
+<div className="hidden md:flex absolute bottom-5 left-4 z-50">
+  <button
+    onClick={() => setSelectedProject(null)}
+    className="flex items-center gap-1 pl-3 pr-5 py-2 bg-[#ee5225] text-white font-medium rounded-full hover:bg-[#d9431d] transition"
+  >
+    <HiArrowLeft className="text-lg" />
+    Back
+  </button>
+</div>
+
+{/* Mobile Back Button (Bottom Left) */}
+<div className="flex md:hidden absolute bottom-5 left-4">
+  <button
+    onClick={() => setSelectedProject(null)}
+    className="flex items-center gap-1 pl-3 pr-5 py-2 bg-[#ee5225] text-white font-medium rounded-full hover:bg-[#d9431d] transition"
+  >
+    <HiArrowLeft className="text-lg" />
+    Back
+  </button>
+</div>
       </div>
     </div>
   </div>

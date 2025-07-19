@@ -198,7 +198,7 @@
   background: none;
   border: none;
   width: 100%;
-  padding: 0.4rem 3rem 0.8rem 0.6rem; /* tighter right padding to move content left */
+  padding: 0.4rem 3rem 0.8rem 0.37rem;
   font-size: 0.75rem;
   color: white;
   text-align: right;

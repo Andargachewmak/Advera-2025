@@ -701,7 +701,7 @@ return (
           </div>
 
           {/* ✅ Updated Mobile Thumbnails (macOS-friendly) */}
-          <div className="mt-3 mb-4 px-1">
+          <div className="-mt-1.5 mb-4 px-1">
             <div
               ref={scrollRef}
               className="flex gap-2 overflow-x-auto no-scrollbar h-[110px] items-center"
@@ -711,7 +711,7 @@ return (
                 <div
                   key={idx}
                   onClick={() => setCurrentImageIndex(idx)}
-                  className={`relative flex-shrink-0 w-[30%] min-w-[85px] max-w-[100px] aspect-square rounded-lg overflow-hidden cursor-pointer  transition ${
+                  className={`relative flex-shrink-0 w-[30%] min-w-[85px] max-w-[80px] aspect-square rounded-lg overflow-hidden cursor-pointer  transition ${
                     idx === currentImageIndex ? '' : ''
                   }`}
                 >

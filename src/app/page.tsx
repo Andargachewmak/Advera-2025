@@ -701,7 +701,7 @@ return (
           </div>
 
           {/* ✅ Updated Mobile Thumbnails (macOS-friendly) */}
-          <div className="-mt-1.5 mb-4 px-1">
+          <div className="-mt-1.5 mb-4 px-2  ">
             <div
               ref={scrollRef}
               className="flex gap-2 overflow-x-auto no-scrollbar h-[110px] items-center"
@@ -727,7 +727,7 @@ return (
           </div>
 
           {/* Mobile Info */}
-          <div className="space-y-3">
+          <div className="space-y-3 pl-1.5 pr-2">
             <h1 className="text-2xl font-bold text-black break-words">
               {selectedProject.title}
             </h1>

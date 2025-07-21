@@ -753,24 +753,27 @@ return (
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {/* Desktop Thumbnails */}
-        <div className="hidden md:grid grid-cols-2 gap-3 pr-42">
-          {selectedProject.images.map((img, idx) => (
-            <div
-              key={idx}
-              onClick={() => setCurrentImageIndex(idx)}
-              className={`relative max-w-[125px] aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer group`}
-            >
-              <Image
-                src={img}
-                alt={`Thumb ${idx + 1}`}
-                fill
-                className={`object-cover transition-transform duration-300 ${
-                  idx === currentImageIndex ? 'scale-105' : ''
-                } group-hover:scale-110`}
-              />
-            </div>
-          ))}
-        </div>
+<div
+  className="hidden md:grid grid-cols-2 gap-3 pr-42"
+  style={{ scrollbarGutter: 'stable' }} // ensures space for scrollbar
+>
+  {selectedProject.images.map((img, idx) => (
+    <div
+      key={idx}
+      onClick={() => setCurrentImageIndex(idx)}
+      className="relative max-w-[125px] aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer group"
+    >
+      <Image
+        src={img}
+        alt={`Thumb ${idx + 1}`}
+        fill
+        className={`object-cover transition-transform duration-300 ${
+          idx === currentImageIndex ? 'scale-105' : ''
+        } group-hover:scale-110`}
+      />
+    </div>
+  ))}
+</div>
 
         {/* Desktop Info */}
         <div className="hidden md:flex flex-col justify-start pt-1 pr-4 space-y-5 text-[#58595b]">
